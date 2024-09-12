@@ -3,7 +3,7 @@
 [![Latest Release](https://img.shields.io/github/release/kattouf/Sake.svg)](https://github.com/kattouf/Sake/releases/latest)
 ![](https://github.com/kattouf/Sake/actions/workflows/tests.yml/badge.svg?branch=main)
 
-A Swift-based utility for managing CLI command execution with dependencies and conditions, inspired by Make.
+A Swift-based utility for managing command execution with dependencies and conditions, inspired by Make.
 
 ``` swift
 struct Commands: SakeApp {
