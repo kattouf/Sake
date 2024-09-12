@@ -5,7 +5,24 @@
 
 A Swift-based utility for managing CLI command execution with dependencies and conditions, inspired by Make.
 
-[Installation](#installation) • [Getting Started](#getting-started) * [Commands](#commands) • [Features In Detail](#features-in-detail) • [Configuration](#configuration) • [Advanced Usage](#advanced-usage)
+``` swift
+struct Commands: SakeApp {
+    public static var hello: Command {
+        Command(
+            run: { context in
+                print("Hello, world!")
+            }
+        )
+    }
+}
+```
+
+``` sh
+❯ sake hello
+Hello, world!
+```
+
+[Installation](#installation) • [Getting Started](#getting-started) • [Commands](#commands) • [Features In Detail](#features-in-detail) • [Configuration](#configuration) • [Advanced Usage](#advanced-usage)
 
 ## Features
 
