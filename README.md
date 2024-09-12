@@ -47,7 +47,7 @@ Currently only supports MacOS.
 ### [Homebrew](https://brew.sh)
 
 ``` sh
-brew install kattouf/homebrew-taps/Sake
+brew install kattouf/sake/sake
 ```
 
 ### [Mint](https://github.com/yonaskolb/Mint)
