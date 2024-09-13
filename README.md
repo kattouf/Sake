@@ -36,13 +36,11 @@ Hello, world!
 
 Sake is designed for Swift developers who prefer to stay within the Swift ecosystem for managing command execution, rather than switching to shell scripting or using tools like Make. By leveraging Swift, Sake ensures type safety, readability, and maintainability in defining commands, making it an intuitive solution for automating project tasks.
 
-## Requirements
-
-Sake requires **Swift 5.9** **(Xcode 15.0)** or higher due to the use of Swift macros.
-
 ## Installation
 
-Currently only supports MacOS.
+### Requirements
+
+Currently only macOS is supported and requires **Swift 5.10** **(Xcode 15.3)** or higher.
 
 ### [Homebrew](https://brew.sh)
 
