@@ -10,7 +10,12 @@ public extension SakeApp {
             case let listCommand as ListCommand:
                 let rootCommands = rootCommands(caseConvertingStrategy: listCommand.options.caseConvertingStrategy)
                 let commandGroups = commandGroups(caseConvertingStrategy: listCommand.options.caseConvertingStrategy)
-                let formatted = CommandListFormatter.formatted(rootName: Self.name, rootCommands: rootCommands, groupedCommands: commandGroups)
+                let formatterInputData = CommandListFormatter.Data(rootName: Self.name, rootCommands: rootCommands, groupedCommands: commandGroups)
+                let formatted = if listCommand.options.json {
+                    try CommandListFormatter.json(data: formatterInputData)
+                } else {
+                    CommandListFormatter.humanReadable(data: formatterInputData)
+                }
                 print(formatted)
             case let runCommand as RunCommand:
                 let commands = try allCommands(caseConvertingStrategy: runCommand.options.caseConvertingStrategy)
@@ -36,8 +41,10 @@ public extension SakeApp {
             }
         } catch {
             let exitCode: Int32 = exitCode(for: error)
-            if exitCode != SakeAppExitCode.unexpectedError {
-                logError(error)
+            if exitCode == SakeAppExitCode.unexpectedError {
+                logError(String(describing: error))
+            } else {
+                logError(error.localizedDescription)
             }
             CLI.exit(withError: ExitCode(exitCode))
         }

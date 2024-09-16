@@ -34,4 +34,7 @@ struct RunCommand: ParsableCommand {
 struct CommonOptions: ParsableArguments {
     @Option
     var caseConvertingStrategy: CaseConvertingStrategy
+
+    @Flag
+    var json: Bool = false
 }

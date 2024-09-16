@@ -129,13 +129,14 @@ final class SakeAppManager {
         }
     }
 
-    func listAvailableCommands(caseConvertingStrategy: CaseConvertingStrategy) throws {
+    func listAvailableCommands(caseConvertingStrategy: CaseConvertingStrategy, json: Bool) throws {
         try validate()
 
         let executablePath = try buildSakeAppExecutable()
+        let jsonFlag = json ? " --json" : ""
 
         do {
-            try SwiftShell.runAndPrint(bash: "\(executablePath) list --case-converting-strategy \(caseConvertingStrategy.rawValue)")
+            try SwiftShell.runAndPrint(bash: "\(executablePath) list --case-converting-strategy \(caseConvertingStrategy.rawValue)\(jsonFlag)")
         } catch let SwiftShell.CommandError.returnedErrorCode(_, exitCode) {
             try handleSakeAppExitCode(exitCode: exitCode)
         }
