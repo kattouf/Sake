@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kattouf/Sake",
       "state" : {
-        "branch" : "main",
-        "revision" : "970cbae5a17d7a7d0b774b93a04e663c3e21ba68"
+        "revision" : "ac71ae271ee365159178201caac495056c43a010",
+        "version" : "0.1.1"
       }
     },
     {
