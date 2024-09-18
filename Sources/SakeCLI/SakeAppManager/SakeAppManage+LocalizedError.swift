@@ -10,11 +10,11 @@ extension SakeAppManager.ValidationError: LocalizedError {
             Failed to dump 'Package.swift' at \(path).
             Stdout:
             \"\"\"
-            \(stdout)
+            \(stdout.isEmpty ? "<No output>" : stdout)
             \"\"\"
             Stderr:
             \"\"\"
-            \(stderr)
+            \(stderr.isEmpty ? "<No output>" : stderr)
             \"\"\"
             """
         case let .failedToReadPackageSwift(path, reason):
@@ -48,11 +48,11 @@ extension SakeAppManager.Error: LocalizedError {
             Failed to clean SakeApp.
             Stdout:
             \"\"\"
-            \(stdout)
+            \(stdout.isEmpty ? "<No output>" : stdout)
             \"\"\"
             Stderr:
             \"\"\"
-            \(stderr)
+            \(stderr.isEmpty ? "<No output>" : stderr)
             \"\"\"
             """
         case let .failedToBuildSakeApp(stdout, stderr):
@@ -60,11 +60,11 @@ extension SakeAppManager.Error: LocalizedError {
             Failed to build SakeApp.
             Stdout:
             \"\"\"
-            \(stdout)
+            \(stdout.isEmpty ? "<No output>" : stdout)
             \"\"\"
             Stderr:
             \"\"\"
-            \(stderr)
+            \(stderr.isEmpty ? "<No output>" : stderr)
             \"\"\"
             """
         case let .failedToReadSakeAppBinPath(stdout, stderr):
@@ -72,11 +72,11 @@ extension SakeAppManager.Error: LocalizedError {
             Failed to read the SakeApp binary path.
             Stdout:
             \"\"\"
-            \(stdout)
+            \(stdout.isEmpty ? "<No output>" : stdout)
             \"\"\"
             Stderr:
             \"\"\"
-            \(stderr)
+            \(stderr.isEmpty ? "<No output>" : stderr)
             \"\"\"
             """
         case let .sakeAppError(error):
