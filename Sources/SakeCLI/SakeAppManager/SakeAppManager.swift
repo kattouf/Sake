@@ -152,7 +152,8 @@ final class SakeAppManager {
         if try isSakeAppBinaryOutdated() {
             log("Building SakeApp package... (this may take a moment)")
             let executablePath = try getExecutablePath()
-            let buildResult = SwiftShell.run(bash: "swift build --package-path \(path) --product \(Constants.executableName) && touch -m \(executablePath)")
+            let swiftcFlags = "-Xswiftc -gnone -Xswiftc -Onone"
+            let buildResult = SwiftShell.run(bash: "swift build \(swiftcFlags) --package-path \(path) --product \(Constants.executableName) && touch -m \(executablePath)")
             guard buildResult.succeeded else {
                 throw Error.failedToBuildSakeApp(stdout: buildResult.stdout, stderr: buildResult.stderror)
             }
