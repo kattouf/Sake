@@ -22,6 +22,8 @@ struct Commands: SakeApp {
 Hello, world!
 ```
 
+> **⚠️ Note:** Sake is still under active development and is not yet production-ready. Use with caution in production environments.
+
 [Installation](#installation) • [Getting Started](#getting-started) • [Commands](#commands) • [Features In Detail](#features-in-detail) • [Configuration](#configuration) • [Advanced Usage](#advanced-usage)
 
 ## Features
