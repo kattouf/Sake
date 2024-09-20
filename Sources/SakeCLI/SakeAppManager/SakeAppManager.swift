@@ -170,7 +170,7 @@ final class SakeAppManager {
         guard FileManager.default.fileExists(atPath: executablePath) else {
             return true
         }
-        guard let binaryModificationDate = try fileManager.attributesOfItem(atPath: executablePath)[.modificationDate] as? Date else {
+        guard let binaryModificationDate = try? fileManager.attributesOfItem(atPath: executablePath)[.modificationDate] as? Date else {
             return true
         }
 
