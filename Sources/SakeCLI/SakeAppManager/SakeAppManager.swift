@@ -70,13 +70,8 @@ final class SakeAppManager {
         FileManager.default.createFile(atPath: packageSwiftPath, contents: SakeAppContents.packageSwift.data(using: .utf8), attributes: nil)
         FileManager.default.createFile(atPath: sakefilePath, contents: SakeAppContents.sakefile.data(using: .utf8), attributes: nil)
 
-        log("Building SakeApp package... (this may take a moment)")
-        let result = SwiftShell.run(bash: "swift build --package-path \(path)")
-        if result.succeeded {
-            log("SakeApp package initialized successfully.")
-        } else {
-            throw Error.failedToBuildSakeApp(stdout: result.stdout, stderr: result.stderror)
-        }
+        try buildSakeAppExecutable()
+        log("SakeApp package initialized successfully.")
     }
 
     func clean() throws {
@@ -154,9 +149,66 @@ final class SakeAppManager {
 
     @discardableResult
     private func buildSakeAppExecutable() throws -> String {
-        let buildResult = SwiftShell.run(bash: "swift build --package-path \(path) --product \(Constants.executableName)")
-        guard buildResult.succeeded else {
-            throw Error.failedToBuildSakeApp(stdout: buildResult.stdout, stderr: buildResult.stderror)
+        if try isSakeAppBinaryOutdated() {
+            log("Building SakeApp package... (this may take a moment)")
+            let executablePath = try getExecutablePath()
+            let buildResult = SwiftShell.run(bash: "swift build --package-path \(path) --product \(Constants.executableName) && touch -m \(executablePath)")
+            guard buildResult.succeeded else {
+                throw Error.failedToBuildSakeApp(stdout: buildResult.stdout, stderr: buildResult.stderror)
+            }
+        }
+
+        return try getExecutablePath()
+    }
+
+    private func isSakeAppBinaryOutdated() throws -> Bool {
+        let sakeAppDirectoryURL = URL(fileURLWithPath: path)
+        let fileManager = FileManager.default
+        let executablePath = try getExecutablePath()
+
+        guard FileManager.default.fileExists(atPath: executablePath) else {
+            return true
+        }
+        guard let binaryModificationDate = try fileManager.attributesOfItem(atPath: executablePath)[.modificationDate] as? Date else {
+            return true
+        }
+
+        let urlResourceKeys: Set<URLResourceKey> = [.isDirectoryKey, .nameKey, .attributeModificationDateKey]
+        let enumerator = fileManager.enumerator(
+            at: sakeAppDirectoryURL,
+            includingPropertiesForKeys: Array(urlResourceKeys),
+            options: []
+        )!
+
+        for case let fileURL as URL in enumerator {
+            guard let resourceValues = try? fileURL.resourceValues(forKeys: urlResourceKeys),
+                  let isDirectory = resourceValues.isDirectory,
+                  let name = resourceValues.name,
+                  let modificationDate = resourceValues.attributeModificationDate
+            else {
+                continue
+            }
+
+            if isDirectory && name == ".build" {
+                enumerator.skipDescendants()
+                continue
+            }
+
+            if modificationDate > binaryModificationDate {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    private func getExecutablePath() throws -> String {
+        enum Cache {
+            static var executablePath: String?
+        }
+
+        if let executablePath = Cache.executablePath {
+            return executablePath
         }
 
         let showBinPathResult = SwiftShell.run(bash: "swift build --package-path \(path) --show-bin-path")
@@ -164,6 +216,9 @@ final class SakeAppManager {
             throw Error.failedToReadSakeAppBinPath(stdout: showBinPathResult.stdout, stderr: showBinPathResult.stderror)
         }
         let binPath = showBinPathResult.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
-        return binPath + "/" + Constants.executableName
+        let executablePath = binPath + "/" + Constants.executableName
+
+        Cache.executablePath = executablePath
+        return executablePath
     }
 }
