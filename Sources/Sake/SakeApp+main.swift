@@ -10,11 +10,11 @@ public extension SakeApp {
             case let listCommand as ListCommand:
                 let rootCommands = rootCommands(caseConvertingStrategy: listCommand.options.caseConvertingStrategy)
                 let commandGroups = commandGroups(caseConvertingStrategy: listCommand.options.caseConvertingStrategy)
-                let formatterInputData = CommandListFormatter.Data(rootName: Self.name, rootCommands: rootCommands, groupedCommands: commandGroups)
+                let formatterInputData = CommandListFormatter.InputData(rootName: Self.name, rootCommands: rootCommands, groupedCommands: commandGroups)
                 let formatted = if listCommand.options.json {
-                    try CommandListFormatter.json(data: formatterInputData)
+                    try CommandListFormatter.json(inputData: formatterInputData)
                 } else {
-                    CommandListFormatter.humanReadable(data: formatterInputData)
+                    CommandListFormatter.humanReadable(inputData: formatterInputData)
                 }
                 print(formatted)
             case let runCommand as RunCommand:
