@@ -70,6 +70,7 @@ final class SakeAppManager {
         FileManager.default.createFile(atPath: packageSwiftPath, contents: SakeAppContents.packageSwift.data(using: .utf8), attributes: nil)
         FileManager.default.createFile(atPath: sakefilePath, contents: SakeAppContents.sakefile.data(using: .utf8), attributes: nil)
 
+        try validate()
         try buildSakeAppExecutable()
         log("SakeApp package initialized successfully.")
     }
