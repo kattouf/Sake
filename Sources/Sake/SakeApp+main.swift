@@ -9,7 +9,7 @@ public extension SakeApp {
             if case let sakeCommand as SakeParsableCommand = cliCommand {
                 try sakeCommand.run(sakeApp: self)
             } else {
-                throw SakeAppError.unexpectedError(message: "Impossible runtime state")
+                throw SakeAppError.unexpectedError(message: "Command should be a SakeParsableCommand. \(cliCommand) is not.")
             }
         } catch {
             let exitCode: Int32 = exitCode(for: error)

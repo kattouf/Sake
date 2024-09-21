@@ -29,7 +29,7 @@ struct RunCommand: ParsableCommand {
             try manager.run(command: command, args: args, caseConvertingStrategy: config.caseConvertingStrategy)
         } catch {
             if case let SakeAppManager.Error.sakeAppError(sakeAppError) = error {
-                // log only unexpected errors, as the expected ones are already logged by SakeApp itself
+                // log only unexpected errors, business errors are already pretty logged by the SakeApp
                 if case SakeAppManager.SakeAppError.unexpectedError = sakeAppError {
                     logError(error.localizedDescription)
                 }
