@@ -112,8 +112,6 @@ final class SakeAppManager {
     }
 
     func run(command: String, args: [String], caseConvertingStrategy: CaseConvertingStrategy) throws {
-        try validate()
-
         let executablePath = try buildSakeAppExecutable()
         let args = args.isEmpty ? "" : " \(args.joined(separator: " "))"
 
@@ -125,8 +123,6 @@ final class SakeAppManager {
     }
 
     func listAvailableCommands(caseConvertingStrategy: CaseConvertingStrategy, json: Bool) throws {
-        try validate()
-
         let executablePath = try buildSakeAppExecutable()
         let jsonFlag = json ? " --json" : ""
 
@@ -150,6 +146,7 @@ final class SakeAppManager {
     @discardableResult
     private func buildSakeAppExecutable() throws -> String {
         if try isSakeAppBinaryOutdated() {
+            try validate()
             log("Building SakeApp package... (this may take a moment)")
             let executablePath = try getExecutablePath()
             let swiftcFlags = "-Xswiftc -gnone -Xswiftc -Onone"
