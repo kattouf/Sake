@@ -3,7 +3,7 @@ import XCTest
 
 final class IntegrationTests: XCTestCase {
     func testHelloWorld() throws {
-        let buildResult = SwiftShell.run(bash: "swift build -c release --product sake")
+        let buildResult = SwiftShell.run(bash: "swift build --product sake")
         if !buildResult.succeeded {
             XCTFail("Failed to build Sake: stdout: \(buildResult.stdout), stderr: \(buildResult.stderror)")
         }
