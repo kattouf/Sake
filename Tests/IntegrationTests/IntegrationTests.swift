@@ -3,19 +3,16 @@ import XCTest
 
 final class IntegrationTests: XCTestCase {
     func testHelloWorld() throws {
-        let isRunningFromGitHubActions = ProcessInfo.processInfo.environment["GITHUB_ACTIONS"] == "true"
-        let workDirectory = isRunningFromGitHubActions ? URL(filePath: FileManager.default.currentDirectoryPath) : FileManager.default.temporaryDirectory
-        let tempDirectory = workDirectory.appendingPathComponent(UUID().uuidString)
-        let testProjectPath = tempDirectory.appendingPathComponent("test-project").path
-        try FileManager.default.createDirectory(atPath: testProjectPath, withIntermediateDirectories: true, attributes: nil)
+        let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let sakeAppPath = tempDirectory.appendingPathComponent("my-sake-app").path
 
-        let sakeInitResult = SwiftShell.run(bash: "cd \(testProjectPath); sake init")
+        let sakeInitResult = SwiftShell.run(bash: "sake init --sake-app-path \(sakeAppPath)")
         XCTAssertTrue(sakeInitResult.succeeded)
 
-        let sakeRunResult = SwiftShell.run(bash: "cd \(testProjectPath); sake hello")
+        let sakeRunResult = SwiftShell.run(bash: "sake hello --sake-app-path \(sakeAppPath)")
         XCTAssertTrue(sakeRunResult.succeeded)
         XCTAssertTrue(sakeRunResult.stdout.contains("Hello, world!"))
 
-        try FileManager.default.removeItem(atPath: workDirectory.path)
+        try FileManager.default.removeItem(atPath: tempDirectory.path)
     }
 }
