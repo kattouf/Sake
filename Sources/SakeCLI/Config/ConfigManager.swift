@@ -19,7 +19,7 @@ final class ConfigManager {
     func resolvedConfig() throws -> Config {
         let configResolver = ConfigResolver()
 
-        if let configPath = cliConfig.configPath, !FileManager.default.fileExists(atPath: configPath) {
+        if let configPath = cliConfig.configPath ?? envConfig.configPath, !FileManager.default.fileExists(atPath: configPath) {
             throw Error.configFileNotFound(configPath: configPath)
         }
         let fileConfig = try loadFileConfig(path: configResolver.resolveConfigPath(cliConfig: cliConfig, envConfig: envConfig))
