@@ -9,7 +9,7 @@ jobs:
       with:
         swift-version: "5.10"
     - name: Build
-      run: swift build
+      run: swift build --build-tests
     - name: Run unit tests
       run: swift test --filter "^(?!.*\bIntegrationTests\b).*"
     - name: Run integration tests

@@ -7,11 +7,16 @@ final class IntegrationTests: XCTestCase {
         let sakeAppPath = tempDirectory.appendingPathComponent("my-sake-app").path
 
         let sakeInitResult = SwiftShell.run(bash: "sake init --sake-app-path \(sakeAppPath)")
-        XCTAssertTrue(sakeInitResult.succeeded)
+        if !sakeInitResult.succeeded {
+            XCTFail("Failed to init Sake app: stdout: \(sakeInitResult.stdout), stderr: \(sakeInitResult.stderror)")
+        }
 
         let sakeRunResult = SwiftShell.run(bash: "sake hello --sake-app-path \(sakeAppPath)")
-        XCTAssertTrue(sakeRunResult.succeeded)
-        XCTAssertTrue(sakeRunResult.stdout.contains("Hello, world!"))
+        if sakeRunResult.succeeded {
+            XCTAssertTrue(sakeRunResult.stdout.contains("Hello, world!"))
+        } else {
+            XCTFail("Failed to run Sake app: stdout: \(sakeRunResult.stdout), stderr: \(sakeRunResult.stderror)")
+        }
 
         try FileManager.default.removeItem(atPath: tempDirectory.path)
     }
