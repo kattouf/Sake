@@ -8,7 +8,9 @@ jobs:
     - uses: swift-actions/setup-swift@v2
       with:
         swift-version: "5.10"
+    - name: Build
+      run: swift build
     - name: Run unit tests
-      run: swift test --filter "^(?!.*\bIntegrationTests\b).*" -v
+      run: swift test --filter "^(?!.*\bIntegrationTests\b).*"
     - name: Run integration tests
-      run: swift test --filter IntegrationTests -v
+      run: swift test --filter IntegrationTests
