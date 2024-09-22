@@ -1,5 +1,30 @@
 import Foundation
 
+extension SakeAppManager {
+    enum Error: Swift.Error {
+        case sakeAppAlreadyInitialized(path: String)
+        case sakeAppNotValid(ValidationError)
+
+        case failedToCleanSakeApp(stdout: String, stderr: String)
+        case failedToBuildSakeApp(stdout: String, stderr: String)
+        case failedToReadSakeAppBinPath(stdout: String, stderr: String)
+
+        case sakeAppError(SakeAppError)
+    }
+
+    enum SakeAppError: Swift.Error {
+        case businessError
+        case unexpectedError
+    }
+
+    enum ValidationError: Swift.Error {
+        case failedToFindPackageSwift(path: String)
+        case failedToDumpPackageSwift(path: String, stdout: String, stderr: String)
+        case failedToReadPackageSwift(path: String, reason: String)
+        case failedToFindSakeAppExecutableInPackageProducts(path: String, executableName: String)
+    }
+}
+
 extension SakeAppManager.ValidationError: LocalizedError {
     var errorDescription: String? {
         switch self {

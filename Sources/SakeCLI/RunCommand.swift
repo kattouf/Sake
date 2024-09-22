@@ -25,7 +25,7 @@ struct RunCommand: ParsableCommand {
             let configManager = ConfigManager(cliConfig: CLIConfig(commonOptions: options, commandRelatedOptions: commandRelatedOptions))
             let config = try configManager.resolvedConfig()
 
-            let manager = SakeAppManager(path: config.sakeAppPath)
+            let manager = SakeAppManager.default(sakeAppPath: config.sakeAppPath)
             try manager.run(command: command, args: args, caseConvertingStrategy: config.caseConvertingStrategy)
         } catch {
             if case let SakeAppManager.Error.sakeAppError(sakeAppError) = error {
