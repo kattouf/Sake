@@ -30,8 +30,11 @@ extension SakeAppManager {
         let defaultAppDirectoryName = "SakeApp"
 
         init(path: String?) {
-            // TODO: standardize path
-            self.path = path ?? FileManager.default.currentDirectoryPath + "/" + defaultAppDirectoryName
+            if let path {
+                self.path = URL(fileURLWithPath: path).standardizedFileURL.path
+            } else {
+                self.path = FileManager.default.currentDirectoryPath + "/" + defaultAppDirectoryName
+            }
         }
 
         func createProjectFiles() throws {
