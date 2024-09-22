@@ -7,7 +7,7 @@ final class IntegrationTests: XCTestCase {
         if !buildResult.succeeded {
             XCTFail("Failed to build Sake: stdout: \(buildResult.stdout), stderr: \(buildResult.stderror)")
         }
-        let sakePath = FileManager.default.currentDirectoryPath + "/.build/release/sake"
+        let sakePath = FileManager.default.currentDirectoryPath + "/.build/debug/sake"
 
         let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let sakeAppPath = tempDirectory.appendingPathComponent("my-sake-app").path
