@@ -6,6 +6,55 @@ import SwiftShell
 @main
 @CommandGroup
 struct Commands: SakeApp {
+    public static var configuration: SakeAppConfiguration {
+        SakeAppConfiguration(
+            commandGroups: [
+                TestCommands.self,
+                ReleaseCommands.self,
+            ]
+        )
+    }
+
+    public static var format: Command {
+        Command(
+            description: "Format code",
+            run: { _ in
+                try runAndPrint("swiftformat", "Sources", "SakeApp", "Tests", "Package.swift")
+            }
+        )
+    }
+}
+
+@CommandGroup
+struct TestCommands {
+    public static var tests: Command {
+        Command(
+            description: "Run tests",
+            dependencies: [unitTests, integrationTests]
+        )
+    }
+
+    public static var unitTests: Command {
+        Command(
+            description: "Run unit tests",
+            run: { _ in
+                try runAndPrint("swift", "test", "--filter", "^(?!.*\\bIntegrationTests\\b).*", "--parallel")
+            }
+        )
+    }
+
+    public static var integrationTests: Command {
+        Command(
+            description: "Run integration tests",
+            run: { _ in
+                try runAndPrint("swift", "test", "--filter", "IntegrationTests", "--parallel")
+            }
+        )
+    }
+}
+
+@CommandGroup
+struct ReleaseCommands {
     public static var buildReleaseArtifacts: Command {
         Command(
             description: "Build release artifacts",
@@ -38,40 +87,6 @@ struct Commands: SakeApp {
                 )
 
                 print("Release artifacts built successfully at '.build/artifacts/'")
-            }
-        )
-    }
-
-    public static var tests: Command {
-        Command(
-            description: "Run tests",
-            dependencies: [unitTests, integrationTests]
-        )
-    }
-
-    public static var unitTests: Command {
-        Command(
-            description: "Run unit tests",
-            run: { _ in
-                try runAndPrint("swift", "test", "--filter", "^(?!.*\\bIntegrationTests\\b).*", "--parallel")
-            }
-        )
-    }
-
-    public static var integrationTests: Command {
-        Command(
-            description: "Run integration tests",
-            run: { _ in
-                try runAndPrint("swift", "test", "--filter", "IntegrationTests", "--parallel")
-            }
-        )
-    }
-
-    public static var format: Command {
-        Command(
-            description: "Format code",
-            run: { _ in
-                try runAndPrint("swiftformat", "Sources", "SakeApp", "Tests", "Package.swift")
             }
         )
     }
