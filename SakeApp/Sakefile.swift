@@ -77,21 +77,25 @@ struct ReleaseCommands {
                 let arguments = try ReleaseArguments.parse(context.arguments)
                 try arguments.validate()
 
-                try runAndPrint("sake", "createAndPushTag", arguments.version)
-                try runAndPrint("sake", "draftReleaseWithArtifacts", arguments.version)
+                try runAndPrint("sake", "create_and_push_tag", arguments.version)
+                try runAndPrint("sake", "draft_release_with_artifacts", arguments.version)
             }
         )
     }
 
-    private static var buildReleaseArtifacts: Command {
+    public static var buildReleaseArtifacts: Command {
         Command(
             description: "Build release artifacts",
             dependencies: [cleanReleaseArtifacts],
             run: { _ in
+                try FileManager.default.createDirectory(atPath: buildArtifactsDirectory, withIntermediateDirectories: true, attributes: nil)
+
                 var archivePaths = [String]()
                 let triples = ["x86_64-apple-macosx", "arm64-apple-macosx"]
                 let executableName = "sake"
                 for triple in triples {
+                    try runAndPrint("swift", "package", "clean")
+
                     let buildFlags = ["--disable-sandbox", "--configuration", "release", "--triple", triple]
                     try runAndPrint("swift", "build", buildFlags)
 
@@ -120,42 +124,71 @@ struct ReleaseCommands {
         )
     }
 
-    private static var cleanReleaseArtifacts: Command {
+    public static var cleanReleaseArtifacts: Command {
         Command(
             description: "Clean release artifacts",
             run: { _ in
-                try runAndPrint("rm", "-rf", buildArtifactsDirectory)
+                try? runAndPrint("rm", "-rf", buildArtifactsDirectory)
             }
         )
     }
 
-    private static var createAndPushTag: Command {
+    public static var createAndPushTag: Command {
         Command(
             description: "Create and push a tag",
+            skipIf: { context in
+                let arguments = try ReleaseArguments.parse(context.arguments)
+                try arguments.validate()
+
+                let version = arguments.version
+
+                let grepResult = run(bash: "git tag | grep \(arguments.version)")
+                if grepResult.succeeded {
+                    print("Tag \(version) already exists. Skipping...")
+                    return true
+                } else {
+                    return false
+                }
+            },
             run: { context in
                 let arguments = try ReleaseArguments.parse(context.arguments)
                 try arguments.validate()
 
                 let version = arguments.version
 
+                print("Creating and pushing tag \(version)")
                 try runAndPrint("git", "tag", version)
                 try runAndPrint("git", "push", "origin", "tag", version)
             }
         )
     }
 
-    private static var draftReleaseWithArtifacts: Command {
+    public static var draftReleaseWithArtifacts: Command {
         Command(
             description: "Draft a release on GitHub",
-            run: { context in
+            skipIf: { context in
                 let arguments = try ReleaseArguments.parse(context.arguments)
                 try arguments.validate()
 
                 let tagName = arguments.version
+                let ghViewResult = run(bash: "gh release view \(tagName)")
+                if ghViewResult.succeeded {
+                    print("Release \(tagName) already exists. Skipping...")
+                    return true
+                } else {
+                    return false
+                }
+            },
+            run: { context in
+                let arguments = try ReleaseArguments.parse(context.arguments)
+                try arguments.validate()
+
+                print("Drafting release on GitHub")
+                let tagName = arguments.version
                 let releaseTitle = arguments.version
                 let draftReleaseCommand =
                     "gh release create \(tagName) \(buildArtifactsDirectory)/* --title '\(releaseTitle)' --draft --verify-tag --generate-notes"
-                try runAndPrint(draftReleaseCommand)
+                try runAndPrint(bash: draftReleaseCommand)
             }
         )
     }
