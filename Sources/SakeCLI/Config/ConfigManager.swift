@@ -50,7 +50,8 @@ final class ConfigResolver {
         Config(
             configPath: resolveConfigPath(cliConfig: cliConfig, envConfig: envConfig),
             sakeAppPath: cliConfig.sakeAppPath ?? envConfig.sakeAppPath ?? fileConfig?.sakeAppPath ?? Config.default.sakeAppPath,
-            caseConvertingStrategy: cliConfig.caseConvertingStrategy ?? fileConfig?.caseConvertingStrategy ?? Config.default.caseConvertingStrategy
+            caseConvertingStrategy: cliConfig.caseConvertingStrategy ?? fileConfig?.caseConvertingStrategy
+                ?? Config.default.caseConvertingStrategy
         )
     }
 }
@@ -59,9 +60,9 @@ extension ConfigManager.Error: LocalizedError {
     var errorDescription: String? {
         switch self {
         case let .configFileNotFound(configPath):
-            return "Configuration file not found at path: \(configPath)."
+            "Configuration file not found at path: \(configPath)."
         case let .configFileCorrupted(configPath, error):
-            return "Configuration file is corrupted at path: \(configPath). Error: \(error.localizedDescription)."
+            "Configuration file is corrupted at path: \(configPath). Error: \(error.localizedDescription)."
         }
     }
 }

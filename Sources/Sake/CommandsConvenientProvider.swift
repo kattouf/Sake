@@ -22,7 +22,7 @@ final class CommandsConvenientProvider {
     }
 
     func rootCommands() -> [String: Command] {
-        return CommandNameCaseConverter.convert(commands, strategy: caseConvertingStrategy)
+        CommandNameCaseConverter.convert(commands, strategy: caseConvertingStrategy)
     }
 
     func otherCommandGroups() -> [String: [String: Command]] {

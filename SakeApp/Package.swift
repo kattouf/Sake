@@ -9,7 +9,6 @@ let package = Package(
     platforms: [.macOS(.v10_15)], // Required by SwiftSyntax for the macro feature in Sake
     products: [
         .executable(name: "SakeApp", targets: ["SakeApp"]),
-        
     ],
     dependencies: [
         .package(url: "https://github.com/kattouf/Sake", from: "0.1.0"),
@@ -21,7 +20,7 @@ let package = Package(
             name: "SakeApp",
             dependencies: [
                 "Sake",
-                "SwiftShell"
+                "SwiftShell",
             ],
             path: "."
         ),

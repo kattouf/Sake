@@ -45,5 +45,4 @@ struct RunCommand: SakeParsableCommand {
         }
         throw SakeAppError.commandRunFailed(command: command, error: error)
     }
-
 }

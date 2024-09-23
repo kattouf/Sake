@@ -40,7 +40,11 @@ extension SakeAppManager {
         func createProjectFiles() throws {
             try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
             FileManager.default.createFile(atPath: gitignorePath, contents: SakeAppContents.gitignore.data(using: .utf8), attributes: nil)
-            FileManager.default.createFile(atPath: packageSwiftPath, contents: SakeAppContents.packageSwift.data(using: .utf8), attributes: nil)
+            FileManager.default.createFile(
+                atPath: packageSwiftPath,
+                contents: SakeAppContents.packageSwift.data(using: .utf8),
+                attributes: nil
+            )
             FileManager.default.createFile(atPath: sakefilePath, contents: SakeAppContents.sakefile.data(using: .utf8), attributes: nil)
         }
 
@@ -77,7 +81,7 @@ extension SakeAppManager {
                     continue
                 }
 
-                if isDirectory && name == ".build" {
+                if isDirectory, name == ".build" {
                     enumerator.skipDescendants()
                     continue
                 }

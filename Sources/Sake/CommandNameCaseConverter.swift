@@ -1,6 +1,6 @@
 import SakeShared
 
-final class CommandNameCaseConverter {
+enum CommandNameCaseConverter {
     static func convert(_ commands: [String: Command], strategy: CaseConvertingStrategy) -> [String: Command] {
         let commandNames = Array(commands.keys)
 

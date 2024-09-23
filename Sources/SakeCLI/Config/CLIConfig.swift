@@ -19,7 +19,11 @@ struct CLIConfig {
 }
 
 extension CLIConfig {
-    static func mock(configPath: String? = nil, sakeAppPath: String? = nil, caseConvertingStrategy: CaseConvertingStrategy? = nil) -> CLIConfig {
+    static func mock(
+        configPath: String? = nil,
+        sakeAppPath: String? = nil,
+        caseConvertingStrategy: CaseConvertingStrategy? = nil
+    ) -> CLIConfig {
         CLIConfig(configPath: configPath, sakeAppPath: sakeAppPath, caseConvertingStrategy: caseConvertingStrategy)
     }
 }

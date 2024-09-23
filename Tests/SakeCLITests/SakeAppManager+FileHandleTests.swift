@@ -41,7 +41,11 @@ final class DefaultFileHandleTests: XCTestCase {
         try fileHandle.createProjectFiles()
 
         let executablePath = tempDirectory.appendingPathComponent(".build").appendingPathComponent("my-exec").path
-        try FileManager.default.createDirectory(atPath: URL(filePath: executablePath).deletingLastPathComponent().path, withIntermediateDirectories: true, attributes: nil)
+        try FileManager.default.createDirectory(
+            atPath: URL(filePath: executablePath).deletingLastPathComponent().path,
+            withIntermediateDirectories: true,
+            attributes: nil
+        )
 
         FileManager.default.createFile(atPath: executablePath, contents: nil, attributes: nil)
         XCTAssertFalse(try fileHandle.isExecutableOutdated(executablePath: executablePath))

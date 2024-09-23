@@ -18,7 +18,10 @@ extension PackageDescription {
             let container = try decoder.container(keyedBy: DynamicCodingKey.self)
 
             guard container.allKeys.count == 1 else {
-                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: container.codingPath, debugDescription: "Expected only one key of product type"))
+                throw DecodingError.dataCorrupted(DecodingError.Context(
+                    codingPath: container.codingPath,
+                    debugDescription: "Expected only one key of product type"
+                ))
             }
 
             let key = container.allKeys[0].stringValue

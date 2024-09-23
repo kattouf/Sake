@@ -29,9 +29,9 @@ extension SakeAppManager.ValidationError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case let .failedToFindPackageSwift(path):
-            return "Failed to find 'Package.swift' at \(path)."
+            "Failed to find 'Package.swift' at \(path)."
         case let .failedToDumpPackageSwift(path, stdout, stderr):
-            return """
+            """
             Failed to dump 'Package.swift' at \(path).
             Stdout:
             \"\"\"
@@ -43,9 +43,9 @@ extension SakeAppManager.ValidationError: LocalizedError {
             \"\"\"
             """
         case let .failedToReadPackageSwift(path, reason):
-            return "Failed to read 'Package.swift' at \(path). Reason: \(reason)."
+            "Failed to read 'Package.swift' at \(path). Reason: \(reason)."
         case let .failedToFindSakeAppExecutableInPackageProducts(path, executableName):
-            return "Failed to find the '\(executableName)' executable in 'Package.swift' products at \(path)."
+            "Failed to find the '\(executableName)' executable in 'Package.swift' products at \(path)."
         }
     }
 }
@@ -54,9 +54,9 @@ extension SakeAppManager.SakeAppError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .businessError:
-            return "Business error."
+            "Business error."
         case .unexpectedError:
-            return "Unexpected error."
+            "Unexpected error."
         }
     }
 }
@@ -65,11 +65,11 @@ extension SakeAppManager.Error: LocalizedError {
     var errorDescription: String? {
         switch self {
         case let .sakeAppAlreadyInitialized(path):
-            return "SakeApp already initialized at \(path)."
+            "SakeApp already initialized at \(path)."
         case let .sakeAppNotValid(error):
-            return "SakeApp is not valid. \(error.localizedDescription)"
+            "SakeApp is not valid. \(error.localizedDescription)"
         case let .failedToCleanSakeApp(stdout, stderr):
-            return """
+            """
             Failed to clean SakeApp.
             Stdout:
             \"\"\"
@@ -81,7 +81,7 @@ extension SakeAppManager.Error: LocalizedError {
             \"\"\"
             """
         case let .failedToBuildSakeApp(stdout, stderr):
-            return """
+            """
             Failed to build SakeApp.
             Stdout:
             \"\"\"
@@ -93,7 +93,7 @@ extension SakeAppManager.Error: LocalizedError {
             \"\"\"
             """
         case let .failedToReadSakeAppBinPath(stdout, stderr):
-            return """
+            """
             Failed to read the SakeApp binary path.
             Stdout:
             \"\"\"
@@ -105,7 +105,7 @@ extension SakeAppManager.Error: LocalizedError {
             \"\"\"
             """
         case let .sakeAppError(error):
-            return "SakeApp error. \(error.localizedDescription)"
+            "SakeApp error. \(error.localizedDescription)"
         }
     }
 }

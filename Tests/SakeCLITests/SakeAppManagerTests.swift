@@ -204,12 +204,13 @@ private final class MockFileHandle: SakeAppManager.FileHandle {
     private(set) var isExecutableOutdatedCallCount = 0
     private(set) var isExecutableOutdatedReturnValue: Bool
 
-    init(path: String = "",
-         gitignorePath: String = "",
-         packageSwiftPath: String = "",
-         sakefilePath: String = "",
-         isExecutableOutdatedReturnValue: Bool)
-    {
+    init(
+        path: String = "",
+        gitignorePath: String = "",
+        packageSwiftPath: String = "",
+        sakefilePath: String = "",
+        isExecutableOutdatedReturnValue: Bool
+    ) {
         self.path = path
         self.gitignorePath = gitignorePath
         self.packageSwiftPath = packageSwiftPath
@@ -278,7 +279,12 @@ private final class MockCommandExecutor: SakeAppManager.CommandExecutor {
         callListCommandOnExecutableCallCount += 1
     }
 
-    func callRunCommandOnExecutable(executablePath _: String, command _: String, args _: [String], caseConvertingStrategy _: CaseConvertingStrategy) throws {
+    func callRunCommandOnExecutable(
+        executablePath _: String,
+        command _: String,
+        args _: [String],
+        caseConvertingStrategy _: CaseConvertingStrategy
+    ) throws {
         callRunCommandOnExecutableCallCount += 1
     }
 }

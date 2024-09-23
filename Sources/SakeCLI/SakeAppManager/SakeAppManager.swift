@@ -55,22 +55,37 @@ final class SakeAppManager {
         do {
             packageDescription = try JSONDecoder().decode(PackageDescription.self, from: dumpData)
         } catch {
-            throw Error.sakeAppNotValid(.failedToReadPackageSwift(path: fileHandle.packageSwiftPath, reason: "Can't decode as PackageDescription object. Error: \(error)"))
+            throw Error.sakeAppNotValid(.failedToReadPackageSwift(
+                path: fileHandle.packageSwiftPath,
+                reason: "Can't decode as PackageDescription object. Error: \(error)"
+            ))
         }
 
         guard packageDescription.products.contains(where: { $0.type.isExecutable && $0.name == Constants.sakeAppExecutableName }) else {
-            throw Error.sakeAppNotValid(.failedToFindSakeAppExecutableInPackageProducts(path: fileHandle.packageSwiftPath, executableName: Constants.sakeAppExecutableName))
+            throw Error.sakeAppNotValid(.failedToFindSakeAppExecutableInPackageProducts(
+                path: fileHandle.packageSwiftPath,
+                executableName: Constants.sakeAppExecutableName
+            ))
         }
     }
 
     func run(command: String, args: [String], caseConvertingStrategy: CaseConvertingStrategy) throws {
         let executablePath = try buildSakeAppExecutable()
-        try commandExecutor.callRunCommandOnExecutable(executablePath: executablePath, command: command, args: args, caseConvertingStrategy: caseConvertingStrategy)
+        try commandExecutor.callRunCommandOnExecutable(
+            executablePath: executablePath,
+            command: command,
+            args: args,
+            caseConvertingStrategy: caseConvertingStrategy
+        )
     }
 
     func listAvailableCommands(caseConvertingStrategy: CaseConvertingStrategy, json: Bool) throws {
         let executablePath = try buildSakeAppExecutable()
-        try commandExecutor.callListCommandOnExecutable(executablePath: executablePath, json: json, caseConvertingStrategy: caseConvertingStrategy)
+        try commandExecutor.callListCommandOnExecutable(
+            executablePath: executablePath,
+            json: json,
+            caseConvertingStrategy: caseConvertingStrategy
+        )
     }
 
     @discardableResult

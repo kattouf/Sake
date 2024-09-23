@@ -32,10 +32,20 @@ struct Commands: SakeApp {
                     let shasumString = shasum.compactMap { String(format: "%02x", $0) }.joined()
                     shasumResults.append("\(shasumString)  \(archivePath)")
                 }
-                FileManager.default.createFile(atPath: ".build/artifacts/shasum", contents: shasumResults.joined(separator: "\n").data(using: .utf8))
+                FileManager.default.createFile(
+                    atPath: ".build/artifacts/shasum",
+                    contents: shasumResults.joined(separator: "\n").data(using: .utf8)
+                )
 
                 print("Release artifacts built successfully at '.build/artifacts/'")
             }
+        )
+    }
+
+    public static var tests: Command {
+        Command(
+            description: "Run tests",
+            dependencies: [unitTests, integrationTests]
         )
     }
 
@@ -53,6 +63,15 @@ struct Commands: SakeApp {
             description: "Run integration tests",
             run: { _ in
                 try runAndPrint("swift", "test", "--filter", "IntegrationTests", "--parallel")
+            }
+        )
+    }
+
+    public static var format: Command {
+        Command(
+            description: "Format code",
+            run: { _ in
+                try runAndPrint("swiftformat", "Sources", "SakeApp", "Tests", "Package.swift")
             }
         )
     }

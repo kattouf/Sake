@@ -9,7 +9,12 @@ extension SakeAppManager {
         func buildExecutable() throws
         func touchExecutable(executablePath: String)
         func callListCommandOnExecutable(executablePath: String, json: Bool, caseConvertingStrategy: CaseConvertingStrategy) throws
-        func callRunCommandOnExecutable(executablePath: String, command: String, args: [String], caseConvertingStrategy: CaseConvertingStrategy) throws
+        func callRunCommandOnExecutable(
+            executablePath: String,
+            command: String,
+            args: [String],
+            caseConvertingStrategy: CaseConvertingStrategy
+        ) throws
     }
 
     final class DefaultCommandExecutor: CommandExecutor {
@@ -22,7 +27,11 @@ extension SakeAppManager {
         func packageDump() throws -> String {
             let dumpResult = SwiftShell.run(bash: "swift package dump-package --package-path \(fileHandle.path)")
             guard dumpResult.succeeded else {
-                throw Error.sakeAppNotValid(.failedToDumpPackageSwift(path: fileHandle.packageSwiftPath, stdout: dumpResult.stdout, stderr: dumpResult.stderror))
+                throw Error.sakeAppNotValid(.failedToDumpPackageSwift(
+                    path: fileHandle.packageSwiftPath,
+                    stdout: dumpResult.stdout,
+                    stderr: dumpResult.stderror
+                ))
             }
             return dumpResult.stdout
         }
@@ -44,7 +53,8 @@ extension SakeAppManager {
 
         func buildExecutable() throws {
             let swiftcFlags = "-Xswiftc -gnone -Xswiftc -Onone"
-            let buildResult = SwiftShell.run(bash: "swift build \(swiftcFlags) --package-path \(fileHandle.path) --product \(Constants.sakeAppExecutableName)")
+            let buildResult = SwiftShell
+                .run(bash: "swift build \(swiftcFlags) --package-path \(fileHandle.path) --product \(Constants.sakeAppExecutableName)")
             guard buildResult.succeeded else {
                 throw Error.failedToBuildSakeApp(stdout: buildResult.stdout, stderr: buildResult.stderror)
             }
@@ -59,17 +69,26 @@ extension SakeAppManager {
             let jsonFlag = json ? " --json" : ""
 
             do {
-                try SwiftShell.runAndPrint(bash: "\(executablePath) list --case-converting-strategy \(caseConvertingStrategy.rawValue)\(jsonFlag)")
+                try SwiftShell
+                    .runAndPrint(bash: "\(executablePath) list --case-converting-strategy \(caseConvertingStrategy.rawValue)\(jsonFlag)")
             } catch let SwiftShell.CommandError.returnedErrorCode(_, exitCode) {
                 try handleSakeAppExitCode(exitCode: exitCode)
             }
         }
 
-        func callRunCommandOnExecutable(executablePath: String, command: String, args: [String], caseConvertingStrategy: CaseConvertingStrategy) throws {
+        func callRunCommandOnExecutable(
+            executablePath: String,
+            command: String,
+            args: [String],
+            caseConvertingStrategy: CaseConvertingStrategy
+        ) throws {
             let args = args.isEmpty ? "" : " \(args.joined(separator: " "))"
 
             do {
-                try SwiftShell.runAndPrint(bash: "\(executablePath) run --case-converting-strategy \(caseConvertingStrategy.rawValue) \(command)\(args)")
+                try SwiftShell
+                    .runAndPrint(
+                        bash: "\(executablePath) run --case-converting-strategy \(caseConvertingStrategy.rawValue) \(command)\(args)"
+                    )
             } catch let SwiftShell.CommandError.returnedErrorCode(_, exitCode) {
                 try handleSakeAppExitCode(exitCode: exitCode)
             }
@@ -78,7 +97,10 @@ extension SakeAppManager {
         private func handleSakeAppExitCode(exitCode: Int) throws {
             let exitCode = Int32(exitCode)
             switch exitCode {
-            case SakeAppExitCode.commandNotFound, SakeAppExitCode.commandRunFailed, SakeAppExitCode.commandDuplicate, SakeAppExitCode.commandArgumentsParsingFailed:
+            case SakeAppExitCode.commandNotFound,
+                 SakeAppExitCode.commandRunFailed,
+                 SakeAppExitCode.commandDuplicate,
+                 SakeAppExitCode.commandArgumentsParsingFailed:
                 throw Error.sakeAppError(.businessError)
             default:
                 throw Error.sakeAppError(.unexpectedError)

@@ -10,6 +10,6 @@ struct DynamicCodingKey: CodingKey {
 
     init?(intValue: Int) {
         self.intValue = intValue
-        self.stringValue = "\(intValue)"
+        stringValue = "\(intValue)"
     }
 }

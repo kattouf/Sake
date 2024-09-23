@@ -1,5 +1,5 @@
-import XCTest
 @testable import SakeCLI
+import XCTest
 
 final class ConfigManagerTests: XCTestCase {
     func testConfigManagerShouldThrowErrorIfConfigFileDoesNotExist() {

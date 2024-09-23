@@ -20,7 +20,11 @@ struct ListCommand: SakeParsableCommand {
         let rootCommands = commandsProvider.rootCommands()
         let commandGroups = commandsProvider.otherCommandGroups()
 
-        let formatterInputData = CommandListFormatter.InputData(rootName: sakeApp.name, rootCommands: rootCommands, groupedCommands: commandGroups)
+        let formatterInputData = CommandListFormatter.InputData(
+            rootName: sakeApp.name,
+            rootCommands: rootCommands,
+            groupedCommands: commandGroups
+        )
         let formatted = if json {
             try CommandListFormatter.json(inputData: formatterInputData)
         } else {

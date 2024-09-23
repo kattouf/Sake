@@ -41,9 +41,9 @@ enum CommandListFormatter {
             .sorted()
             .map { commandName in
                 if let description = commands[commandName]?.description {
-                    return "\n * \(commandName) - \(description)"
+                    "\n * \(commandName) - \(description)"
                 } else {
-                    return "\n * \(commandName)"
+                    "\n * \(commandName)"
                 }
             }
             .joined()
