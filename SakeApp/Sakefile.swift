@@ -72,18 +72,11 @@ struct ReleaseCommands {
     public static var release: Command {
         Command(
             description: "Release",
-            dependencies: [buildReleaseArtifacts],
-            run: { context in
-                let arguments = try ReleaseArguments.parse(context.arguments)
-                try arguments.validate()
-
-                try runAndPrint("sake", "create_and_push_tag", arguments.version)
-                try runAndPrint("sake", "draft_release_with_artifacts", arguments.version)
-            }
+            dependencies: [buildReleaseArtifacts, createAndPushTag, draftReleaseWithArtifacts]
         )
     }
 
-    public static var buildReleaseArtifacts: Command {
+    static var buildReleaseArtifacts: Command {
         Command(
             description: "Build release artifacts",
             dependencies: [cleanReleaseArtifacts],
@@ -124,7 +117,7 @@ struct ReleaseCommands {
         )
     }
 
-    public static var cleanReleaseArtifacts: Command {
+    static var cleanReleaseArtifacts: Command {
         Command(
             description: "Clean release artifacts",
             run: { _ in
@@ -133,7 +126,7 @@ struct ReleaseCommands {
         )
     }
 
-    public static var createAndPushTag: Command {
+    static var createAndPushTag: Command {
         Command(
             description: "Create and push a tag",
             skipIf: { context in
@@ -163,7 +156,7 @@ struct ReleaseCommands {
         )
     }
 
-    public static var draftReleaseWithArtifacts: Command {
+    static var draftReleaseWithArtifacts: Command {
         Command(
             description: "Draft a release on GitHub",
             skipIf: { context in
@@ -183,7 +176,7 @@ struct ReleaseCommands {
                 let arguments = try ReleaseArguments.parse(context.arguments)
                 try arguments.validate()
 
-                print("Drafting release on GitHub")
+                print("Drafting release \(arguments.version) on GitHub")
                 let tagName = arguments.version
                 let releaseTitle = arguments.version
                 let draftReleaseCommand =
