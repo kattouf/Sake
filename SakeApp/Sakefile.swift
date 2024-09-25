@@ -56,7 +56,11 @@ struct TestCommands {
 
 @CommandGroup
 struct ReleaseCommands {
-    private static let buildArtifactsDirectory = ".build/artifacts"
+    private enum Constants {
+        static let buildArtifactsDirectory = ".build/artifacts"
+        static let triples = ["x86_64-apple-macosx", "arm64-apple-macosx"]
+        static let executableName = "sake"
+    }
 
     struct ReleaseArguments: ParsableArguments {
         @Argument(help: "Version number")
@@ -72,7 +76,7 @@ struct ReleaseCommands {
     public static var release: Command {
         Command(
             description: "Release",
-            dependencies: [buildReleaseArtifacts, createAndPushTag, draftReleaseWithArtifacts]
+            dependencies: [buildReleaseArtifacts, calculateBuildArtifactsSha256, createAndPushTag, draftReleaseWithArtifacts]
         )
     }
 
@@ -80,48 +84,97 @@ struct ReleaseCommands {
         Command(
             description: "Build release artifacts",
             dependencies: [cleanReleaseArtifacts],
-            run: { _ in
-                try FileManager.default.createDirectory(atPath: buildArtifactsDirectory, withIntermediateDirectories: true, attributes: nil)
+            skipIf: { context in
+                let arguments = try ReleaseArguments.parse(context.arguments)
+                try arguments.validate()
+                let version = arguments.version
 
-                var archivePaths = [String]()
-                let triples = ["x86_64-apple-macosx", "arm64-apple-macosx"]
-                let executableName = "sake"
-                for triple in triples {
+                let areAllArtifactsExists = Constants.triples.allSatisfy { triple in
+                    let archivePath = executableArchivePath(triple: triple, version: version)
+                    return FileManager.default.fileExists(atPath: archivePath)
+                }
+                if areAllArtifactsExists {
+                    print("Release artifacts already exist. Skipping...")
+                    return true
+                } else {
+                    return false
+                }
+            },
+            run: { context in
+                let arguments = try ReleaseArguments.parse(context.arguments)
+                try arguments.validate()
+                let version = arguments.version
+
+                try FileManager.default.createDirectory(
+                    atPath: Constants.buildArtifactsDirectory,
+                    withIntermediateDirectories: true,
+                    attributes: nil
+                )
+
+                for triple in Constants.triples {
                     try runAndPrint("swift", "package", "clean")
 
                     let buildFlags = ["--disable-sandbox", "--configuration", "release", "--triple", triple]
-                    try runAndPrint("swift", "build", buildFlags)
+                    try runAndPrint("swift", "build", buildFlags, "--jobs", "10")
 
-                    let executablePath = run("swift", "build", buildFlags, "--show-bin-path").stdout + "/\(executableName)"
+                    let executablePath = run("swift", "build", buildFlags, "--show-bin-path").stdout + "/\(Constants.executableName)"
                     try runAndPrint("strip", "-rSTx", executablePath)
 
-                    let executableArchivePath = "\(buildArtifactsDirectory)/\(executableName)-\(triple).zip"
+                    let executableArchivePath = executableArchivePath(triple: triple, version: version)
                     try runAndPrint("zip", "-j", executableArchivePath, executablePath)
-                    archivePaths.append(executableArchivePath)
                 }
 
+                print("Release artifacts built successfully at '\(Constants.buildArtifactsDirectory)'")
+            }
+        )
+    }
+
+    static var calculateBuildArtifactsSha256: Command {
+        func shasumFilePath(version: String) -> String {
+            ".build/artifacts/shasum-\(version)"
+        }
+
+        return Command(
+            description: "Calculate SHA-256 checksums for build artifacts",
+            skipIf: { context in
+                let arguments = try ReleaseArguments.parse(context.arguments)
+                try arguments.validate()
+                let version = arguments.version
+
+                let shasumFilePath = shasumFilePath(version: version)
+
+                return FileManager.default.fileExists(atPath: shasumFilePath)
+            },
+            run: { context in
+                let arguments = try ReleaseArguments.parse(context.arguments)
+                try arguments.validate()
+                let version = arguments.version
+
                 var shasumResults = [String]()
-                for archivePath in archivePaths {
+                for triple in Constants.triples {
+                    let archivePath = executableArchivePath(triple: triple, version: version)
                     let file = FileHandle(forReadingAtPath: archivePath)!
                     let shasum = SHA256.hash(data: file.readDataToEndOfFile())
                     let shasumString = shasum.compactMap { String(format: "%02x", $0) }.joined()
                     shasumResults.append("\(shasumString)  \(archivePath)")
                 }
                 FileManager.default.createFile(
-                    atPath: ".build/artifacts/shasum",
+                    atPath: shasumFilePath(version: version),
                     contents: shasumResults.joined(separator: "\n").data(using: .utf8)
                 )
-
-                print("Release artifacts built successfully at '\(buildArtifactsDirectory)'")
             }
         )
+    }
+
+    private static func executableArchivePath(triple: String, version: String) -> String {
+        "\(Constants.buildArtifactsDirectory)/\(Constants.executableName)-\(version)-\(triple).zip"
     }
 
     static var cleanReleaseArtifacts: Command {
         Command(
             description: "Clean release artifacts",
             run: { _ in
-                try? runAndPrint("rm", "-rf", buildArtifactsDirectory)
+                try? runAndPrint("rm", "-rf", Constants.buildArtifactsDirectory)
             }
         )
     }
@@ -180,7 +233,7 @@ struct ReleaseCommands {
                 let tagName = arguments.version
                 let releaseTitle = arguments.version
                 let draftReleaseCommand =
-                    "gh release create \(tagName) \(buildArtifactsDirectory)/* --title '\(releaseTitle)' --draft --verify-tag --generate-notes"
+                    "gh release create \(tagName) \(Constants.buildArtifactsDirectory)/*.zip --title '\(releaseTitle)' --draft --verify-tag --generate-notes"
                 try runAndPrint(bash: draftReleaseCommand)
             }
         )

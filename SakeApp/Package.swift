@@ -19,6 +19,7 @@ let package = Package(
         .executableTarget(
             name: "SakeApp",
             dependencies: [
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 "Sake",
                 "SwiftShell",
             ],
