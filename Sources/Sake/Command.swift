@@ -2,10 +2,14 @@ public extension Command {
     struct Context {
         public let arguments: [String]
         public let environment: [String: String]
+        public let appDirectory: String
+        public let runDirectory: String
 
-        public init(arguments: [String], environment: [String: String]) {
+        init(arguments: [String], environment: [String: String], appDirectory: String, runDirectory: String) {
             self.arguments = arguments
             self.environment = environment
+            self.appDirectory = appDirectory
+            self.runDirectory = runDirectory
         }
     }
 }

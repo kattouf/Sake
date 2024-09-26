@@ -121,7 +121,9 @@ private extension Command.Context {
     static var empty: Command.Context {
         Command.Context(
             arguments: [],
-            environment: [:]
+            environment: [:],
+            appDirectory: "",
+            runDirectory: ""
         )
     }
 }

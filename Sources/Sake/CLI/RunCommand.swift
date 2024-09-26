@@ -24,7 +24,13 @@ struct RunCommand: SakeParsableCommand {
         let commands = try commandsProvider.allCommands()
 
         if let command = commands[command] {
-            let context = Command.Context(arguments: args, environment: ProcessInfo.processInfo.environment)
+            let context = Command.Context(
+                arguments: args,
+                environment: ProcessInfo.processInfo.environment,
+                appDirectory: Bundle.main.bundleURL.findBuildDirectory()?.deletingLastPathComponent()
+                    .path ?? "<Could not find SakeApp directory>",
+                runDirectory: FileManager.default.currentDirectoryPath
+            )
             let runner = CommandRunner(command: command, context: context)
             do {
                 try runner.run()
@@ -44,5 +50,21 @@ struct RunCommand: SakeParsableCommand {
             throw SakeAppError.commandArgumentsParsingFailed(command: command, error: error)
         }
         throw SakeAppError.commandRunFailed(command: command, error: error)
+    }
+}
+
+private extension URL {
+    func findBuildDirectory() -> URL? {
+        var currentURL = self
+
+        while currentURL.path != "/" {
+            let buildDirectory = currentURL.appendingPathComponent(".build")
+            if FileManager.default.fileExists(atPath: buildDirectory.path) {
+                return buildDirectory
+            }
+            currentURL.deleteLastPathComponent()
+        }
+
+        return nil
     }
 }

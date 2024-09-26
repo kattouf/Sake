@@ -25,10 +25,20 @@ public extension Command {
 
 public extension Command.Context {
     func mapArguments(_ transform: ([String]) throws -> [String]) throws -> Command.Context {
-        try Command.Context(arguments: transform(arguments), environment: environment)
+        try Command.Context(
+            arguments: transform(arguments),
+            environment: environment,
+            appDirectory: appDirectory,
+            runDirectory: runDirectory
+        )
     }
 
     func mapEnvironment(_ transform: ([String: String]) throws -> [String: String]) throws -> Command.Context {
-        try Command.Context(arguments: arguments, environment: transform(environment))
+        try Command.Context(
+            arguments: arguments,
+            environment: transform(environment),
+            appDirectory: appDirectory,
+            runDirectory: runDirectory
+        )
     }
 }
