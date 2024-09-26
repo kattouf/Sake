@@ -23,7 +23,7 @@ public extension Command {
     }
 }
 
-private extension Command.Context {
+public extension Command.Context {
     func mapArguments(_ transform: ([String]) throws -> [String]) throws -> Command.Context {
         try Command.Context(arguments: transform(arguments), environment: environment)
     }
