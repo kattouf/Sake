@@ -28,7 +28,7 @@ struct Commands: SakeApp {
 
 @CommandGroup
 struct TestCommands {
-    public static var tests: Command {
+    public static var test: Command {
         Command(
             description: "Run tests",
             dependencies: [unitTests, integrationTests]
@@ -39,7 +39,7 @@ struct TestCommands {
         Command(
             description: "Run unit tests",
             run: { _ in
-                try runAndPrint("swift", "test", "--filter", "^(?!.*\\bIntegrationTests\\b).*", "--parallel")
+                try runAndPrint("swift", "test", "--filter", "^(?!.*\\bIntegrationTests\\b).*")
             }
         )
     }
@@ -48,7 +48,7 @@ struct TestCommands {
         Command(
             description: "Run integration tests",
             run: { _ in
-                try runAndPrint("swift", "test", "--filter", "IntegrationTests", "--parallel")
+                try runAndPrint("swift", "test", "--filter", "IntegrationTests")
             }
         )
     }
@@ -59,6 +59,7 @@ struct ReleaseCommands {
     private enum Constants {
         static let buildArtifactsDirectory = ".build/artifacts"
         static let triples = ["x86_64-apple-macosx", "arm64-apple-macosx"]
+        static let executableOriginalName = "SakeCLI"
         static let executableName = "sake"
     }
 
@@ -117,7 +118,11 @@ struct ReleaseCommands {
                     let buildFlags = ["--disable-sandbox", "--configuration", "release", "--triple", triple]
                     try runAndPrint("swift", "build", buildFlags, "--jobs", "10")
 
-                    let executablePath = run("swift", "build", buildFlags, "--show-bin-path").stdout + "/\(Constants.executableName)"
+                    let binPath: String = run("swift", "build", buildFlags, "--show-bin-path").stdout
+                    let originalExecutablePath = binPath + "/\(Constants.executableOriginalName)"
+                    let executablePath = binPath + "/\(Constants.executableName)"
+                    try runAndPrint("mv", originalExecutablePath, executablePath)
+
                     try runAndPrint("strip", "-rSTx", executablePath)
 
                     let executableArchivePath = executableArchivePath(triple: triple, version: version)

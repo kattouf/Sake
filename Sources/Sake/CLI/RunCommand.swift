@@ -1,5 +1,6 @@
 import ArgumentParser
 import Foundation
+import SakeShared
 
 struct RunCommand: SakeParsableCommand {
     static var configuration = CommandConfiguration(
@@ -50,21 +51,5 @@ struct RunCommand: SakeParsableCommand {
             throw SakeAppError.commandArgumentsParsingFailed(command: command, error: error)
         }
         throw SakeAppError.commandRunFailed(command: command, error: error)
-    }
-}
-
-private extension URL {
-    func findBuildDirectory() -> URL? {
-        var currentURL = self
-
-        while currentURL.path != "/" {
-            let buildDirectory = currentURL.appendingPathComponent(".build")
-            if FileManager.default.fileExists(atPath: buildDirectory.path) {
-                return buildDirectory
-            }
-            currentURL.deleteLastPathComponent()
-        }
-
-        return nil
     }
 }

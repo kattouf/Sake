@@ -8,7 +8,7 @@ let package = Package(
     name: "Sake",
     platforms: [.macOS(.v10_15)], // required by SwiftSyntax
     products: [
-        .executable(name: "sake", targets: ["SakeCLI"]),
+        .executable(name: "SakeCLI", targets: ["SakeCLI"]), // Swift 6.0 produces a error for test builds if the name is "sake"
         .library(name: "Sake", targets: ["Sake"]),
     ],
     dependencies: [
@@ -71,6 +71,7 @@ let package = Package(
             name: "IntegrationTests",
             dependencies: [
                 "SwiftShell",
+                "SakeShared",
             ]
         ),
     ]
