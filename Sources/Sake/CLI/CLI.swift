@@ -2,7 +2,7 @@ import ArgumentParser
 import SakeShared
 
 struct CLI: ParsableCommand {
-    static var configuration = CommandConfiguration(
+    static let configuration = CommandConfiguration(
         subcommands: [ListCommand.self, RunCommand.self]
     )
 }

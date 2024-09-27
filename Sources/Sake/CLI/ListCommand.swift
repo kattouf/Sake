@@ -1,7 +1,7 @@
 import ArgumentParser
 
 struct ListCommand: SakeParsableCommand {
-    static var configuration = CommandConfiguration(
+    static let configuration = CommandConfiguration(
         commandName: "list"
     )
 

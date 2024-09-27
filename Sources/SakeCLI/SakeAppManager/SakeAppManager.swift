@@ -104,7 +104,7 @@ final class SakeAppManager {
 
     private func getExecutablePath() throws -> String {
         enum Cache {
-            static var executablePath: String?
+            nonisolated(unsafe) static var executablePath: String?
         }
 
         if let executablePath = Cache.executablePath {

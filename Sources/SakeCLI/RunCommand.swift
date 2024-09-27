@@ -3,7 +3,7 @@ import Foundation
 import SwiftShell
 
 struct RunCommand: ParsableCommand {
-    static var configuration = CommandConfiguration(
+    static let configuration = CommandConfiguration(
         commandName: "run",
         abstract: "Run the specified command from the SakeApp."
     )

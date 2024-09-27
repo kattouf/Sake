@@ -3,7 +3,7 @@ import Foundation
 import SwiftShell
 
 struct ListCommand: ParsableCommand {
-    static var configuration = CommandConfiguration(
+    static let configuration = CommandConfiguration(
         commandName: "list",
         abstract: "List all available commands defined in the SakeApp."
     )

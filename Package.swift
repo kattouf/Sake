@@ -25,7 +25,10 @@ let package = Package(
                 "SwiftShell",
                 "SakeShared",
                 "Yams",
+            ], swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency"),
             ]
+
         ),
         .testTarget(
             name: "SakeCLITests",
@@ -39,7 +42,10 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 "SakeMacros",
                 "SakeShared",
+            ], swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency"),
             ]
+
         ),
         .testTarget(
             name: "SakeTests",
@@ -51,13 +57,18 @@ let package = Package(
             name: "SakeShared",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            ], swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency"),
             ]
+
         ),
         .macro(
             name: "SakeMacros",
             dependencies: [
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+            ], swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency"),
             ]
         ),
         .testTarget(

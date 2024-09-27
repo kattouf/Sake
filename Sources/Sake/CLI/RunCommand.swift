@@ -3,7 +3,7 @@ import Foundation
 import SakeShared
 
 struct RunCommand: SakeParsableCommand {
-    static var configuration = CommandConfiguration(
+    static let configuration = CommandConfiguration(
         commandName: "run"
     )
 

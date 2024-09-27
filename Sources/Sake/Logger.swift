@@ -1,9 +1,8 @@
 import Foundation
 import SakeShared
 
-private var standardError = FileHandle.standardError
-
 func log(_ message: String) {
+    var standardError = FileHandle.standardError
     print("[sake-app] \(message)", to: &standardError)
 }
 
