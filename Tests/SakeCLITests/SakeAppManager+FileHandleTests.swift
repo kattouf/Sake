@@ -42,7 +42,7 @@ final class DefaultFileHandleTests: XCTestCase {
 
         let executablePath = tempDirectory.appendingPathComponent(".build").appendingPathComponent("my-exec").path
         try FileManager.default.createDirectory(
-            atPath: URL(filePath: executablePath).deletingLastPathComponent().path,
+            atPath: URL(fileURLWithPath: executablePath).deletingLastPathComponent().path,
             withIntermediateDirectories: true,
             attributes: nil
         )
