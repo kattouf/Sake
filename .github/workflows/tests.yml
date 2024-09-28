@@ -2,15 +2,20 @@ name: Tests
 on: [push]
 jobs:
   build:
-    runs-on: macos-latest
+    name: Swift ${{ matrix.swift }} on ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+        swift: ["5.10", "6.0"]
+        runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v4
-    - uses: swift-actions/setup-swift@v2
-      with:
-        swift-version: "5.10"
-    - name: Build
-      run: swift build --build-tests
-    - name: Run unit tests
-      run: swift test --filter "^(?!.*\bIntegrationTests\b).*"
-    - name: Run integration tests
-      run: swift test --filter IntegrationTests
+      - uses: actions/checkout@v4
+      - uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: ${{ matrix.swift }}
+      - name: Build
+        run: swift build --build-tests
+      - name: Run unit tests
+        run: swift test --filter "^(?!.*\bIntegrationTests\b).*"
+      - name: Run integration tests
+        run: swift test --filter IntegrationTests
