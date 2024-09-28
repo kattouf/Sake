@@ -7,7 +7,7 @@ jobs:
       matrix:
         os: [macos-latest, ubuntu-latest]
         swift: ["5.10", "6.0"]
-        runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: swift-actions/setup-swift@v2
