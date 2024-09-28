@@ -8,7 +8,7 @@ let package = Package(
     name: "Sake",
     platforms: [.macOS(.v10_15)], // required by SwiftSyntax
     products: [
-        .executable(name: "SakeCLI", targets: ["SakeCLI"]), // Swift 6.0 produces a error for test builds if the name is "sake"
+        .executable(name: "sake", targets: ["SakeCLI"]),
         .library(name: "Sake", targets: ["Sake"]),
     ],
     dependencies: [
@@ -25,7 +25,8 @@ let package = Package(
                 "SwiftShell",
                 "SakeShared",
                 "Yams",
-            ], swiftSettings: [
+            ],
+            swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency"),
             ]
 
@@ -42,7 +43,8 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 "SakeMacros",
                 "SakeShared",
-            ], swiftSettings: [
+            ],
+            swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency"),
             ]
 
@@ -57,7 +59,8 @@ let package = Package(
             name: "SakeShared",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-            ], swiftSettings: [
+            ],
+            swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency"),
             ]
 
@@ -67,7 +70,8 @@ let package = Package(
             dependencies: [
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-            ], swiftSettings: [
+            ],
+            swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency"),
             ]
         ),

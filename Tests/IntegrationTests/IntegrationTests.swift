@@ -6,7 +6,7 @@ final class IntegrationTests: XCTestCase {
     func testHelloWorld() throws {
         let packagePath = try XCTUnwrap(URL(fileURLWithPath: #file).findBuildDirectory()?.deletingLastPathComponent().path)
 
-        let sakeExecutablePath = packagePath + "/.build/debug/SakeCLI"
+        let sakeExecutablePath = packagePath + "/.build/debug/sake"
         XCTAssert(FileManager.default.fileExists(atPath: sakeExecutablePath), "Sake executable not found at \(sakeExecutablePath)")
 
         let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)

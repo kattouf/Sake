@@ -119,9 +119,7 @@ struct ReleaseCommands {
                     try runAndPrint("swift", "build", buildFlags, "--jobs", "10")
 
                     let binPath: String = run("swift", "build", buildFlags, "--show-bin-path").stdout
-                    let originalExecutablePath = binPath + "/\(Constants.executableOriginalName)"
                     let executablePath = binPath + "/\(Constants.executableName)"
-                    try runAndPrint("mv", originalExecutablePath, executablePath)
 
                     try runAndPrint("strip", "-rSTx", executablePath)
 
