@@ -5,7 +5,8 @@ import SwiftShell
 struct ListCommand: ParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "list",
-        abstract: "List all available commands defined in the SakeApp."
+        abstract: "List all available commands defined in the SakeApp.",
+        aliases: ["ls"]
     )
 
     @OptionGroup
