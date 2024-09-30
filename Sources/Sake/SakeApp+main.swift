@@ -3,11 +3,11 @@ import Foundation
 import SakeShared
 
 public extension SakeApp {
-    static func main() throws {
+    static func main() async throws {
         do {
             let cliCommand = try CLI.parseAsRoot()
             if case let sakeCommand as SakeParsableCommand = cliCommand {
-                try sakeCommand.run(sakeApp: self)
+                try await sakeCommand.run(sakeApp: self)
             } else {
                 throw SakeAppError.unexpectedError(message: "Command should be a SakeParsableCommand. \(cliCommand) is not.")
             }

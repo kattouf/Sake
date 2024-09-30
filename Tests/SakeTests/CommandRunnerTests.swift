@@ -2,7 +2,7 @@
 import XCTest
 
 final class CommandRunnerTests: XCTestCase {
-    func testSimpleRun() throws {
+    func testSimpleRun() async throws {
         var runnedCommands: [String] = []
 
         let command = Command(
@@ -16,12 +16,12 @@ final class CommandRunnerTests: XCTestCase {
         )
 
         let runner = CommandRunner(command: command, context: .empty)
-        try runner.run()
+        try await runner.run()
 
         XCTAssertEqual(runnedCommands, ["skipIf", "run"])
     }
 
-    func testSkipSimpleRun() throws {
+    func testSkipSimpleRun() async throws {
         var runnedCommands: [String] = []
 
         let command = Command(
@@ -35,12 +35,12 @@ final class CommandRunnerTests: XCTestCase {
         )
 
         let runner = CommandRunner(command: command, context: .empty)
-        try runner.run()
+        try await runner.run()
 
         XCTAssertEqual(runnedCommands, ["skipIf"])
     }
 
-    func testRunWithNestedDependencies() throws {
+    func testRunWithNestedDependencies() async throws {
         var runnedCommands: [String] = []
 
         let dependency1 = Command(
@@ -71,12 +71,12 @@ final class CommandRunnerTests: XCTestCase {
         )
 
         let runner = CommandRunner(command: command, context: .empty)
-        try runner.run()
+        try await runner.run()
 
         XCTAssertEqual(runnedCommands, ["dependency1", "dependency2", "dependency3", "command"])
     }
 
-    func testSkipDependencySubtreeRun() throws {
+    func testSkipDependencySubtreeRun() async throws {
         var runnedCommands: [String] = []
 
         let dependency1 = Command(
@@ -111,7 +111,7 @@ final class CommandRunnerTests: XCTestCase {
         )
 
         let runner = CommandRunner(command: command, context: .empty)
-        try runner.run()
+        try await runner.run()
 
         XCTAssertEqual(runnedCommands, ["skipIf2", "dependency3", "command"])
     }

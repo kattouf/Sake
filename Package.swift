@@ -93,5 +93,5 @@ let package = Package(
 )
 
 #if compiler(>=6.0)
-package.targets = package.targets.filter { $0.name != "SakeCLITests" }
+    package.targets = package.targets.filter { $0.name != "SakeCLITests" }
 #endif

@@ -7,14 +7,14 @@ public final class CommandRunner {
         self.context = context
     }
 
-    public func run() throws {
+    public func run() async throws {
         if try command.skipIf(context) {
             return
         }
-        try command.dependencies.forEach { command in
+        for command in command.dependencies {
             let runner = CommandRunner(command: command, context: context)
-            try runner.run()
+            try await runner.run()
         }
-        try command.run(context)
+        try await command.run(context)
     }
 }

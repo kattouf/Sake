@@ -11,7 +11,7 @@ struct ListCommand: SakeParsableCommand {
     @Flag
     var json: Bool = false
 
-    func run(sakeApp: SakeApp.Type) throws {
+    func run(sakeApp: SakeApp.Type) async throws {
         let commandsProvider = CommandsConvenientProvider(
             commands: sakeApp.commands,
             commandGroups: sakeApp.configuration.commandGroups,

@@ -16,7 +16,7 @@ struct RunCommand: SakeParsableCommand {
     @Argument(parsing: .allUnrecognized)
     var args: [String] = []
 
-    func run(sakeApp: SakeApp.Type) throws {
+    func run(sakeApp: SakeApp.Type) async throws {
         let commandsProvider = CommandsConvenientProvider(
             commands: sakeApp.commands,
             commandGroups: sakeApp.configuration.commandGroups,
@@ -34,7 +34,7 @@ struct RunCommand: SakeParsableCommand {
             )
             let runner = CommandRunner(command: command, context: context)
             do {
-                try runner.run()
+                try await runner.run()
             } catch {
                 try handleRunnerError(error)
             }

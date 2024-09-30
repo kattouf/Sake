@@ -18,13 +18,13 @@ public struct Command {
     public let description: String?
     public let dependencies: [Command]
     public let skipIf: (Context) throws -> Bool
-    public let run: (Context) throws -> Void
+    public let run: (Context) async throws -> Void
 
     public init(
         description: String? = nil,
         dependencies: [Command] = [],
         skipIf: @escaping (Context) throws -> Bool = { _ in false },
-        run: @escaping (Context) throws -> Void = { _ in }
+        run: @escaping (Context) async throws -> Void = { _ in }
     ) {
         self.description = description
         self.dependencies = dependencies
