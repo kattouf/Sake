@@ -11,10 +11,23 @@ public final class CommandRunner {
         if try command.skipIf(context) {
             return
         }
-        for command in command.dependencies {
-            let runner = CommandRunner(command: command, context: context)
-            try await runner.run()
+
+        if command.runDependenciesConcurrently {
+            await withThrowingTaskGroup(of: Void.self) { [context] group in
+                for command in command.dependencies {
+                    group.addTask {
+                        let runner = CommandRunner(command: command, context: context)
+                        try await runner.run()
+                    }
+                }
+            }
+        } else {
+            for command in command.dependencies {
+                let runner = CommandRunner(command: command, context: context)
+                try await runner.run()
+            }
         }
+
         try await command.run(context)
     }
 }

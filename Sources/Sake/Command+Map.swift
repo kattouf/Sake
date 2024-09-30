@@ -1,17 +1,17 @@
 public extension Command {
-    func mapArguments(_ transform: @escaping ([String]) throws -> [String]) -> Command {
+    func mapArguments(_ transform: @escaping @Sendable ([String]) throws -> [String]) -> Command {
         mapContext { context in
             try context.mapArguments(transform)
         }
     }
 
-    func mapEnvironment(_ transform: @escaping ([String: String]) throws -> [String: String]) -> Command {
+    func mapEnvironment(_ transform: @escaping @Sendable ([String: String]) throws -> [String: String]) -> Command {
         mapContext { context in
             try context.mapEnvironment(transform)
         }
     }
 
-    private func mapContext(_ transform: @escaping (Context) throws -> Context) -> Command {
+    private func mapContext(_ transform: @escaping @Sendable (Context) throws -> Context) -> Command {
         Command(
             description: description,
             dependencies: dependencies.map { $0.mapContext(transform) },

@@ -3,7 +3,7 @@ import XCTest
 
 final class CommandRunnerTests: XCTestCase {
     func testSimpleRun() async throws {
-        var runnedCommands: [String] = []
+        nonisolated(unsafe) var runnedCommands: [String] = []
 
         let command = Command(
             skipIf: { _ in
@@ -22,7 +22,7 @@ final class CommandRunnerTests: XCTestCase {
     }
 
     func testSkipSimpleRun() async throws {
-        var runnedCommands: [String] = []
+        nonisolated(unsafe) var runnedCommands: [String] = []
 
         let command = Command(
             skipIf: { _ in
@@ -41,7 +41,7 @@ final class CommandRunnerTests: XCTestCase {
     }
 
     func testRunWithNestedDependencies() async throws {
-        var runnedCommands: [String] = []
+        nonisolated(unsafe) var runnedCommands: [String] = []
 
         let dependency1 = Command(
             run: { _ in
@@ -77,7 +77,7 @@ final class CommandRunnerTests: XCTestCase {
     }
 
     func testSkipDependencySubtreeRun() async throws {
-        var runnedCommands: [String] = []
+        nonisolated(unsafe) var runnedCommands: [String] = []
 
         let dependency1 = Command(
             run: { _ in

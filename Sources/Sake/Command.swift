@@ -1,5 +1,5 @@
 public extension Command {
-    struct Context {
+    struct Context: Sendable {
         public let arguments: [String]
         public let environment: [String: String]
         public let appDirectory: String
@@ -14,20 +14,23 @@ public extension Command {
     }
 }
 
-public struct Command {
+public struct Command: Sendable {
     public let description: String?
     public let dependencies: [Command]
-    public let skipIf: (Context) throws -> Bool
-    public let run: (Context) async throws -> Void
+    public let runDependenciesConcurrently: Bool
+    public let skipIf: @Sendable (Context) throws -> Bool
+    public let run: @Sendable (Context) async throws -> Void
 
     public init(
         description: String? = nil,
         dependencies: [Command] = [],
-        skipIf: @escaping (Context) throws -> Bool = { _ in false },
-        run: @escaping (Context) async throws -> Void = { _ in }
+        runDependenciesConcurrently: Bool = false,
+        skipIf: @escaping @Sendable (Context) throws -> Bool = { _ in false },
+        run: @escaping @Sendable (Context) async throws -> Void = { _ in }
     ) {
         self.description = description
         self.dependencies = dependencies
+        self.runDependenciesConcurrently = runDependenciesConcurrently
         self.skipIf = skipIf
         self.run = run
     }

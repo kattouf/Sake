@@ -133,6 +133,7 @@ struct ReleaseCommands {
     }
 
     static var calculateBuildArtifactsSha256: Command {
+        @Sendable
         func shasumFilePath(version: String) -> String {
             ".build/artifacts/shasum-\(version)"
         }
