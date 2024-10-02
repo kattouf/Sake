@@ -1,5 +1,4 @@
 import Foundation
-import SakeShared
 
 func log(_ message: String) {
     var standardError = FileHandle.standardError
