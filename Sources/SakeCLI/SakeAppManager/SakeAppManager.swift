@@ -32,7 +32,7 @@ final class SakeAppManager {
         try fileHandle.createProjectFiles()
 
         try validate()
-        try buildSakeAppExecutable()
+        try buildSakeAppExecutableIfNeeded()
         log("SakeApp package initialized successfully.")
     }
 
@@ -70,7 +70,7 @@ final class SakeAppManager {
     }
 
     func run(command: String, args: [String], caseConvertingStrategy: CaseConvertingStrategy) throws {
-        let executablePath = try buildSakeAppExecutable()
+        let executablePath = try buildSakeAppExecutableIfNeeded()
         try commandExecutor.callRunCommandOnExecutable(
             executablePath: executablePath,
             command: command,
@@ -80,7 +80,7 @@ final class SakeAppManager {
     }
 
     func listAvailableCommands(caseConvertingStrategy: CaseConvertingStrategy, json: Bool) throws {
-        let executablePath = try buildSakeAppExecutable()
+        let executablePath = try buildSakeAppExecutableIfNeeded()
         try commandExecutor.callListCommandOnExecutable(
             executablePath: executablePath,
             json: json,
@@ -89,17 +89,24 @@ final class SakeAppManager {
     }
 
     @discardableResult
-    private func buildSakeAppExecutable() throws -> String {
+    func buildSakeAppExecutableIfNeeded() throws -> String {
         let executablePath = try getExecutablePath()
         if try fileHandle.isExecutableOutdated(executablePath: executablePath) {
-            try validate()
-            log("Building SakeApp package... (this may take a moment)")
-            try commandExecutor.buildExecutable()
-            // touch the executable to update the modification date
-            commandExecutor.touchExecutable(executablePath: executablePath)
+            return try buildSakeAppExecutable()
         }
 
-        return try getExecutablePath()
+        return executablePath
+    }
+
+    @discardableResult
+    func buildSakeAppExecutable() throws -> String {
+        let executablePath = try getExecutablePath()
+        try validate()
+        log("Building SakeApp package... (this may take a moment)")
+        try commandExecutor.buildExecutable()
+        // touch the executable to update the modification date
+        commandExecutor.touchExecutable(executablePath: executablePath)
+        return executablePath
     }
 
     private func getExecutablePath() throws -> String {
