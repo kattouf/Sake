@@ -5,6 +5,7 @@ extension SakeAppManager {
         case sakeAppAlreadyInitialized(path: String)
         case sakeAppNotValid(ValidationError)
 
+        case failedToReadSwiftVersion(stdout: String, stderr: String)
         case failedToCleanSakeApp(stdout: String, stderr: String)
         case failedToBuildSakeApp(stdout: String, stderr: String)
         case failedToReadSakeAppBinPath(stdout: String, stderr: String)
@@ -68,6 +69,18 @@ extension SakeAppManager.Error: LocalizedError {
             "SakeApp already initialized at \(path)."
         case let .sakeAppNotValid(error):
             "SakeApp is not valid. \(error.localizedDescription)"
+        case let .failedToReadSwiftVersion(stdout, stderr):
+            """
+            Failed to read the Swift version.
+            Stdout:
+            \"\"\"
+            \(stdout.isEmpty ? "<No output>" : stdout)
+            \"\"\"
+            Stderr:
+            \"\"\"
+            \(stderr.isEmpty ? "<No output>" : stderr)
+            \"\"\"
+            """
         case let .failedToCleanSakeApp(stdout, stderr):
             """
             Failed to clean SakeApp.

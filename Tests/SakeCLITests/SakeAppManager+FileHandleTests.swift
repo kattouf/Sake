@@ -35,6 +35,19 @@ final class DefaultFileHandleTests: XCTestCase {
         try FileManager.default.removeItem(atPath: fileHandle.path)
     }
 
+    func testSaveAndGetSwiftVersionDump() throws {
+        let fileHandle = SakeAppManager.DefaultFileHandle(path: "/tmp/sakeapp")
+        let buildPath = fileHandle.path + "/.build"
+        try FileManager.default.createDirectory(atPath: buildPath, withIntermediateDirectories: true, attributes: nil)
+
+        try fileHandle.saveSwiftVersionDump(binPath: buildPath, dump: "4.2.0")
+        let dump = try fileHandle.getSavedSwiftVersionDump(binPath: buildPath)
+
+        XCTAssertEqual(dump, "4.2.0")
+
+        try FileManager.default.removeItem(atPath: fileHandle.path)
+    }
+
     func testIsExecutableOutdated() throws {
         let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let fileHandle = SakeAppManager.DefaultFileHandle(path: tempDirectory.path)
@@ -48,13 +61,13 @@ final class DefaultFileHandleTests: XCTestCase {
         )
 
         FileManager.default.createFile(atPath: executablePath, contents: nil, attributes: nil)
-        XCTAssertFalse(try fileHandle.isExecutableOutdated(executablePath: executablePath))
+        XCTAssertFalse(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
         try "jepa".write(toFile: fileHandle.sakefilePath, atomically: true, encoding: .utf8)
-        XCTAssertTrue(try fileHandle.isExecutableOutdated(executablePath: executablePath))
+        XCTAssertTrue(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
         FileManager.default.createFile(atPath: executablePath, contents: nil, attributes: nil)
-        XCTAssertFalse(try fileHandle.isExecutableOutdated(executablePath: executablePath))
+        XCTAssertFalse(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
         try FileManager.default.removeItem(atPath: fileHandle.path)
     }

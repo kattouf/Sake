@@ -9,7 +9,10 @@ extension SakeAppManager {
 
         func createProjectFiles() throws
         func validatePackageSwiftExists() throws
-        func isExecutableOutdated(executablePath: String) throws -> Bool
+        func isExecutableOlderThenSourceFiles(executablePath: String) throws -> Bool
+
+        func getSavedSwiftVersionDump(binPath: String) throws -> String?
+        func saveSwiftVersionDump(binPath: String, dump: String) throws
     }
 
     final class DefaultFileHandle: FileHandle {
@@ -54,7 +57,7 @@ extension SakeAppManager {
             }
         }
 
-        func isExecutableOutdated(executablePath: String) throws -> Bool {
+        func isExecutableOlderThenSourceFiles(executablePath: String) throws -> Bool {
             let sakeAppDirectoryURL = URL(fileURLWithPath: path)
             let fileManager = FileManager.default
 
@@ -92,6 +95,19 @@ extension SakeAppManager {
             }
 
             return false
+        }
+
+        func getSavedSwiftVersionDump(binPath: String) throws -> String? {
+            let versionDumpFilePath = "\(binPath)/swift-version.txt"
+            guard FileManager.default.fileExists(atPath: versionDumpFilePath) else {
+                return nil
+            }
+            return try String(contentsOf: URL(fileURLWithPath: versionDumpFilePath), encoding: .utf8)
+        }
+
+        func saveSwiftVersionDump(binPath: String, dump: String) throws {
+            let versionDumpFilePath = "\(binPath)/swift-version.txt"
+            try dump.write(toFile: versionDumpFilePath, atomically: true, encoding: .utf8)
         }
     }
 }

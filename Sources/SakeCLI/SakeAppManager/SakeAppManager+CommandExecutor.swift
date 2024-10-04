@@ -3,6 +3,7 @@ import SwiftShell
 
 extension SakeAppManager {
     protocol CommandExecutor {
+        func swiftVersionDump() throws -> String
         func packageDump() throws -> String
         func packageClean() throws
         func packageShowBinPath() throws -> String
@@ -22,6 +23,14 @@ extension SakeAppManager {
 
         init(fileHandle: FileHandle) {
             self.fileHandle = fileHandle
+        }
+
+        func swiftVersionDump() throws -> String {
+            let dumpResult = SwiftShell.run(bash: "swift --version")
+            guard dumpResult.succeeded else {
+                throw Error.failedToReadSwiftVersion(stdout: dumpResult.stdout, stderr: dumpResult.stderror)
+            }
+            return dumpResult.stdout
         }
 
         func packageDump() throws -> String {

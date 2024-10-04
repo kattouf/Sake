@@ -91,7 +91,11 @@ final class SakeAppManager {
     @discardableResult
     func buildSakeAppExecutableIfNeeded() throws -> String {
         let executablePath = try getExecutablePath()
-        if try fileHandle.isExecutableOutdated(executablePath: executablePath) {
+        if try isSwiftVersionWasChanged() {
+            log("Swift version was changed")
+            try clean()
+        }
+        if try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath) {
             return try buildSakeAppExecutable()
         }
 
@@ -104,24 +108,54 @@ final class SakeAppManager {
         try validate()
         log("Building SakeApp package... (this may take a moment)")
         try commandExecutor.buildExecutable()
-        // touch the executable to update the modification date
+        // touch the executable to force update the modification date
         commandExecutor.touchExecutable(executablePath: executablePath)
+        try saveLastUsedSwiftVersion()
         return executablePath
     }
 
-    private func getExecutablePath() throws -> String {
+    private func isSwiftVersionWasChanged() throws -> Bool {
+        guard let lastSwiftVersion = try fileHandle.getSavedSwiftVersionDump(binPath: getBinPath()) else {
+            return true
+        }
+        let swiftVersion = try commandExecutor.swiftVersionDump()
+        return lastSwiftVersion != swiftVersion
+    }
+
+    private func saveLastUsedSwiftVersion() throws {
+        try fileHandle.saveSwiftVersionDump(binPath: getBinPath(), dump: swiftVersionDump())
+    }
+
+    private func swiftVersionDump() throws -> String {
         enum Cache {
-            nonisolated(unsafe) static var executablePath: String?
+            nonisolated(unsafe) static var swiftVersionDump: String?
         }
 
-        if let executablePath = Cache.executablePath {
-            return executablePath
+        if let swiftVersionDump = Cache.swiftVersionDump {
+            return swiftVersionDump
+        }
+
+        let swiftVersionDump = try commandExecutor.swiftVersionDump()
+        Cache.swiftVersionDump = swiftVersionDump
+        return swiftVersionDump
+    }
+
+    private func getExecutablePath() throws -> String {
+        try getBinPath() + "/" + Constants.sakeAppExecutableName
+    }
+
+    private func getBinPath() throws -> String {
+        enum Cache {
+            nonisolated(unsafe) static var binPath: String?
+        }
+
+        if let binPath = Cache.binPath {
+            return binPath
         }
 
         let binPath = try commandExecutor.packageShowBinPath()
-        let executablePath = binPath + "/" + Constants.sakeAppExecutableName
 
-        Cache.executablePath = executablePath
-        return executablePath
+        Cache.binPath = binPath
+        return binPath
     }
 }
