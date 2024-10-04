@@ -21,17 +21,26 @@ public struct CommandGroupMacro: ExtensionMacro {
             guard let binding = $0.bindings.first else {
                 return nil
             }
-            guard binding.typeAnnotation?.type.as(IdentifierTypeSyntax.self)?.name.text == "Command" else {
-                return nil
+            if
+                let type = binding.typeAnnotation?.type.as(IdentifierTypeSyntax.self)?.name.text,
+                type == "Command"
+            {
+                return binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
             }
-            return binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
+            if let memberType = binding.typeAnnotation?.type.as(MemberTypeSyntax.self)?.trimmedDescription,
+               memberType == "Sake.Command"
+            {
+                return binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
+            }
+
+            return nil
         }
         let commandsAsDictionaryKeyValues = commandsVariableNames.map { "\"\($0)\": Self.\($0)" }.joined(separator: ",\n")
         let commandsDictionary = commandsAsDictionaryKeyValues.isEmpty ? "[:]" : "[\n\(commandsAsDictionaryKeyValues)\n]"
 
         let syntax = try ExtensionDeclSyntax("""
         extension \(raw: type): Sake.CommandGroup {
-            static var commands: [String: Command] {
+            static var commands: [String: Sake.Command] {
                 \(raw: commandsDictionary)
             }
         }

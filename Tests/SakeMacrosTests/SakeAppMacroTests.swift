@@ -16,7 +16,7 @@ final class SakeAppMacroTests: XCTestCase {
                     )
                 }
 
-                public static var bye: Command {
+                public static var bye: Sake.Command {
                     Command(
                         run: { _ in
                             print("Bye, world!")
@@ -60,7 +60,7 @@ final class SakeAppMacroTests: XCTestCase {
                     )
                 }
 
-                public static var bye: Command {
+                public static var bye: Sake.Command {
                     Command(
                         run: { _ in
                             print("Bye, world!")
@@ -94,7 +94,7 @@ final class SakeAppMacroTests: XCTestCase {
             }
 
             extension MyCommands: Sake.CommandGroup {
-                static var commands: [String: Command] {
+                static var commands: [String: Sake.Command] {
                     [
                         "hello": Self.hello,
                         "bye": Self.bye
@@ -117,7 +117,7 @@ final class SakeAppMacroTests: XCTestCase {
             struct MyCommands {}
 
             extension MyCommands: Sake.CommandGroup {
-                static var commands: [String: Command] {
+                static var commands: [String: Sake.Command] {
                     [:]
                 }
             }
