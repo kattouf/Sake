@@ -152,7 +152,9 @@ final class SakeAppManagerTests: XCTestCase {
 
         try manager.buildSakeAppExecutableIfNeeded()
 
+        XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
+        XCTAssertEqual(commandExecutor.touchExecutableCallCount, 1)
     }
 
     func testSakeAppManager_whenBuildSakeAppExecutableIfNeeded_shouldNotBuildExecutable_ifNotOutdated() throws {
@@ -166,7 +168,9 @@ final class SakeAppManagerTests: XCTestCase {
 
         try manager.buildSakeAppExecutableIfNeeded()
 
+        XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 0)
+        XCTAssertEqual(commandExecutor.touchExecutableCallCount, 0)
     }
 
     func testSakeAppManager_whenBuildSakeAppExecutableIfNeeded_shouldCleanPackageFirst_ifSwiftVersionWasChanged() throws {
@@ -182,8 +186,27 @@ final class SakeAppManagerTests: XCTestCase {
 
         try manager.buildSakeAppExecutableIfNeeded()
 
-        XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 1)
+        XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
+        XCTAssertEqual(commandExecutor.touchExecutableCallCount, 1)
+    }
+
+    func testSakeAppManager_whenBuildSakeAppExecutableIfNeeded_shouldNotCleanPackageFirst_ifLastSwiftVersionDumpMissed() throws {
+        let fileHandle = MockFileHandle(
+            isExecutableOutdatedReturnValue: true,
+            swiftVersionDumpReturnValue: nil
+        )
+        let commandExecutor = MockCommandExecutor(
+            swiftVersionDumpReturnValue: "1.0.1",
+            packageDumpReturnValue: { _ in self.validPackageDump }
+        )
+        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+
+        try manager.buildSakeAppExecutableIfNeeded()
+
+        XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
+        XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
+        XCTAssertEqual(commandExecutor.touchExecutableCallCount, 1)
     }
 
     func testSakeAppManager_whenBuildSakeAppExecutableIfNeeded_shouldTouchExecutable() throws {
@@ -197,6 +220,7 @@ final class SakeAppManagerTests: XCTestCase {
 
         try manager.buildSakeAppExecutableIfNeeded()
 
+        XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
         XCTAssertEqual(commandExecutor.touchExecutableCallCount, 1)
     }
@@ -214,7 +238,9 @@ final class SakeAppManagerTests: XCTestCase {
 
         try manager.run(command: "command", args: ["arg1", "arg2"], caseConvertingStrategy: .keepOriginal)
 
+        XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
+        XCTAssertEqual(commandExecutor.touchExecutableCallCount, 1)
         XCTAssertEqual(commandExecutor.callRunCommandOnExecutableCallCount, 1)
     }
 
@@ -229,7 +255,9 @@ final class SakeAppManagerTests: XCTestCase {
 
         try manager.listAvailableCommands(caseConvertingStrategy: .keepOriginal, json: false)
 
+        XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
+        XCTAssertEqual(commandExecutor.touchExecutableCallCount, 1)
         XCTAssertEqual(commandExecutor.callListCommandOnExecutableCallCount, 1)
     }
 }
@@ -245,7 +273,7 @@ private final class MockFileHandle: SakeAppManager.FileHandle {
     private(set) var isExecutableOutdatedReturnValue: Bool
     private(set) var getSavedSwiftVersionDumpCallCount = 0
     private(set) var saveSwiftVersionDumpCallCount = 0
-    let swiftVersionDumpReturnValue: String
+    let swiftVersionDumpReturnValue: String?
 
     init(
         path: String = "",
@@ -253,7 +281,7 @@ private final class MockFileHandle: SakeAppManager.FileHandle {
         packageSwiftPath: String = "",
         sakefilePath: String = "",
         isExecutableOutdatedReturnValue: Bool,
-        swiftVersionDumpReturnValue: String = ""
+        swiftVersionDumpReturnValue: String? = ""
     ) {
         self.path = path
         self.gitignorePath = gitignorePath

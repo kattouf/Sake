@@ -91,11 +91,11 @@ final class SakeAppManager {
     @discardableResult
     func buildSakeAppExecutableIfNeeded() throws -> String {
         let executablePath = try getExecutablePath()
-        if try isSwiftVersionWasChanged() {
-            log("Swift version was changed")
-            try clean()
-        }
         if try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath) {
+            if try isSwiftVersionWasChanged() {
+                log("Swift version was changed")
+                try clean()
+            }
             return try buildSakeAppExecutable()
         }
 
@@ -116,7 +116,7 @@ final class SakeAppManager {
 
     private func isSwiftVersionWasChanged() throws -> Bool {
         guard let lastSwiftVersion = try fileHandle.getSavedSwiftVersionDump(binPath: getBinPath()) else {
-            return true
+            return false
         }
         let swiftVersion = try commandExecutor.swiftVersionDump()
         return lastSwiftVersion != swiftVersion
