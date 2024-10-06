@@ -16,6 +16,16 @@ struct Commands: SakeApp {
         )
     }
 
+    public static var lint: Command {
+        Command(
+            description: "Lint code",
+            dependencies: [BrewCommands.ensureSwiftFormatInstalled],
+            run: { _ in
+                try runAndPrint("swiftformat", "Sources", "SakeApp", "Tests", "Package.swift", "--lint")
+            }
+        )
+    }
+
     public static var format: Command {
         Command(
             description: "Format code",
