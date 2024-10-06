@@ -1,42 +1,41 @@
 @testable import Sake
 import XCTest
 
-final class CommandsConvenientProviderTests: XCTestCase {
+final class CommandsPreprocessorTests: XCTestCase {
     func testAllCommands() throws {
         let commands = [
-            "command1": Command(description: "description1"),
-            "command2": Command(description: "description2"),
+            "myCommand1": Command(description: "description1"),
+            "myCommand2": Command(description: "description2"),
         ]
         let commandGroups: [CommandGroup.Type] = [CommandGroupMock1.self, CommandGroupMock2.self]
-        let provider = CommandsConvenientProvider(commands: commands, commandGroups: commandGroups, caseConvertingStrategy: .keepOriginal)
+        let provider = CommandsPreprocessor(commands: commands, commandGroups: commandGroups, caseConvertingStrategy: .toSnakeCase)
 
         let allCommands = try provider.allCommands()
         let allCommandsIdentifiableData = allCommands.mapValues { $0.description }
 
         let expectedAllCommands = [
-            "command1": "description1",
-            "command2": "description2",
-            "command3": nil,
-            "command4": "description4",
-            "command5": "description5",
-            "command6": "description6",
+            "my_command1": "description1",
+            "my_command2": "description2",
+            "my_command3": nil,
+            "my_command4": "description4",
+            "my_command5": "description5",
+            "my_command6": "description6",
         ]
-
         XCTAssertEqual(allCommandsIdentifiableData, expectedAllCommands)
     }
 
     func testAllCommandsShouldThrowWhenGroupsHaveCommandsWithTheSameName() throws {
         let commands = [
-            "command3": Command(description: "description1"),
-            "command2": Command(description: "description2"),
+            "myCommand3": Command(description: "description1"),
+            "myCommand2": Command(description: "description2"),
         ]
         let commandGroups: [CommandGroup.Type] = [CommandGroupMock1.self, CommandGroupMock2.self]
-        let provider = CommandsConvenientProvider(commands: commands, commandGroups: commandGroups, caseConvertingStrategy: .keepOriginal)
+        let provider = CommandsPreprocessor(commands: commands, commandGroups: commandGroups, caseConvertingStrategy: .toSnakeCase)
 
         XCTAssertThrowsError(try provider.allCommands()) { error in
             let sakeAppError = error as! SakeAppError
             if case let .commandDuplicate(error) = sakeAppError {
-                XCTAssertTrue(error.contains("command3"))
+                XCTAssertTrue(error.contains("my_command3"))
             } else {
                 XCTFail("Unexpected error: \(sakeAppError)")
             }
@@ -45,18 +44,18 @@ final class CommandsConvenientProviderTests: XCTestCase {
 
     func testRootCommands() {
         let commands = [
-            "command1": Command(description: "description1"),
-            "command2": Command(description: "description2"),
+            "myCommand1": Command(description: "description1"),
+            "myCommand2": Command(description: "description2"),
         ]
         let commandGroups: [CommandGroup.Type] = [CommandGroupMock1.self, CommandGroupMock2.self]
-        let provider = CommandsConvenientProvider(commands: commands, commandGroups: commandGroups, caseConvertingStrategy: .keepOriginal)
+        let provider = CommandsPreprocessor(commands: commands, commandGroups: commandGroups, caseConvertingStrategy: .toSnakeCase)
 
         let rootCommands = provider.rootCommands()
         let rootCommandsIdentifiableData = rootCommands.mapValues { $0.description }
 
         let expectedRootCommands = [
-            "command1": "description1",
-            "command2": "description2",
+            "my_command1": "description1",
+            "my_command2": "description2",
         ]
 
         XCTAssertEqual(rootCommandsIdentifiableData, expectedRootCommands)
@@ -64,23 +63,23 @@ final class CommandsConvenientProviderTests: XCTestCase {
 
     func testOtherCommandGroups() {
         let commands = [
-            "command1": Command(description: "description1"),
-            "command2": Command(description: "description2"),
+            "myCommand1": Command(description: "description1"),
+            "myCommand2": Command(description: "description2"),
         ]
         let commandGroups: [CommandGroup.Type] = [CommandGroupMock1.self, CommandGroupMock2.self]
-        let provider = CommandsConvenientProvider(commands: commands, commandGroups: commandGroups, caseConvertingStrategy: .keepOriginal)
+        let provider = CommandsPreprocessor(commands: commands, commandGroups: commandGroups, caseConvertingStrategy: .toSnakeCase)
 
         let otherCommandGroups = provider.otherCommandGroups()
         let otherCommandGroupsIdentifiableData = otherCommandGroups.mapValues { $0.mapValues { $0.description } }
 
         let expectedOtherCommandGroups = [
             "group1": [
-                "command3": nil,
-                "command4": "description4",
+                "my_command3": nil,
+                "my_command4": "description4",
             ],
             "group2": [
-                "command5": "description5",
-                "command6": "description6",
+                "my_command5": "description5",
+                "my_command6": "description6",
             ],
         ]
 
@@ -95,8 +94,8 @@ private struct CommandGroupMock1: CommandGroup {
 
     static var commands: [String: Command] {
         [
-            "command3": Command(description: nil),
-            "command4": Command(description: "description4"),
+            "myCommand3": Command(description: nil),
+            "myCommand4": Command(description: "description4"),
         ]
     }
 }
@@ -108,8 +107,8 @@ private struct CommandGroupMock2: CommandGroup {
 
     static var commands: [String: Command] {
         [
-            "command5": Command(description: "description5"),
-            "command6": Command(description: "description6"),
+            "myCommand5": Command(description: "description5"),
+            "myCommand6": Command(description: "description6"),
         ]
     }
 }

@@ -1,6 +1,6 @@
 import SakeShared
 
-final class CommandsConvenientProvider {
+final class CommandsPreprocessor {
     let commands: [String: Command]
     let commandGroups: [CommandGroup.Type]
     let caseConvertingStrategy: CaseConvertingStrategy
@@ -22,16 +22,20 @@ final class CommandsConvenientProvider {
     }
 
     func rootCommands() -> [String: Command] {
-        CommandNameCaseConverter.convert(commands, strategy: caseConvertingStrategy)
+        processCommands(commands)
     }
 
     func otherCommandGroups() -> [String: [String: Command]] {
         var result: [String: [String: Command]] = [:]
         for group in commandGroups {
             let groupName = group.name
-            let commands = CommandNameCaseConverter.convert(group.commands, strategy: caseConvertingStrategy)
-            result[groupName] = commands
+            result[groupName] = processCommands(group.commands)
         }
         return result
+    }
+
+    private func processCommands(_ commands: [String: Command]) -> [String: Command] {
+        let caseConvertedCommands = CommandNameCaseConverter.convert(commands, strategy: caseConvertingStrategy)
+        return caseConvertedCommands
     }
 }

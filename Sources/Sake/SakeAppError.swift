@@ -25,7 +25,7 @@ extension SakeAppError: LocalizedError {
             Run \"sake list\" to see all available commands.
             """
         case let .commandRunFailed(command, error):
-            return "Command \"\(command)\" failed with error: \(error)."
+            return "Command \"\(command)\" run failed with error: \(error)."
         case let .commandDuplicate(command):
             return "Command \"\(command)\" is duplicated."
         case let .commandArgumentsParsingFailed(command, error):

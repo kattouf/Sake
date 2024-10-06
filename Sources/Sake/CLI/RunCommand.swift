@@ -17,12 +17,12 @@ struct RunCommand: SakeParsableCommand {
     var args: [String] = []
 
     func run(sakeApp: SakeApp.Type) async throws {
-        let commandsProvider = CommandsConvenientProvider(
+        let commandsPreprocessor = CommandsPreprocessor(
             commands: sakeApp.commands,
             commandGroups: sakeApp.configuration.commandGroups,
             caseConvertingStrategy: options.caseConvertingStrategy
         )
-        let commands = try commandsProvider.allCommands()
+        let commands = try commandsPreprocessor.allCommands()
 
         if let command = commands[command] {
             let context = Command.Context(

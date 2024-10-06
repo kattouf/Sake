@@ -68,7 +68,7 @@ extension SakeAppManager.Error: LocalizedError {
         case let .sakeAppAlreadyInitialized(path):
             "SakeApp already initialized at \(path)."
         case let .sakeAppNotValid(error):
-            "SakeApp is not valid. \(error.localizedDescription)"
+            "SakeApp is not valid. Error: \(error.localizedDescription)"
         case let .failedToReadSwiftVersion(stdout, stderr):
             """
             Failed to read the Swift version.

@@ -12,13 +12,13 @@ struct ListCommand: SakeParsableCommand {
     var json: Bool = false
 
     func run(sakeApp: SakeApp.Type) async throws {
-        let commandsProvider = CommandsConvenientProvider(
+        let commandsPreprocessor = CommandsPreprocessor(
             commands: sakeApp.commands,
             commandGroups: sakeApp.configuration.commandGroups,
             caseConvertingStrategy: options.caseConvertingStrategy
         )
-        let rootCommands = commandsProvider.rootCommands()
-        let commandGroups = commandsProvider.otherCommandGroups()
+        let rootCommands = commandsPreprocessor.rootCommands()
+        let commandGroups = commandsPreprocessor.otherCommandGroups()
 
         let formatterInputData = CommandListFormatter.InputData(
             rootName: sakeApp.name,
