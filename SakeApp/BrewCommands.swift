@@ -26,4 +26,16 @@ struct BrewCommands {
             }
         )
     }
+
+    static var ensureGhInstalled: Command {
+        Command(
+            description: "Ensure gh is installed",
+            skipIf: { _ in
+                run("which", "gh").succeeded
+            },
+            run: { _ in
+                try runAndPrint("brew", "install", "gh")
+            }
+        )
+    }
 }
