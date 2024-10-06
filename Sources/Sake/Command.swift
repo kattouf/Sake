@@ -18,14 +18,14 @@ public struct Command: Sendable {
     public let description: String?
     public let dependencies: [Command]
     public let runDependenciesConcurrently: Bool
-    public let skipIf: @Sendable (Context) throws -> Bool
+    public let skipIf: @Sendable (Context) async throws -> Bool
     public let run: @Sendable (Context) async throws -> Void
 
     public init(
         description: String? = nil,
         dependencies: [Command] = [],
         runDependenciesConcurrently: Bool = false,
-        skipIf: @escaping @Sendable (Context) throws -> Bool = { _ in false },
+        skipIf: @escaping @Sendable (Context) async throws -> Bool = { _ in false },
         run: @escaping @Sendable (Context) async throws -> Void = { _ in }
     ) {
         self.description = description

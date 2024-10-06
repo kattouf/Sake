@@ -64,7 +64,7 @@ final class CommandMapTests: XCTestCase {
         let mappedCommand = command.mapArguments { arguments in
             arguments.filter { !$0.hasPrefix("--") }
         }
-        _ = try mappedCommand.skipIf(context)
+        _ = try await mappedCommand.skipIf(context)
         try await mappedCommand.run(context)
 
         XCTAssertEqual(skipIfContext?.arguments, ["value1", "value2", "argument1", "argument2"])
@@ -104,7 +104,7 @@ final class CommandMapTests: XCTestCase {
         let mappedCommand = command.mapEnvironment { environment in
             environment.merging(["baz": "qux"]) { $1 }
         }
-        _ = try mappedCommand.skipIf(context)
+        _ = try await mappedCommand.skipIf(context)
         try await mappedCommand.run(context)
 
         XCTAssertEqual(skipIfContext?.arguments, context.arguments)

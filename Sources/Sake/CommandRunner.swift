@@ -8,7 +8,7 @@ public final class CommandRunner {
     }
 
     public func run() async throws {
-        if try command.skipIf(context) {
+        if try await command.skipIf(context) {
             return
         }
 
