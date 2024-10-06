@@ -15,7 +15,9 @@ public extension Command {
         Command(
             description: description,
             dependencies: dependencies.map { $0.mapContext(transform) },
-            skipIf: skipIf,
+            skipIf: { context in
+                try skipIf(transform(context))
+            },
             run: { context in
                 try await run(transform(context))
             }

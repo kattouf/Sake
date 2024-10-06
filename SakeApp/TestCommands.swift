@@ -5,7 +5,7 @@ import SwiftShell
 @CommandGroup
 struct TestCommands {
     struct TestArguments: ParsableArguments {
-        @Flag(name: .shortAndLong, help: "Clean build artifacts before running tests")
+        @Flag(name: .long, help: "Clean build artifacts before running tests")
         var clean: Bool = false
     }
 
@@ -14,8 +14,8 @@ struct TestCommands {
             description: "Run tests",
             dependencies: [
                 cleanIfNeeded,
-                unitTests.mapArguments { arguments in arguments.filter { $0 != "--clean" && $0 != "-c" } },
-                integrationTests.mapArguments { arguments in arguments.filter { $0 != "--clean" && $0 != "-c" } },
+                unitTests.mapArguments { arguments in arguments.filter { $0 != "--clean" } },
+                integrationTests.mapArguments { arguments in arguments.filter { $0 != "--clean" } },
             ]
         )
     }
