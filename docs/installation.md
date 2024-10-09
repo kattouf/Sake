@@ -12,11 +12,11 @@ Currently only macOS is supported and requires **Swift 5.10** **(Xcode 15.3)** o
 brew install kattouf/sake/sake
 ```
 
-``` sh [Mint]
+```sh [Mint]
 mint install kattouf/Sake
 ```
 
-``` sh [Mise]
+```sh [Mise]
 mise use -g spm:kattouf/Sake
 ```
 
@@ -25,4 +25,3 @@ mise use -g spm:kattouf/Sake
 ### Manual Installation
 
 Download the binary for your platform from the [releases page](https://github.com/kattouf/Sake/releases), and place it in your executable path.
-
