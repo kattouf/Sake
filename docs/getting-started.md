@@ -2,48 +2,49 @@
 outline: deep
 ---
 
-# Runtime API Examples
+# Getting Started
 
-This page demonstrates usage of some of the runtime APIs provided by VitePress.
+To start using Sake, follow these steps:
 
-The main `useData()` API can be used to access site, theme, and page data for the current page. It works in both `.md` and `.vue` files:
+### Initialize a new SakeApp
 
-```md
-<script setup>
-import { useData } from 'vitepress'
+   Run the following command to generate a new SakeApp template in the current directory:
 
-const { theme, page, frontmatter } = useData()
-</script>
+   ```bash
+   sake init
+   ```
 
-## Results
+   This will create a new project structure in the `SakeApp` directory with a basic `Sakefile.swift` containing a simple command.
 
-### Theme Data
-<pre>{{ theme }}</pre>
+### Inspect the generated `Sakefile.swift`
 
-### Page Data
-<pre>{{ page }}</pre>
+   Navigate to the `SakeApp` directory and open `Sakefile.swift` to see the pre-defined `hello` command:
 
-### Page Frontmatter
-<pre>{{ frontmatter }}</pre>
-```
+   ```swift
+   import Foundation
+   import Sake
 
-<script setup>
-import { useData } from 'vitepress'
+   @main
+   @CommandGroup
+   struct Commands: SakeApp {
+       public static var hello: Command {
+           Command(
+               run: { _ in
+                   print("Hello, world!")
+               }
+           )
+       }
+   }
+   ```
 
-const { site, theme, page, frontmatter } = useData()
-</script>
+   This command prints "Hello, world!" to the console.
 
-## Results
+### Run your first command
 
-### Theme Data
-<pre>{{ theme }}</pre>
+   To execute the `hello` command, run:
 
-### Page Data
-<pre>{{ page }}</pre>
+   ```bash
+   sake hello
+   ```
 
-### Page Frontmatter
-<pre>{{ frontmatter }}</pre>
-
-## More
-
-Check out the documentation for the [full list of runtime APIs](https://vitepress.dev/reference/runtime-api#usedata).
+   This will print "Hello, world!" in your terminal.
