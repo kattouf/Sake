@@ -1,85 +1,28 @@
-# Markdown Extension Examples
+# Installation
 
-This page demonstrates some of the built-in markdown extensions provided by VitePress.
+::: info Requirements
+Currently only macOS is supported and requires **Swift 5.10** **(Xcode 15.3)** or higher.
+:::
 
-## Syntax Highlighting
+### Package Managers
 
-VitePress provides Syntax Highlighting powered by [Shiki](https://github.com/shikijs/shiki), with additional features like line-highlighting:
+::: code-group
 
-**Input**
-
-````md
-```js{4}
-export default {
-  data () {
-    return {
-      msg: 'Highlighted!'
-    }
-  }
-}
-```
-````
-
-**Output**
-
-```js{4}
-export default {
-  data () {
-    return {
-      msg: 'Highlighted!'
-    }
-  }
-}
+```sh [Homebrew]
+brew install kattouf/sake/sake
 ```
 
-## Custom Containers
-
-**Input**
-
-```md
-::: info
-This is an info box.
-:::
-
-::: tip
-This is a tip.
-:::
-
-::: warning
-This is a warning.
-:::
-
-::: danger
-This is a dangerous warning.
-:::
-
-::: details
-This is a details block.
-:::
+``` sh [Mint]
+mint install kattouf/Sake
 ```
 
-**Output**
+``` sh [Mise]
+mise use -g spm:kattouf/Sake
+```
 
-::: info
-This is an info box.
 :::
 
-::: tip
-This is a tip.
-:::
+### Manual Installation
 
-::: warning
-This is a warning.
-:::
+Download the binary for your platform from the [releases page](https://github.com/kattouf/Sake/releases), and place it in your executable path.
 
-::: danger
-This is a dangerous warning.
-:::
-
-::: details
-This is a details block.
-:::
-
-## More
-
-Check out the documentation for the [full list of markdown extensions](https://vitepress.dev/guide/markdown).
