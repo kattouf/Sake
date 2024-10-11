@@ -33,6 +33,7 @@ export default defineConfig({
             link: "/commands-conditional-execution",
           },
           { text: "Grouping", link: "/command-grouping" },
+          { text: "Command Name Converions", link: "/commands-name-conversions" }
         ],
       },
       {
