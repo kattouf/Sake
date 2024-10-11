@@ -15,10 +15,34 @@ export default defineConfig({
 
     sidebar: [
       {
-        text: "Documentation",
+        text: "General",
         items: [
+          { text: "About", link: "/about" },
           { text: "Installation", link: "/installation" },
           { text: "Getting Started", link: "/getting-started" },
+          { text: "Configuration", link: "/configuration" },
+        ],
+      },
+      {
+        text: "Defining Commands",
+        items: [
+          { text: "Basic", link: "/command-basic" },
+          { text: "Dependencies", link: "/command-dependencies" },
+          {
+            text: "Conditional execution",
+            link: "/command-conditional-execution",
+          },
+          { text: "Grouping", link: "/command-grouping" },
+        ],
+      },
+      {
+        text: "Cookbook",
+        items: [],
+      },
+      {
+        items: [
+          { text: "How It Works", link: "/how-it-works" },
+          { text: "Troubleshooting", link: "/troubleshooting" },
         ],
       },
     ],

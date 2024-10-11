@@ -16,7 +16,7 @@ hero:
       link: /installation
     - theme: alt
       text: Documentation
-      link: /getting-started
+      link: /about
     - theme: alt
       text: GitHub
       link: https://github.com/kattouf/Sake
