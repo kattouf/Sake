@@ -1,4 +1,4 @@
-# Command Grouping
+# Grouping
 
 Sake allows you to organize commands into groups for better structure and maintainability. This is especially useful when you have multiple related commands and want to keep them organized in logical groupings.
 
