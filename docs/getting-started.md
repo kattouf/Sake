@@ -43,7 +43,13 @@ In this file, `Commands` serves as the entry point of the **SakeApp** executable
 
 ### Run your first command
 
-To execute the `hello` command, run:
+To execute the hello command, you can run:
+
+```bash
+sake run hello
+```
+
+or simply:
 
 ```bash
 sake hello
@@ -60,6 +66,7 @@ sake list
 ```
 
 To see all available `sake` commands, run:
+
 ```bash
 sake --help
 ```
