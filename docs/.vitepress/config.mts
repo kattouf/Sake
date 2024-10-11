@@ -30,7 +30,7 @@ export default defineConfig({
           { text: "Dependencies", link: "/commands-dependencies" },
           {
             text: "Conditional execution",
-            link: "/command-conditional-execution",
+            link: "/commands-conditional-execution",
           },
           { text: "Grouping", link: "/command-grouping" },
         ],

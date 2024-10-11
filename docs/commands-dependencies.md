@@ -1,7 +1,3 @@
----
-outline: deep
----
-
 # Dependencies
 
 Sake allows you to define commands that must be run before the main command. Dependencies ensure that any prerequisite commands are executed in the correct order.
