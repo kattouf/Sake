@@ -17,6 +17,9 @@ hero:
     - theme: alt
       text: Documentation
       link: /getting-started
+    - theme: alt
+      text: GitHub
+      link: https://github.com/kattouf/Sake
 
 features:
   - title: ⚡ Swift-based
