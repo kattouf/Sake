@@ -8,7 +8,7 @@ To start using Sake, follow these steps:
 
 ### Initialize a new SakeApp
 
-**SakeApp** is a Swift package with the `Sake` library integrated, allowing you to define and manage commands.
+**SakeApp** is a Swift package executable with the `Sake` library integrated, allowing you to define and manage commands.
 
 To generate a new **SakeApp** project template in the current directory, run the following command:
 
@@ -39,7 +39,7 @@ struct Commands: SakeApp {
 }
 ```
 
-In this file, `Commands` is a command group that contains the `hello` command.
+In this file, `Commands` serves as the entry point of the **SakeApp** executable and acts as the main command group that includes the `hello` command.
 
 ### Run your first command
 
@@ -50,3 +50,16 @@ sake hello
 ```
 
 This will print "Hello, world!" in your terminal.
+
+### Other commands
+
+To see all available user-defined (`Sakefile.swift`) commands, run:
+
+```bash
+sake list
+```
+
+To see all available `sake` commands, run:
+```bash
+sake --help
+```
