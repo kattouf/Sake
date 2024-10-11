@@ -7,10 +7,11 @@ For example:
 ```swift
 Command(
     description: "Build the project",
-    dependencies: [clean]
-) { _ in
-    print("Building the project...")
-}
+    dependencies: [clean],
+    run: { _ in
+        print("Building the project...")
+    }
+)
 ```
 
 In this example, the `clean` command will always be executed before the `build` command. This ensures that the project is cleaned before building.
@@ -21,14 +22,15 @@ Sake also supports running dependencies in parallel to speed up execution times.
 
 For example:
 
-```swift
+```swift {4}
 Command(
     description: "Build the project",
     dependencies: [clean, setupEnvironment, fetchDependencies],
     runDependenciesConcurrently: true
-) { _ in
-    print("Building the project...")
-}
+    run: { _ in
+        print("Building the project...")
+    }
+)
 ```
 
 In this example, the `clean`, `setupEnvironment`, and `fetchDependencies` commands will be executed concurrently, before running the `build` command.

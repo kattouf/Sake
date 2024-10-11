@@ -38,12 +38,18 @@ export default defineConfig({
         ],
       },
       {
-        text: "Cookbook",
-        items: [],
+        text: "Advanced Usage",
+        items: [
+          { text: "Extensibility of SakeApp", link: "/advanced-extensibility-of-sakeapp" },
+          { text: "Argument Parsing", link: "/advanced-argument-parsing" },
+          { text: "CLI Tools Running", link: "/advanced-cli-tools-running" },
+          { text: "Example", link: "/advanced-usage-example" },
+        ],
       },
       {
         items: [
           { text: "How It Works", link: "/how-it-works" },
+          { text: "Limitations", link: "/limitations" },
           { text: "Troubleshooting", link: "/troubleshooting" },
         ],
       },

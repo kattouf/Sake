@@ -21,9 +21,12 @@ struct Commands: SakeApp {
 @CommandGroup
 struct BuildCommands {
     public static var build: Command {
-        Command(description: "Build the project") { _ in
-            print("Building the project...")
-        }
+        Command(
+            description: "Build the project",
+            run: { _ in
+                print("Building the project...")
+            }
+        )
     }
 }
 
@@ -31,9 +34,12 @@ struct BuildCommands {
 @CommandGroup
 struct TestCommands {
     public static var test: Command {
-        Command(description: "Run tests") { _ in
-            print("Running tests...")
-        }
+        Command(
+            description: "Run tests",
+            run: { _ in
+                print("Running tests...")
+            }
+        )
     }
 }
 ```

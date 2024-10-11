@@ -19,7 +19,7 @@ Here's a simple example of using `Context` in a command:
 Command(
     description: "Print arguments",
     skipIf: { context in
-        return context.arguments.isEmpty
+        context.arguments.isEmpty
     },
     run: { context in
         print("Arguments: \(context.arguments)")

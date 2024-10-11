@@ -10,10 +10,11 @@ Command(
     skipIf: { context in
         // Skip the command if deployment is not needed
         return !shouldDeploy()
+    },
+    run: { context in
+        print("Deploying the project...")
     }
-) { _ in
-    print("Deploying the project...")
-}
+)
 ```
 
 In this example, the `deploy` command will only run if the `shouldDeploy()` function returns `true`.

@@ -57,7 +57,7 @@ sake hello
 
 This will print "Hello, world!" in your terminal.
 
-### Other commands
+### Listing commands
 
 To see all available user-defined (`Sakefile.swift`) commands, run:
 
