@@ -27,7 +27,7 @@ export default defineConfig({
         text: "Defining Commands",
         items: [
           { text: "Basic Rules", link: "/commands-basic-rules" },
-          { text: "Dependencies", link: "/command-dependencies" },
+          { text: "Dependencies", link: "/commands-dependencies" },
           {
             text: "Conditional execution",
             link: "/command-conditional-execution",

@@ -1,3 +1,7 @@
+---
+outline: deep
+---
+
 # Configuration
 
 Sake provides flexible options for configuration, which can be set via:
