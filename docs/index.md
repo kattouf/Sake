@@ -7,8 +7,8 @@ hero:
   text: Manage project commands using Swift
   tagline: Inspired by Make, built for convenience
   image:
-    dark: ./img/hello_dark.png
-    light: ./img/hello_light.png
+    dark: /hello_dark.png
+    light: /hello_light.png
     alt: Hello World!
   actions:
     - theme: brand

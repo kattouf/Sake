@@ -5,7 +5,7 @@ export default defineConfig({
   base: '/Sake/',
   title: "Sake",
   description: "Manage project commands using Swift",
-  head: [["link", { rel: "icon", href: "./img/favicon.ico" }]],
+  head: [["link", { rel: "icon", href: "/favicon.ico" }]],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     siteTitle: "Sake 🍶",
