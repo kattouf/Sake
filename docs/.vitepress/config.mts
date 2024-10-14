@@ -20,6 +20,7 @@ export default defineConfig({
           { text: "About", link: "/about" },
           { text: "Installation", link: "/installation" },
           { text: "Getting Started", link: "/getting-started" },
+          { text: "Passing Arguments", link: "/passing-arguments" },
           { text: "Configuration", link: "/configuration" },
         ],
       },
