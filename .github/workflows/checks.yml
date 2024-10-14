@@ -26,19 +26,9 @@ jobs:
       - name: Run integration tests
         run: swift test --filter IntegrationTests
   lint:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Set up Swift
-        uses: swift-actions/setup-swift@v2
-        with:
-          swift-version: '5.10'
-      - name: Install SwiftFormat
-        run: |
-          git clone https://github.com/nicklockwood/SwiftFormat.git
-          cd SwiftFormat
-          swift build -c release
-          sudo cp .build/release/swiftformat /usr/local/bin/swiftformat
       - name: Run SwiftFormat Linting
         run: swiftformat Sources SakeApp Tests Package.swift --lint
