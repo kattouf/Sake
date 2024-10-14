@@ -49,7 +49,7 @@ export default defineConfig({
       },
       {
         items: [
-          // { text: "How It Works", link: "/how-it-works" },
+          { text: "How It Works", link: "/how-it-works" },
           { text: "Limitations", link: "/limitations" },
           { text: "Troubleshooting", link: "/troubleshooting" },
         ],
