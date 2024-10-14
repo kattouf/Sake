@@ -1,7 +1,13 @@
-name: Tests
-on: [push]
+name: Checks
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 jobs:
-  build:
+  build-and-test:
     name: Swift ${{ matrix.swift }} on ${{ matrix.os }}
     strategy:
       matrix:
@@ -19,3 +25,20 @@ jobs:
         run: swift test --filter "^(?!.*\bIntegrationTests\b).*"
       - name: Run integration tests
         run: swift test --filter IntegrationTests
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Swift
+        uses: actions/setup-swift@v2
+        with:
+          swift-version: '5.10'
+      - name: Install SwiftFormat
+        run: |
+          git clone https://github.com/nicklockwood/SwiftFormat.git
+          cd SwiftFormat
+          swift build -c release
+          sudo cp .build/release/swiftformat /usr/local/bin/swiftformat
+      - name: Run SwiftFormat Linting
+        run: swiftformat Sources SakeApp Tests Package.swift --lint
