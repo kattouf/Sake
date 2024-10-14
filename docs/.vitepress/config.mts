@@ -14,8 +14,8 @@ export default defineConfig({
     siteTitle: "Sake 🍶",
     nav: [
       { text: "Home", link: "/" },
+      { text: "Docs", link: "/about" }
     ],
-
     sidebar: [
       {
         text: "General",
@@ -59,7 +59,6 @@ export default defineConfig({
         ],
       },
     ],
-
     socialLinks: [{ icon: "github", link: "https://github.com/kattouf/Sake" }],
   },
 });
