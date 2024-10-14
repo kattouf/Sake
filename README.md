@@ -1,7 +1,7 @@
 # 🍶Sake
 
 [![Latest Release](https://img.shields.io/github/release/kattouf/Sake.svg)](https://github.com/kattouf/Sake/releases/latest)
-![](https://github.com/kattouf/Sake/actions/workflows/tests.yml/badge.svg?branch=main)
+![](https://github.com/kattouf/Sake/actions/workflows/checks.yml/badge.svg?branch=main)
 
 A Swift-based utility for managing project commands, inspired by Make.
 

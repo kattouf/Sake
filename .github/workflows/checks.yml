@@ -1,8 +1,14 @@
-name: Tests
-on: [push]
+name: Checks
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 jobs:
-  build:
-    name: Swift ${{ matrix.swift }} on ${{ matrix.os }}
+  build-and-test:
+    name: tests (Swift ${{ matrix.swift }})
     strategy:
       matrix:
         os: [macos-latest]  # ubuntu-latest
@@ -19,3 +25,10 @@ jobs:
         run: swift test --filter "^(?!.*\bIntegrationTests\b).*"
       - name: Run integration tests
         run: swift test --filter IntegrationTests
+  lint:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Run SwiftFormat Linting
+        run: swiftformat Sources SakeApp Tests Package.swift --lint
