@@ -1,3 +1,7 @@
+---
+outline: deep
+---
+
 # Run Context
 
 Sake provides a `Command.Context` structure that is used to provide runtime information to commands. This structure contains important details that commands can use during their execution.
@@ -13,7 +17,7 @@ Sake provides a `Command.Context` structure that is used to provide runtime info
 
 The `Context` is passed to the `run` and `skipIf` blocks of a command to provide all the necessary runtime information.
 
-Here's a simple example of using `Context` in a command:
+Here's an example of using `Context` in a command:
 
 ```swift
 Command(
@@ -27,4 +31,44 @@ Command(
 )
 ```
 
-In this example, the `skipIf` block checks if there are no arguments, and if so, skips the command. Otherwise, the `run` block prints the arguments provided by the user when the command is executed.
+In this example:
+
+- The `skipIf` block checks if there are no arguments. If no arguments are provided, the command is skipped.
+- The `run` block executes the main logic, which in this case is printing the arguments provided by the user.
+
+### Mapping
+
+Sake provides a way to modify (`map`) the `arguments` and `environment` properties of the `Context` before executing a command. This feature can be particularly useful when working with command dependencies, allowing for customization of their behavior.
+
+Here's an example of using mapping with a command dependency:
+
+```swift
+public static var mainCommand: Command {
+    Command(
+        description: "Main command with dependency",
+        dependencies: [dependencyCommand.mapArguments { arguments in
+            var modifiedArguments = arguments
+            modifiedArguments.append("--dependency-specific-flag")
+            return modifiedArguments
+        }],
+        run: { context in
+            print("Running main command...")
+        }
+    )
+}
+
+public static var dependencyCommand: Command {
+    Command(
+        description: "Dependency command",
+        run: { context in
+            print("Arguments for dependency: \(context.arguments)")
+        }
+    )
+}
+```
+
+In this example:
+
+- The `mainCommand` depends on `dependencyCommand`.
+- The `mapArguments` function is used to modify the arguments passed to the `dependencyCommand` by adding a specific flag (`--dependency-specific-flag`).
+- This ensures that the dependency command receives customized arguments when executed as part of `mainCommand`.
