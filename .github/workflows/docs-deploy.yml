@@ -7,7 +7,7 @@ on:
   # using the `master` branch as the default branch.
   push:
     branches: [docs-site]
-    paths: [docs/**]
+    paths: [docs/**, .github/workflows/docs-deploy.yml]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
