@@ -2,7 +2,7 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: '/Sake/',
+  // base: '/Sake/', # uncomment to use with github pages
   title: "Sake",
   description: "Manage project commands using Swift",
   head: [["link", { rel: "icon", href: "/favicon.ico" }]],
