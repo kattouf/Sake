@@ -1,8 +1,8 @@
 # Grouping
 
-Sake allows you to organize commands into groups for better structure and maintainability. This is especially useful when you have multiple related commands and want to keep them organized in logical groupings.
+Sake allows you to organize commands into groups for better structure and maintainability. This is especially useful when you have multiple related commands that need to be organized logically.
 
-You can define command groups by using the `@CommandGroup` attribute for each structure. All command groups should be listed in the main structure that conforms to the `SakeApp` protocol. For example:
+To create command groups, use the `@CommandGroup` attribute for each structure. All command groups are listed in the main structure that conforms to the `SakeApp` protocol. Here is an example:
 
 ```swift
 // Sakefile.swift
@@ -44,9 +44,15 @@ struct TestCommands {
 }
 ```
 
-In this example, the commands are organized into `BuildCommands` and `TestCommands` groups. Each group is annotated with `@CommandGroup`, and all groups are listed in the main `Commands` structure that conforms to `SakeApp`.
+In this example, commands are divided into `BuildCommands` and `TestCommands`. Each group is marked with `@CommandGroup`, and they are all referenced in the main `Commands` structure, which conforms to `SakeApp`.
 
-When running Sake, you can execute commands from these groups as usual:
+::: tip
+
+Grouping commands with @CommandGroup and listing them in the main Commands structure is only necessary if you want these commands to be visible and accessible from the terminal. If you have internal commands that should not be accessible via the terminal, you can keep them private and avoid adding them to a command group or marking them with @CommandGroup.
+
+:::
+
+Once grouped, commands can be executed as usual using Sake:
 
 ```bash
 sake build
