@@ -10,7 +10,6 @@ export default defineConfig({
     siteTitle: "Sake 🍶",
     nav: [
       { text: "Home", link: "/" },
-      // { text: "Documentation", link: "/getting-started" },
     ],
 
     sidebar: [
@@ -50,7 +49,7 @@ export default defineConfig({
       },
       {
         items: [
-          { text: "How It Works", link: "/how-it-works" },
+          // { text: "How It Works", link: "/how-it-works" },
           { text: "Limitations", link: "/limitations" },
           { text: "Troubleshooting", link: "/troubleshooting" },
         ],
