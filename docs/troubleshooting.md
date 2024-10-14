@@ -16,4 +16,4 @@ After doing this, SakeApp will be rebuilt from scratch the next time you run a c
 
 ### Getting Help and Providing Feedback
 
-If you encounter other problems or have any feature requests, feel free to open an issue on GitHub: [https://github.com/kattouf/Sake/issues](https://github.com/kattouf/Sake/issues)
+If you encounter other problems or have any feature requests, feel free to open an issue on [https://github.com/kattouf/Sake/issues](https://github.com/kattouf/Sake/issues) 
