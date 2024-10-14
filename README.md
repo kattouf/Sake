@@ -46,7 +46,7 @@ To start using Sake, follow these steps:
    ```bash
    brew install kattouf/sake/sake
    ```
-   Other methods [here](https://sakeswift.org)
+   Other methods [here](https://sakeswift.org/installation.html)
 
 2. **Initialize a new SakeApp:**
 
