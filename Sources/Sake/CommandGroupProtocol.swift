@@ -28,7 +28,6 @@ public macro CommandGroup() = #externalMacro(module: "SakeMacros", type: "Comman
 ///   but they can be automatically converted according to a naming strategy defined
 ///   in the configuration (e.g., converting to snake_case or kebab-case).
 public protocol CommandGroup {
-
     /// The name of the command group.
     ///
     /// This property defines a unique name for the group of commands.

@@ -4,7 +4,6 @@
 /// should be skipped, running dependencies (either concurrently or sequentially), and finally
 /// executing the main command logic.
 public final class CommandRunner {
-
     /// The command to be executed.
     private let command: Command
 

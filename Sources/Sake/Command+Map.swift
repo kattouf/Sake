@@ -1,5 +1,4 @@
 public extension Command {
-
     /// Returns a new `Command` with transformed arguments using the provided closure.
     ///
     /// This method applies the given transformation to the arguments within the command's context.
@@ -48,7 +47,6 @@ public extension Command {
 }
 
 public extension Command.Context {
-
     /// Returns a new `Context` with transformed arguments using the provided closure.
     ///
     /// This method applies the given transformation to the arguments in the context while keeping
