@@ -197,6 +197,7 @@ struct ReleaseCommands {
                 print("Creating and pushing tag \(version)")
                 try runAndPrint("git", "tag", version)
                 try runAndPrint("git", "push", "origin", "tag", version)
+                try runAndPrint("git", "push") // push local changes like version bump
             }
         )
     }
