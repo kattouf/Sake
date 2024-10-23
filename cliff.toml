@@ -114,7 +114,8 @@ commit_parsers = [
   { message = '^refactor', group = "<!-- 04 -->:tractor: Refactoring" },
   { message = '^doc', group = "<!-- 05 -->:books: Documentation" },
   { body = '.*security', group = "<!-- 06 -->:shield: Security" },
-  { message = '^revert', group = "<!-- 07 -->:leftwards_arrow_with_hook: Revert" },
+  { message = '^project', group = "<!-- 07 -->:file_folder: Project" },
+  { message = '^revert', group = "<!-- 39 -->:leftwards_arrow_with_hook: Revert" },
   { message = '.', group = "<!-- 49 -->:card_index_dividers: Other Changes" },
 ]
 # filter out the commits that are not matched by commit parsers
