@@ -105,7 +105,7 @@ commit_preprocessors = [
 ]
 # regex for parsing and grouping commits
 commit_parsers = [
-  { message = '^chore\(release\): bump version', skip = true },
+  { message = '^chore\(release\): Bump version to', skip = true },
   { message = '^(chore|fix)\(deps\):', group = "<!-- 99 -->:package: Dependency Updates", scope = "" },
   { message = '^feat', group = "<!-- 00 -->:rocket: Features" },
   { message = '^fix', group = "<!-- 01 -->:bug: Bug Fixes" },

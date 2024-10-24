@@ -27,7 +27,14 @@ struct ReleaseCommands {
     public static var release: Command {
         Command(
             description: "Release",
-            dependencies: [bumpVersion, buildReleaseArtifacts, calculateBuildArtifactsSha256, createAndPushTag, draftReleaseWithArtifacts]
+            dependencies: [
+                bumpVersion,
+                buildReleaseArtifacts,
+                calculateBuildArtifactsSha256,
+                createAndPushTag,
+                generateReleaseNotes,
+                draftReleaseWithArtifacts,
+            ]
         )
     }
 
@@ -63,7 +70,7 @@ struct ReleaseCommands {
                 try versionFileContent.write(toFile: versionFilePath, atomically: true, encoding: .utf8)
 
                 try runAndPrint("git", "add", versionFilePath)
-                try runAndPrint("git", "commit", "-m", "Bump version to \(version)")
+                try runAndPrint("git", "commit", "-m", "chore(release): Bump version to \(version)")
                 print("Version bumped to \(version)")
             }
         )
@@ -202,6 +209,35 @@ struct ReleaseCommands {
         )
     }
 
+    static var generateReleaseNotes: Command {
+        Command(
+            description: "Generate release notes",
+            dependencies: [BrewCommands.ensureGitCliffInstalled],
+            skipIf: { context in
+                let arguments = try ReleaseArguments.parse(context.arguments)
+                try arguments.validate()
+
+                let version = arguments.version
+                let releaseNotesPath = releaseNotesPath(version: version)
+                if FileManager.default.fileExists(atPath: releaseNotesPath) {
+                    print("Release notes for \(version) already exist at \(releaseNotesPath). Skipping...")
+                    return true
+                } else {
+                    return false
+                }
+            },
+            run: { context in
+                let arguments = try ReleaseArguments.parse(context.arguments)
+                try arguments.validate()
+
+                let version = arguments.version
+                let releaseNotesPath = releaseNotesPath(version: version)
+                try runAndPrint("git", "cliff", "--unreleased", "--strip=all", "--tag", version, "--output", releaseNotesPath)
+                print("Release notes generated at \(releaseNotesPath)")
+            }
+        )
+    }
+
     static var draftReleaseWithArtifacts: Command {
         Command(
             description: "Draft a release on GitHub",
@@ -227,9 +263,17 @@ struct ReleaseCommands {
                 let tagName = arguments.version
                 let releaseTitle = arguments.version
                 let draftReleaseCommand =
-                    "gh release create \(tagName) \(Constants.buildArtifactsDirectory)/*.zip --title '\(releaseTitle)' --draft --verify-tag --generate-notes"
+                    "gh release create \(tagName) \(Constants.buildArtifactsDirectory)/*.zip --title '\(releaseTitle)' --draft --verify-tag --notes-file \(releaseNotesPath(version: tagName))"
                 try runAndPrint(bash: draftReleaseCommand)
             }
         )
+    }
+}
+
+// MARK: - Helpers
+
+extension ReleaseCommands {
+    private static func releaseNotesPath(version: String) -> String {
+        ".build/artifacts/release-notes-\(version).md"
     }
 }
