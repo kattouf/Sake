@@ -1,3 +1,7 @@
+---
+outline: deep
+---
+
 # Dependencies
 
 Sake allows you to define commands that must be run before the main command. Dependencies ensure that any prerequisite commands are executed in the correct order.
@@ -38,3 +42,27 @@ In this example, the `clean`, `setupEnvironment`, and `fetchDependencies` comman
 ::: warning
 If dependencies write to stdout or stderr, logs may become mixed and hard to read when running them concurrently.
 :::
+
+### Direct Run
+
+If using dependencies is not suitable for your needs, you can run another command directly using the `CommandRunner`.
+
+For example:
+
+```swift
+public static var commandA: Command {
+    Command(
+        run: { context in
+            try await CommandRunner(
+                command: commandB,
+                context: context
+            )
+            .run()
+        }
+    )
+}
+
+public static var commandB: Command { ...
+```
+
+In this example, `commandA` directly runs `commandB` using `CommandRunner`, passing along the current `context`. This allows for greater control over the execution flow without relying on predefined dependencies.e
