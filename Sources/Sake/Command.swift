@@ -1,3 +1,53 @@
+import Foundation
+
+public extension Command.Context {
+    /// Represents a storage container for the context.
+    ///
+    /// The `Storage` class provides a thread-safe storage container for the context.
+    /// It allows for sharing data between commands and storing information during execution.
+    final class Storage: @unchecked Sendable {
+        private var dictionary: [String: Any] = [:]
+        private let lock = NSRecursiveLock()
+
+        public init() {}
+
+        subscript(key: String) -> Any? {
+            get { get(forKey: key) }
+            set { set(newValue, forKey: key) }
+        }
+
+        public func set(_ value: Any?, forKey key: String) {
+            lock.lock()
+            defer { lock.unlock() }
+            dictionary[key] = value
+        }
+
+        public func get(forKey key: String) -> Any? {
+            lock.lock()
+            defer { lock.unlock() }
+            return dictionary[key]
+        }
+
+        public func remove(forKey key: String) {
+            lock.lock()
+            defer { lock.unlock() }
+            dictionary.removeValue(forKey: key)
+        }
+
+        public func removeAll() {
+            lock.lock()
+            defer { lock.unlock() }
+            dictionary.removeAll()
+        }
+
+        public func contains(key: String) -> Bool {
+            lock.lock()
+            defer { lock.unlock() }
+            return dictionary.keys.contains(key)
+        }
+    }
+}
+
 public extension Command {
     /// Represents the context in which a command is executed.
     ///
@@ -25,6 +75,11 @@ public extension Command {
         /// This is the current working directory when the command runs.
         public let runDirectory: String
 
+        /// A storage container for the context.
+        ///
+        /// This storage is used to share data between commands and store information
+        public let storage: Storage
+
         /// Initializes a new `Context` for command execution.
         ///
         /// - Parameters:
@@ -32,16 +87,19 @@ public extension Command {
         ///   - environment: The environment variables available during execution.
         ///   - appDirectory: The directory where the app is located.
         ///   - runDirectory: The directory from which the command is run.
+        ///   - storage: A storage container for the context.
         public init(
             arguments: [String],
             environment: [String: String],
             appDirectory: String,
-            runDirectory: String
+            runDirectory: String,
+            storage: Storage
         ) {
             self.arguments = arguments
             self.environment = environment
             self.appDirectory = appDirectory
             self.runDirectory = runDirectory
+            self.storage = storage
         }
     }
 }
