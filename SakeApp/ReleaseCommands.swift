@@ -232,7 +232,7 @@ struct ReleaseCommands {
 
                 let version = arguments.version
                 let releaseNotesPath = releaseNotesPath(version: version)
-                try runAndPrint("git", "cliff", "--unreleased", "--strip=all", "--tag", version, "--output", releaseNotesPath)
+                try runAndPrint("git", "cliff", "--latest", "--strip=all", "--tag", version, "--output", releaseNotesPath)
                 print("Release notes generated at \(releaseNotesPath)")
             }
         )
