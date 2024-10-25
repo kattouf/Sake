@@ -60,7 +60,8 @@ public extension Command.Context {
             arguments: transform(arguments),
             environment: environment,
             appDirectory: appDirectory,
-            runDirectory: runDirectory
+            runDirectory: runDirectory,
+            storage: storage
         )
     }
 
@@ -77,7 +78,8 @@ public extension Command.Context {
             arguments: arguments,
             environment: transform(environment),
             appDirectory: appDirectory,
-            runDirectory: runDirectory
+            runDirectory: runDirectory,
+            storage: storage
         )
     }
 }

@@ -30,7 +30,8 @@ struct RunCommand: SakeParsableCommand {
                 environment: ProcessInfo.processInfo.environment,
                 appDirectory: Bundle.main.bundleURL.findBuildDirectory()?.deletingLastPathComponent()
                     .path ?? "<Could not find SakeApp directory>",
-                runDirectory: FileManager.default.currentDirectoryPath
+                runDirectory: FileManager.default.currentDirectoryPath,
+                storage: Command.Context.Storage()
             )
             let runner = CommandRunner(command: command, context: context)
             do {

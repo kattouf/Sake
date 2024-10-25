@@ -12,6 +12,7 @@ Sake provides a `Command.Context` structure that is used to provide runtime info
 - **`environment`**: A dictionary representing the environment variables available during the command's execution.
 - **`appDirectory`**: The path to the SakeApp directory.
 - **`runDirectory`**: The directory from which the command was run.
+- **`storage`**: A storage container used to share data between commands.
 
 ### Using in Commands
 
@@ -36,7 +37,37 @@ In this example:
 - The `skipIf` block checks if there are no arguments. If no arguments are provided, the command is skipped.
 - The `run` block executes the main logic, which in this case is printing the arguments provided by the user.
 
-### Mapping
+### Sharing Data Between Commands
+
+The `storage` property enables sharing data between different command blocks like `run` and `skipIf`, as well as across commands that have dependencies.
+
+Here's an example of using `storage` to share data between a command and its dependency:
+
+```swift
+public static var commandA: Command {
+    Command(
+        run: { context in
+            context.storage["command-a-data"] = "jepa"
+            print("Command A running")
+        }
+    )
+}
+
+public static var commandB: Command {
+    Command(
+        dependencies: [commandA], // commandA runs before commandB
+        run: { context in
+            let commandAData = context.storage["command-a-data"] as? String
+            // commandAData == "jepa"
+            print("Command B running")
+        }
+    )
+}
+```
+
+In this example, `commandA` stores a value in the `context.storage`, which `commandB` then retrieves when it runs. This allows for flexible data sharing and coordination between dependent commands.
+
+### Modifying
 
 Sake provides a way to modify (`map`) the `arguments` and `environment` properties of the `Context` before executing a command. This feature can be particularly useful when working with command dependencies, allowing for customization of their behavior.
 
