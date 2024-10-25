@@ -24,12 +24,14 @@ Sake also supports configuration via environment variables. The following enviro
 
 - **`SAKE_CONFIG_PATH`**: Path to the `.sake.yml` file.
 - **`SAKE_APP_PATH`**: Path to the SakeApp package.
+- **`SAKE_CASE_CONVERTING_STRATEGY`**: [Commands name conversion strategy](/commands-name-conversions.md).
 
 For example, you can set these variables in your environment:
 
 ```bash
 export SAKE_CONFIG_PATH="/path/to/.sake.yml"
 export SAKE_APP_PATH="/path/to/SakeApp"
+export SAKE_CASE_CONVERTING_STRATEGY="toKebabCase"
 ```
 
 ### Configuration file (.sake.yml)
