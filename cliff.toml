@@ -69,12 +69,7 @@ body = """
 {% macro commit(commit) -%}
 {% if commit.scope %}**({{commit.scope}})** {% endif -%}
 {% if commit.breaking %}**breaking** {% endif -%}
-{% if commit.remote.pr_title -%}
-  {%- set commit_message = commit.remote.pr_title -%}
-{%- else -%}
-  {%- set commit_message = commit.message -%}
-{%- endif -%}
-{{ commit_message | split(pat="\n") | first | trim }} by \
+{{ commit.message | split(pat="\n") | first | trim }} by \
 {% if commit.remote.username %}[@{{commit.remote.username}}](https://github.com/{{commit.remote.username}})\
 {% else %}{{commit.author.name}}{% endif %} in \
 {% if commit.remote.pr_number %}[#{{ commit.remote.pr_number }}]({{ self::remote_url() }}/pull/{{ commit.remote.pr_number }})\
