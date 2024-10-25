@@ -67,7 +67,7 @@ public extension Command.Context {
 
         public init() {}
 
-        subscript(key: String) -> Any? {
+        public subscript(key: String) -> Any? {
             get { get(forKey: key) }
             set { set(newValue, forKey: key) }
         }
