@@ -50,7 +50,8 @@ final class ConfigResolver {
         Config(
             configPath: resolveConfigPath(cliConfig: cliConfig, envConfig: envConfig),
             sakeAppPath: cliConfig.sakeAppPath ?? envConfig.sakeAppPath ?? fileConfig?.sakeAppPath ?? Config.default.sakeAppPath,
-            caseConvertingStrategy: cliConfig.caseConvertingStrategy ?? fileConfig?.caseConvertingStrategy
+            caseConvertingStrategy: cliConfig.caseConvertingStrategy ?? envConfig.caseConvertingStrategy ?? fileConfig?
+                .caseConvertingStrategy
                 ?? Config.default.caseConvertingStrategy
         )
     }
