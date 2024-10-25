@@ -115,6 +115,47 @@ final class CommandRunnerTests: XCTestCase {
 
         XCTAssertEqual(runnedCommands, ["skipIf2", "dependency3", "command"])
     }
+
+    func testSharingDataBetweenCommandsViaContextStorage() async throws {
+        nonisolated(unsafe) var runnedCommands: [String] = []
+
+        let dependency1 = Command(
+            run: { context in
+                context.storage["someKey"] = "someData"
+                runnedCommands.append("dependency1")
+            }
+        )
+
+        let dependency2 = Command(
+            dependencies: [dependency1],
+            run: { context in
+                XCTAssertEqual(context.storage["someKey"] as? String, "someData")
+                runnedCommands.append("dependency2")
+            }
+        )
+
+        let dependency3 = Command(
+            dependencies: [dependency2],
+            run: { context in
+                XCTAssertEqual(context.storage["someKey"] as? String, "someData")
+                context.storage["someKey"] = "otherData"
+                runnedCommands.append("dependency3")
+            }
+        )
+
+        let command = Command(
+            dependencies: [dependency3],
+            run: { context in
+                XCTAssertEqual(context.storage["someKey"] as? String, "otherData")
+                runnedCommands.append("command")
+            }
+        )
+
+        let runner = CommandRunner(command: command, context: .empty)
+        try await runner.run()
+
+        XCTAssertEqual(runnedCommands, ["dependency1", "dependency2", "dependency3", "command"])
+    }
 }
 
 private extension Command.Context {
@@ -123,7 +164,8 @@ private extension Command.Context {
             arguments: [],
             environment: [:],
             appDirectory: "",
-            runDirectory: ""
+            runDirectory: "",
+            storage: .init()
         )
     }
 }
