@@ -2,6 +2,7 @@ enum SakeAppContents {
     static let gitignore = """
     .DS_Store
     /.build
+    /.index-build
     /Packages
     xcuserdata/
     DerivedData/
