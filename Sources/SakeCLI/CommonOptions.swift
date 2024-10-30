@@ -2,10 +2,18 @@ import ArgumentParser
 import SakeShared
 
 struct CommonOptions: ParsableArguments {
-    @Option(name: .shortAndLong, help: "Specify the path to the configuration file. Defaults to \".sake.yml\" in the current directory.")
+    @Option(
+        name: .shortAndLong,
+        help: "Specify the path to the configuration file. Defaults to \".sake.yml\" in the current directory.",
+        completion: .file()
+    )
     var configPath: String?
 
-    @Option(name: .shortAndLong, help: "Specify the path for the SakeApp package. Defaults to \"SakeApp\" in the current directory.")
+    @Option(
+        name: .shortAndLong,
+        help: "Specify the path for the SakeApp package. Defaults to \"SakeApp\" in the current directory.",
+        completion: .directory
+    )
     var sakeAppPath: String?
 }
 
