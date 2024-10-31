@@ -1,4 +1,5 @@
 import Foundation
+import SakeShared
 
 enum CommandListFormatter {
     struct InputData {
@@ -48,16 +49,5 @@ enum CommandListFormatter {
             }
             .joined()
         return "\(header)\(commandList)"
-    }
-}
-
-private extension CommandListFormatter {
-    struct CommandGroupsJSON: Encodable {
-        struct Command: Encodable {
-            let name: String
-            let description: String?
-        }
-
-        let groups: [String: [Command]]
     }
 }

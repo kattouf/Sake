@@ -14,7 +14,10 @@ struct RunCommand: ParsableCommand {
     @OptionGroup
     var commandRelatedOptions: CommandRelatedCommonOptions
 
-    @Argument(help: "The name of the command to execute.")
+    @Argument(
+        help: "The name of the command to execute.",
+        completion: .custom(ShellCompletionCommandListGenerator.generate)
+    )
     var command: String
 
     @Argument(parsing: .allUnrecognized, help: "Arguments to pass to the command.")
