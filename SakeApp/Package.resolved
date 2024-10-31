@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "sake",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kattouf/Sake.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "8e04ff5437c05bc6f5d7999d5d35919b82ab58ee"
+      }
+    },
+    {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser.git",
