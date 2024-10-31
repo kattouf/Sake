@@ -14,10 +14,13 @@ struct RunCommand: ParsableCommand {
     @OptionGroup
     var commandRelatedOptions: CommandRelatedCommonOptions
 
-    @Argument
+    @Argument(
+        help: "The name of the command to execute.",
+        completion: .custom(ShellCompletionCommandListGenerator.generate)
+    )
     var command: String
 
-    @Argument(parsing: .allUnrecognized)
+    @Argument(parsing: .allUnrecognized, help: "Arguments to pass to the command.")
     var args: [String] = []
 
     func run() throws {

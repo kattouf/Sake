@@ -26,6 +26,7 @@ export default defineConfig({
           { text: "Editing Commands", link: "/editing-commands" },
           { text: "Passing Arguments", link: "/passing-arguments" },
           { text: "Configuration", link: "/configuration" },
+          { text: "Shell Completion", link: "/shell-completion" },
         ],
       },
       {

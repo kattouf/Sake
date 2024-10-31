@@ -114,6 +114,10 @@ final class SakeAppManager {
         return executablePath
     }
 
+    func getExecutablePath() throws -> String {
+        try getBinPath() + "/" + Constants.sakeAppExecutableName
+    }
+
     private func isSwiftVersionWasChanged() throws -> Bool {
         guard let lastSwiftVersion = try fileHandle.getSavedSwiftVersionDump(binPath: getBinPath()) else {
             return false
@@ -138,10 +142,6 @@ final class SakeAppManager {
         let swiftVersionDump = try commandExecutor.swiftVersionDump()
         Cache.swiftVersionDump = swiftVersionDump
         return swiftVersionDump
-    }
-
-    private func getExecutablePath() throws -> String {
-        try getBinPath() + "/" + Constants.sakeAppExecutableName
     }
 
     private func getBinPath() throws -> String {
