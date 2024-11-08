@@ -68,24 +68,17 @@ extension SakeAppManager {
                 return true
             }
 
-            let urlResourceKeys: Set<URLResourceKey> = [.isDirectoryKey, .nameKey, .attributeModificationDateKey]
+            let urlResourceKeys: Set<URLResourceKey> = [.attributeModificationDateKey]
             let enumerator = fileManager.enumerator(
                 at: sakeAppDirectoryURL,
                 includingPropertiesForKeys: Array(urlResourceKeys),
-                options: []
+                options: [.includesDirectoriesPostOrder, .skipsHiddenFiles]
             )!
 
             for case let fileURL as URL in enumerator {
                 guard let resourceValues = try? fileURL.resourceValues(forKeys: urlResourceKeys),
-                      let isDirectory = resourceValues.isDirectory,
-                      let name = resourceValues.name,
                       let modificationDate = resourceValues.attributeModificationDate
                 else {
-                    continue
-                }
-
-                if isDirectory, name == ".build" {
-                    enumerator.skipDescendants()
                     continue
                 }
 

@@ -71,4 +71,32 @@ final class DefaultFileHandleTests: XCTestCase {
 
         try FileManager.default.removeItem(atPath: fileHandle.path)
     }
+
+    func testIsExecutableDoesNotBecomeOutdatedDueToHiddenFiles() throws {
+        let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let fileHandle = SakeAppManager.DefaultFileHandle(path: tempDirectory.path)
+        try fileHandle.createProjectFiles()
+
+        let hiddenDirectory = tempDirectory.appendingPathComponent(".hidden")
+        try FileManager.default.createDirectory(atPath: hiddenDirectory.path, withIntermediateDirectories: true, attributes: nil)
+        let hiddenFilePath = hiddenDirectory.appendingPathComponent("hidden.swift").path
+
+        let executablePath = tempDirectory.appendingPathComponent(".build").appendingPathComponent("my-exec").path
+        try FileManager.default.createDirectory(
+            atPath: URL(fileURLWithPath: executablePath).deletingLastPathComponent().path,
+            withIntermediateDirectories: true,
+            attributes: nil
+        )
+
+        FileManager.default.createFile(atPath: executablePath, contents: nil, attributes: nil)
+        XCTAssertFalse(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
+
+        try "hidden-jepa".write(toFile: hiddenFilePath, atomically: true, encoding: .utf8)
+        XCTAssertFalse(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
+
+        try "jepa".write(toFile: fileHandle.sakefilePath, atomically: true, encoding: .utf8)
+        XCTAssertTrue(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
+
+        try FileManager.default.removeItem(atPath: fileHandle.path)
+    }
 }
