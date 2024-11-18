@@ -16,7 +16,8 @@ final class DefaultFileHandleTests: XCTestCase {
     }
 
     func testCreateProjectFiles() throws {
-        let fileHandle = SakeAppManager.DefaultFileHandle(path: "/tmp/sakeapp")
+        let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
+        let fileHandle = SakeAppManager.DefaultFileHandle(path: tempDirectory)
         try fileHandle.createProjectFiles()
 
         XCTAssertTrue(FileManager.default.fileExists(atPath: fileHandle.gitignorePath))
@@ -36,7 +37,8 @@ final class DefaultFileHandleTests: XCTestCase {
     }
 
     func testSaveAndGetSwiftVersionDump() throws {
-        let fileHandle = SakeAppManager.DefaultFileHandle(path: "/tmp/sakeapp")
+        let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
+        let fileHandle = SakeAppManager.DefaultFileHandle(path: tempDirectory)
         let buildPath = fileHandle.path + "/.build"
         try FileManager.default.createDirectory(atPath: buildPath, withIntermediateDirectories: true, attributes: nil)
 
@@ -63,10 +65,10 @@ final class DefaultFileHandleTests: XCTestCase {
         FileManager.default.createFile(atPath: executablePath, contents: nil, attributes: nil)
         XCTAssertFalse(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
-        try "jepa".write(toFile: fileHandle.sakefilePath, atomically: true, encoding: .utf8)
+        try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: fileHandle.sakefilePath)
         XCTAssertTrue(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
-        FileManager.default.createFile(atPath: executablePath, contents: nil, attributes: nil)
+        try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: executablePath)
         XCTAssertFalse(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
         try FileManager.default.removeItem(atPath: fileHandle.path)
@@ -88,13 +90,15 @@ final class DefaultFileHandleTests: XCTestCase {
             attributes: nil
         )
 
+        FileManager.default.createFile(atPath: hiddenFilePath, contents: nil, attributes: nil)
+
         FileManager.default.createFile(atPath: executablePath, contents: nil, attributes: nil)
         XCTAssertFalse(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
-        try "hidden-jepa".write(toFile: hiddenFilePath, atomically: true, encoding: .utf8)
+        try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: hiddenFilePath)
         XCTAssertFalse(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
-        try "jepa".write(toFile: fileHandle.sakefilePath, atomically: true, encoding: .utf8)
+        try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: fileHandle.sakefilePath)
         XCTAssertTrue(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
         try FileManager.default.removeItem(atPath: fileHandle.path)

@@ -1,6 +1,6 @@
 --swiftversion 5.10
 
---exclude .build,SakeApp/.build
+--exclude .build,.index-build,SakeApp/.build,SakeApp/.index-build
 
 --maxwidth 140
 --wraparguments before-first
