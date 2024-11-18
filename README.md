@@ -1,5 +1,7 @@
 # 🍶Sake
 
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fkattouf%2FSake%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/kattouf/Sake)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fkattouf%2FSake%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/kattouf/Sake)
 [![Latest Release](https://img.shields.io/github/release/kattouf/Sake.svg)](https://github.com/kattouf/Sake/releases/latest)
 ![](https://github.com/kattouf/Sake/actions/workflows/checks.yml/badge.svg?branch=main)
 
