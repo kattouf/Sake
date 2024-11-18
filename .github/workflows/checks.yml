@@ -11,7 +11,7 @@ jobs:
     name: tests (Swift ${{ matrix.swift }})
     strategy:
       matrix:
-        os: [macos-latest]  # ubuntu-latest
+        os: [macos-latest, ubuntu-latest]
         swift: ["5.10", "6.0"]
     runs-on: ${{ matrix.os }}
     steps:
