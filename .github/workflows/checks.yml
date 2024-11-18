@@ -8,7 +8,7 @@ on:
       - main
 jobs:
   build-and-test:
-    name: tests (Swift ${{ matrix.swift }})
+    name: tests (Swift ${{ matrix.swift }}) on ${{ matrix.os }}
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest]
