@@ -42,7 +42,11 @@ extension SakeAppManager {
 
         func createProjectFiles() throws {
             try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
-            _ = FileManager.default.createFile(atPath: gitignorePath, contents: SakeAppContents.gitignore.data(using: .utf8), attributes: nil)
+            _ = FileManager.default.createFile(
+                atPath: gitignorePath,
+                contents: SakeAppContents.gitignore.data(using: .utf8),
+                attributes: nil
+            )
             _ = FileManager.default.createFile(
                 atPath: packageSwiftPath,
                 contents: SakeAppContents.packageSwift.data(using: .utf8),
@@ -70,9 +74,9 @@ extension SakeAppManager {
 
             let urlResourceKeys: Set<URLResourceKey> = [.attributeModificationDateKey]
             #if os(Linux) && swift(<6.0)
-            let enumeratorOptions: FileManager.DirectoryEnumerationOptions = [.skipsHiddenFiles]
+                let enumeratorOptions: FileManager.DirectoryEnumerationOptions = [.skipsHiddenFiles]
             #else
-            let enumeratorOptions: FileManager.DirectoryEnumerationOptions = [.skipsHiddenFiles, .includesDirectoriesPostOrder]
+                let enumeratorOptions: FileManager.DirectoryEnumerationOptions = [.skipsHiddenFiles, .includesDirectoriesPostOrder]
             #endif
             let enumerator = fileManager.enumerator(
                 at: sakeAppDirectoryURL,

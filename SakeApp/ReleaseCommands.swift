@@ -34,10 +34,10 @@ struct ReleaseCommands {
         static let swiftVersion = "6.0"
         static let buildArtifactsDirectory = ".build/artifacts"
         static let buildTargets: [BuildTarget] = [
-                   .init(arch: .arm, os: .macos),
-                   .init(arch: .x86, os: .macos),
-                   .init(arch: .x86, os: .linux),
-                   .init(arch: .arm, os: .linux),
+            .init(arch: .arm, os: .macos),
+            .init(arch: .x86, os: .macos),
+            .init(arch: .x86, os: .linux),
+            .init(arch: .arm, os: .linux),
         ]
         static let executableOriginalName = "SakeCLI"
         static let executableName = "sake"
@@ -144,7 +144,8 @@ struct ReleaseCommands {
                         continue
                     }
                     let (swiftBuild, swiftClean, strip, zip) = {
-                        let buildFlags = ["--disable-sandbox", "--configuration", "release", "--triple", target.triple].joined(separator: " ")
+                        let buildFlags = ["--disable-sandbox", "--configuration", "release", "--triple", target.triple]
+                            .joined(separator: " ")
                         if target.os == .linux {
                             let platform = target.arch == .arm ? "linux/arm64" : "linux/amd64"
                             let dockerExec =
