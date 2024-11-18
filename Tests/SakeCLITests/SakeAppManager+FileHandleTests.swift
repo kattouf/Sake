@@ -16,7 +16,8 @@ final class DefaultFileHandleTests: XCTestCase {
     }
 
     func testCreateProjectFiles() throws {
-        let fileHandle = SakeAppManager.DefaultFileHandle(path: "/tmp/sakeapp")
+        let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
+        let fileHandle = SakeAppManager.DefaultFileHandle(path: tempDirectory)
         try fileHandle.createProjectFiles()
 
         XCTAssertTrue(FileManager.default.fileExists(atPath: fileHandle.gitignorePath))
@@ -36,7 +37,8 @@ final class DefaultFileHandleTests: XCTestCase {
     }
 
     func testSaveAndGetSwiftVersionDump() throws {
-        let fileHandle = SakeAppManager.DefaultFileHandle(path: "/tmp/sakeapp")
+        let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
+        let fileHandle = SakeAppManager.DefaultFileHandle(path: tempDirectory)
         let buildPath = fileHandle.path + "/.build"
         try FileManager.default.createDirectory(atPath: buildPath, withIntermediateDirectories: true, attributes: nil)
 
