@@ -36,3 +36,9 @@ struct Commands: SakeApp {
         )
     }
 }
+
+extension Command.Context {
+    var projectRoot: String {
+        "\(appDirectory)/.."
+    }
+}

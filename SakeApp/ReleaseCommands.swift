@@ -6,9 +6,39 @@ import SwiftShell
 
 @CommandGroup
 struct ReleaseCommands {
+    private struct BuildTarget {
+        enum Arch {
+            case x86
+            case arm
+        }
+
+        enum OS {
+            case macos
+            case linux
+        }
+
+        let arch: Arch
+        let os: OS
+
+        var triple: String {
+            switch (arch, os) {
+            case (.x86, .macos): "x86_64-apple-macosx"
+            case (.arm, .macos): "arm64-apple-macosx"
+            case (.x86, .linux): "x86_64-unknown-linux-gnu"
+            case (.arm, .linux): "aarch64-unknown-linux-gnu"
+            }
+        }
+    }
+
     private enum Constants {
+        static let swiftVersion = "6.0"
         static let buildArtifactsDirectory = ".build/artifacts"
-        static let triples = ["x86_64-apple-macosx", "arm64-apple-macosx"]
+        static let buildTargets: [BuildTarget] = [
+                   .init(arch: .arm, os: .macos),
+                   .init(arch: .x86, os: .macos),
+                   .init(arch: .x86, os: .linux),
+                   .init(arch: .arm, os: .linux),
+        ]
         static let executableOriginalName = "SakeCLI"
         static let executableName = "sake"
     }
@@ -29,6 +59,7 @@ struct ReleaseCommands {
             description: "Release",
             dependencies: [
                 bumpVersion,
+                cleanReleaseArtifacts,
                 buildReleaseArtifacts,
                 calculateBuildArtifactsSha256,
                 createAndPushTag,
@@ -79,20 +110,20 @@ struct ReleaseCommands {
     static var buildReleaseArtifacts: Command {
         Command(
             description: "Build release artifacts",
-            dependencies: [cleanReleaseArtifacts],
             skipIf: { context in
                 let arguments = try ReleaseArguments.parse(context.arguments)
                 try arguments.validate()
                 let version = arguments.version
 
-                let areAllArtifactsExists = Constants.triples.allSatisfy { triple in
-                    let archivePath = executableArchivePath(triple: triple, version: version)
+                let targetsWithExistingArtifacts = Constants.buildTargets.filter { target in
+                    let archivePath = executableArchivePath(target: target, version: version)
                     return FileManager.default.fileExists(atPath: archivePath)
                 }
-                if areAllArtifactsExists {
+                if targetsWithExistingArtifacts.count == Constants.buildTargets.count {
                     print("Release artifacts already exist. Skipping...")
                     return true
                 } else {
+                    context.storage["existing-artifacts-triples"] = targetsWithExistingArtifacts.map(\.triple)
                     return false
                 }
             },
@@ -106,20 +137,49 @@ struct ReleaseCommands {
                     withIntermediateDirectories: true,
                     attributes: nil
                 )
+                let existingArtifactsTriples = context.storage["existing-artifacts-triples"] as? [String] ?? []
+                for target in Constants.buildTargets {
+                    if existingArtifactsTriples.contains(target.triple) {
+                        print("Skipping \(target.triple) as artifacts already exist")
+                        continue
+                    }
+                    let (swiftBuild, swiftClean, strip, zip) = {
+                        let buildFlags = ["--disable-sandbox", "--configuration", "release", "--triple", target.triple].joined(separator: " ")
+                        if target.os == .linux {
+                            let platform = target.arch == .arm ? "linux/arm64" : "linux/amd64"
+                            let dockerExec =
+                                "docker run --rm --volume \(context.projectRoot):/workdir --workdir /workdir --platform \(platform) swift:\(Constants.swiftVersion)"
+                            return (
+                                "\(dockerExec) swift build \(buildFlags)",
+                                "\(dockerExec) swift package clean",
+                                "\(dockerExec) strip -s",
+                                "zip -j"
+                            )
+                        } else {
+                            return (
+                                "swift build \(buildFlags)",
+                                "swift package clean",
+                                "strip -rSTx",
+                                "zip -j"
+                            )
+                        }
+                    }()
 
-                for triple in Constants.triples {
-                    try runAndPrint("swift", "package", "clean")
+                    try runAndPrint(bash: swiftClean)
+                    try runAndPrint(bash: swiftBuild)
 
-                    let buildFlags = ["--disable-sandbox", "--configuration", "release", "--triple", triple]
-                    try runAndPrint("swift", "build", buildFlags, "--jobs", "10")
-
-                    let binPath: String = run("swift", "build", buildFlags, "--show-bin-path").stdout
+                    let binPath: String = run(bash: "\(swiftBuild) --show-bin-path").stdout
+                    if binPath.isEmpty {
+                        throw NSError(domain: "Fail to get bin path", code: -999)
+                    }
                     let executablePath = binPath + "/\(Constants.executableName)"
 
-                    try runAndPrint("strip", "-rSTx", executablePath)
+                    try runAndPrint(bash: "\(strip) \(executablePath)")
 
-                    let executableArchivePath = executableArchivePath(triple: triple, version: version)
-                    try runAndPrint("zip", "-j", executableArchivePath, executablePath)
+                    let executableArchivePath = executableArchivePath(target: target, version: version)
+                    try runAndPrint(
+                        bash: "\(zip) \(executableArchivePath) \(executablePath.replacingOccurrences(of: "/workdir", with: context.projectRoot))"
+                    )
                 }
 
                 print("Release artifacts built successfully at '\(Constants.buildArtifactsDirectory)'")
@@ -150,8 +210,8 @@ struct ReleaseCommands {
                 let version = arguments.version
 
                 var shasumResults = [String]()
-                for triple in Constants.triples {
-                    let archivePath = executableArchivePath(triple: triple, version: version)
+                for target in Constants.buildTargets {
+                    let archivePath = executableArchivePath(target: target, version: version)
                     let file = FileHandle(forReadingAtPath: archivePath)!
                     let shasum = SHA256.hash(data: file.readDataToEndOfFile())
                     let shasumString = shasum.compactMap { String(format: "%02x", $0) }.joined()
@@ -163,10 +223,6 @@ struct ReleaseCommands {
                 )
             }
         )
-    }
-
-    private static func executableArchivePath(triple: String, version: String) -> String {
-        "\(Constants.buildArtifactsDirectory)/\(Constants.executableName)-\(version)-\(triple).zip"
     }
 
     static var cleanReleaseArtifacts: Command {
@@ -273,6 +329,10 @@ struct ReleaseCommands {
 // MARK: - Helpers
 
 extension ReleaseCommands {
+    private static func executableArchivePath(target: BuildTarget, version: String) -> String {
+        "\(Constants.buildArtifactsDirectory)/\(Constants.executableName)-\(version)-\(target.triple).zip"
+    }
+
     private static func releaseNotesPath(version: String) -> String {
         ".build/artifacts/release-notes-\(version).md"
     }
