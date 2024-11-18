@@ -72,7 +72,7 @@ extension SakeAppManager {
                 return true
             }
 
-            let urlResourceKeys: Set<URLResourceKey> = [.attributeModificationDateKey]
+            let urlResourceKeys: Set<URLResourceKey> = [.contentModificationDateKey]
             #if os(Linux) && swift(<6.0)
                 let enumeratorOptions: FileManager.DirectoryEnumerationOptions = [.skipsHiddenFiles]
             #else
@@ -86,7 +86,7 @@ extension SakeAppManager {
 
             for case let fileURL as URL in enumerator {
                 guard let resourceValues = try? fileURL.resourceValues(forKeys: urlResourceKeys),
-                      let modificationDate = resourceValues.attributeModificationDate
+                      let modificationDate = resourceValues.contentModificationDate
                 else {
                     continue
                 }
