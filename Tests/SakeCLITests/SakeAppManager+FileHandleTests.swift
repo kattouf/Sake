@@ -66,6 +66,8 @@ final class DefaultFileHandleTests: XCTestCase {
         XCTAssertFalse(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
         try "jepa".write(toFile: fileHandle.sakefilePath, atomically: true, encoding: .utf8)
+        // flush
+        sleep(1)
         XCTAssertTrue(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
         FileManager.default.createFile(atPath: executablePath, contents: nil, attributes: nil)
