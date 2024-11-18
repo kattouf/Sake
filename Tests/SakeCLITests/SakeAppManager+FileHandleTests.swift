@@ -65,12 +65,10 @@ final class DefaultFileHandleTests: XCTestCase {
         FileManager.default.createFile(atPath: executablePath, contents: nil, attributes: nil)
         XCTAssertFalse(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
-        try "jepa".write(toFile: fileHandle.sakefilePath, atomically: true, encoding: .utf8)
-        // flush
-        sleep(1)
+        try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: fileHandle.sakefilePath)
         XCTAssertTrue(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
-        FileManager.default.createFile(atPath: executablePath, contents: nil, attributes: nil)
+        try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: executablePath)
         XCTAssertFalse(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
         try FileManager.default.removeItem(atPath: fileHandle.path)
@@ -92,13 +90,15 @@ final class DefaultFileHandleTests: XCTestCase {
             attributes: nil
         )
 
+        FileManager.default.createFile(atPath: hiddenFilePath, contents: nil, attributes: nil)
+
         FileManager.default.createFile(atPath: executablePath, contents: nil, attributes: nil)
         XCTAssertFalse(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
-        try "hidden-jepa".write(toFile: hiddenFilePath, atomically: true, encoding: .utf8)
+        try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: hiddenFilePath)
         XCTAssertFalse(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
-        try "jepa".write(toFile: fileHandle.sakefilePath, atomically: true, encoding: .utf8)
+        try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: fileHandle.sakefilePath)
         XCTAssertTrue(try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath))
 
         try FileManager.default.removeItem(atPath: fileHandle.path)
