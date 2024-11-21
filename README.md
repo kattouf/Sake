@@ -9,10 +9,11 @@ A Swift-based utility for managing project commands, inspired by Make.
 
 ``` swift
 struct Commands: SakeApp {
-    public static var hello: Command {
+    public static var sayHello: Command {
         Command(
             run: { context in
-                print("Hello, world!")
+                let name = context.arguments.first ?? "World"
+                print("Hello, \(name)!")
             }
         )
     }
@@ -20,11 +21,13 @@ struct Commands: SakeApp {
 ```
 
 ``` sh
-❯ sake hello
-Hello, world!
+❯ sake sayHello Stranger
+Hello, Stranger!
 ```
 
-> **⚠️ Note:** Sake is under active development, with ongoing updates and improvements. Use with caution in production environments.
+
+> [!WARNING]
+> Sake is under active development, with ongoing updates and improvements. Use with caution in production environments.
 
 [Full Documentation](https://sakeswift.org) • [Getting Started](#getting-started)
 
