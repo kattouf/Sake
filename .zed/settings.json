@@ -1,0 +1,11 @@
+{
+  "languages": {
+    "Swift": {
+      "formatter": {
+        "external": {
+          "command": "swiftformat"
+        }
+      }
+    }
+  }
+}
