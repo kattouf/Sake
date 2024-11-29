@@ -8,4 +8,4 @@
 --wrapcollections before-first
 
 --enable isEmpty,wrapSwitchCases,wrapConditionalBodies,wrapEnumCases
---disable redundantRawValues,redundantSelf,redundantStaticSelf,redundantType
+--disable redundantRawValues,redundantSelf,redundantStaticSelf,redundantType,preferKeyPath
