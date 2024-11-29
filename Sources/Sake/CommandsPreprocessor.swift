@@ -13,7 +13,7 @@ final class CommandsPreprocessor {
 
     func allCommands() throws -> [String: Command] {
         let rootCommands = rootCommands()
-        let commandGroups = otherCommandGroups().values.flatMap { $0 }
+        let commandGroups = otherCommandGroups().values.flatMap(\.self)
         let commandNamesIntersection = Set(rootCommands.keys).intersection(Set(commandGroups.map(\.key)))
         guard commandNamesIntersection.isEmpty else {
             throw SakeAppError.commandDuplicate(command: commandNamesIntersection.first!)
