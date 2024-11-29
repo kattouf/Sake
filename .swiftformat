@@ -1,4 +1,4 @@
---swiftversion 6.0
+--swiftversion 5.10
 
 --exclude .build,.index-build,SakeApp/.build,SakeApp/.index-build
 
@@ -8,4 +8,4 @@
 --wrapcollections before-first
 
 --enable isEmpty,wrapSwitchCases,wrapConditionalBodies,wrapEnumCases
---disable redundantRawValues,redundantSelf,redundantStaticSelf,redundantType
+--disable redundantRawValues,redundantSelf,redundantStaticSelf,redundantType,preferKeyPath
