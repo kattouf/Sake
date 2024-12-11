@@ -3,7 +3,8 @@
     "Swift": {
       "formatter": {
         "external": {
-          "command": "swiftformat"
+          "command": "swiftformat",
+          "arguments": ["--stdinpath", "{buffer_path}"]
         }
       }
     }

@@ -25,5 +25,14 @@
     "reveal": "always",
     "hide": "never",
     "shell": "system"
+  },
+  {
+    "label": "Format",
+    "command": "sake format",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "hide": "never",
+    "shell": "system"
   }
 ]
