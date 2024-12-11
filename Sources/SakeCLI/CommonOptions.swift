@@ -18,6 +18,13 @@ struct CommonOptions: ParsableArguments {
 }
 
 struct CommandRelatedCommonOptions: ParsableArguments {
+    @Option(
+        name: [.long, .customShort("b")],
+        help: "Specify the path to the prebuilt SakeApp binary.\nThis is used to share the ready to use binary and avoid build process (between CI runs for example).",
+        completion: .file()
+    )
+    var sakeAppPrebuiltBinaryPath: String?
+
     @Option(name: .long, help: "Specify the strategy for converting command names' case.")
     var caseConvertingStrategy: CaseConvertingStrategy?
 }

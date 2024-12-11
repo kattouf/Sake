@@ -1,4 +1,5 @@
 import Foundation
+import SakeShared
 
 extension ConfigManager {
     enum Error: Swift.Error {
@@ -24,7 +25,7 @@ final class ConfigManager {
         }
         let fileConfig = try loadFileConfig(path: configResolver.resolveConfigPath(cliConfig: cliConfig, envConfig: envConfig))
 
-        return configResolver.resolve(
+        return try configResolver.resolve(
             cliConfig: cliConfig,
             envConfig: envConfig,
             fileConfig: fileConfig
@@ -41,19 +42,43 @@ final class ConfigManager {
     }
 }
 
+extension ConfigResolver {
+    enum Error: Swift.Error, Equatable {
+        case mutualExclusiveOptions([String])
+    }
+}
+
 final class ConfigResolver {
     func resolveConfigPath(cliConfig: CLIConfig, envConfig: ENVConfig) -> String {
         cliConfig.configPath ?? envConfig.configPath ?? Config.default.configPath
     }
 
-    func resolve(cliConfig: CLIConfig, envConfig: ENVConfig, fileConfig: FileConfig?) -> Config {
-        Config(
+    func resolve(cliConfig: CLIConfig, envConfig: ENVConfig, fileConfig: FileConfig?) throws -> Config {
+        let sakeAppPath: String? = cliConfig.sakeAppPath ?? envConfig.sakeAppPath ?? fileConfig?.sakeAppPath
+        let sakeAppPrebuiltBinaryPath: String? = cliConfig.sakeAppPrebuiltBinaryPath ?? envConfig.sakeAppPrebuiltBinaryPath
+            ?? fileConfig?.sakeAppPrebuiltBinaryPath
+        let caseConvertingStrategy: CaseConvertingStrategy? = cliConfig.caseConvertingStrategy ?? envConfig.caseConvertingStrategy
+            ?? fileConfig?.caseConvertingStrategy
+
+        if sakeAppPath != nil, sakeAppPrebuiltBinaryPath != nil {
+            throw Error.mutualExclusiveOptions(["sakeAppPath", "sakeAppPrebuiltBinaryPath"])
+        }
+
+        return Config(
             configPath: resolveConfigPath(cliConfig: cliConfig, envConfig: envConfig),
-            sakeAppPath: cliConfig.sakeAppPath ?? envConfig.sakeAppPath ?? fileConfig?.sakeAppPath ?? Config.default.sakeAppPath,
-            caseConvertingStrategy: cliConfig.caseConvertingStrategy ?? envConfig.caseConvertingStrategy ?? fileConfig?
-                .caseConvertingStrategy
-                ?? Config.default.caseConvertingStrategy
+            sakeAppPath: sakeAppPath ?? Config.default.sakeAppPath,
+            sakeAppPrebuiltBinaryPath: sakeAppPrebuiltBinaryPath ?? Config.default.sakeAppPrebuiltBinaryPath,
+            caseConvertingStrategy: caseConvertingStrategy ?? Config.default.caseConvertingStrategy
         )
+    }
+}
+
+extension ConfigResolver.Error: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case let .mutualExclusiveOptions(options):
+            "Options are mutually exclusive: \(options.joined(separator: ", "))."
+        }
     }
 }
 
