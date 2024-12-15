@@ -22,8 +22,8 @@ struct ReleaseCommands {
 
         var triple: String {
             switch (arch, os) {
-            case (.x86, .macos): "x86_64-apple-macosx"
-            case (.arm, .macos): "arm64-apple-macosx"
+            case (.x86, .macos): "x86_64-apple-macos"
+            case (.arm, .macos): "arm64-apple-macos"
             case (.x86, .linux): "x86_64-unknown-linux-gnu"
             case (.arm, .linux): "aarch64-unknown-linux-gnu"
             }
