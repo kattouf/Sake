@@ -37,9 +37,20 @@ dependencies: [
     .package(url: "https://github.com/kareman/SwiftShell", from: "5.1.0")
 ]
 ```
+And then adding the product to `SakeApp` target that needs access to the library:
+```swift{6}
+targets: [
+    .executableTarget(
+        name: "SakeApp",
+        dependencies: [
+            "Sake",
+            "SwiftShell"
+        ],
+        path: "."
+    ),
+]
+```
 
 This way, you can seamlessly run external commands within your Swift environment and automate tasks effectively.
 
 The flexibility of using external libraries allows you to extend your automation capabilities, making Sake a powerful tool for project command management.
-
-
