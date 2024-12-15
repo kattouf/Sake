@@ -16,8 +16,13 @@ brew install kattouf/sake/sake
 mint install kattouf/Sake
 ```
 
-```sh [Mise]
+```sh [Mise (CLI)]
 mise use -g spm:kattouf/Sake
+```
+
+```toml [Mise (toml config)]
+[tools]
+"spm:kattouf/Sake" = "latest"
 ```
 
 :::
