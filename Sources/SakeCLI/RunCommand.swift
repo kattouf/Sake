@@ -29,7 +29,12 @@ struct RunCommand: ParsableCommand {
             let config = try configManager.resolvedConfig()
 
             let manager = SakeAppManager.default(sakeAppPath: config.sakeAppPath)
-            try manager.run(command: command, args: args, caseConvertingStrategy: config.caseConvertingStrategy)
+            try manager.run(
+                prebuiltExecutablePath: config.sakeAppPrebuiltBinaryPath,
+                command: command,
+                args: args,
+                caseConvertingStrategy: config.caseConvertingStrategy
+            )
         } catch {
             if case let SakeAppManager.Error.sakeAppError(sakeAppError) = error {
                 // log only unexpected errors, business errors are already pretty logged by the SakeApp

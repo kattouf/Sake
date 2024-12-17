@@ -236,11 +236,12 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.run(command: "command", args: ["arg1", "arg2"], caseConvertingStrategy: .keepOriginal)
+        try manager.run(prebuiltExecutablePath: nil, command: "command", args: ["arg1", "arg2"], caseConvertingStrategy: .keepOriginal)
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
         XCTAssertEqual(commandExecutor.touchExecutableCallCount, 1)
+        XCTAssertEqual(fileHandle.isPrebuiltExecutableExistsCallCount, 0)
         XCTAssertEqual(commandExecutor.callRunCommandOnExecutableCallCount, 1)
     }
 
@@ -253,11 +254,50 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.listAvailableCommands(caseConvertingStrategy: .keepOriginal, json: false)
+        try manager.listAvailableCommands(prebuiltExecutablePath: nil, caseConvertingStrategy: .keepOriginal, json: false)
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
         XCTAssertEqual(commandExecutor.touchExecutableCallCount, 1)
+        XCTAssertEqual(fileHandle.isPrebuiltExecutableExistsCallCount, 0)
+        XCTAssertEqual(commandExecutor.callListCommandOnExecutableCallCount, 1)
+    }
+
+    // MARK: Run prebuilt
+
+    func testSakeAppManager_whenRunCommandOnPrebuiltExecutable_shouldCallRunCommand() throws {
+        let fileHandle = MockFileHandle(
+            isExecutableOutdatedReturnValue: true
+        )
+        let commandExecutor = MockCommandExecutor(
+            packageDumpReturnValue: { _ in self.validPackageDump }
+        )
+        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+
+        try manager.run(prebuiltExecutablePath: "path", command: "command", args: ["arg1", "arg2"], caseConvertingStrategy: .keepOriginal)
+
+        XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
+        XCTAssertEqual(commandExecutor.buildExecutableCallCount, 0)
+        XCTAssertEqual(commandExecutor.touchExecutableCallCount, 0)
+        XCTAssertEqual(fileHandle.isPrebuiltExecutableExistsCallCount, 1)
+        XCTAssertEqual(commandExecutor.callRunCommandOnExecutableCallCount, 1)
+    }
+
+    func testSakeAppManager_whenListAvailableCommandsOnPrebuiltExecutable_shouldCallListCommand() throws {
+        let fileHandle = MockFileHandle(
+            isExecutableOutdatedReturnValue: true
+        )
+        let commandExecutor = MockCommandExecutor(
+            packageDumpReturnValue: { _ in self.validPackageDump }
+        )
+        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+
+        try manager.listAvailableCommands(prebuiltExecutablePath: "path", caseConvertingStrategy: .keepOriginal, json: false)
+
+        XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
+        XCTAssertEqual(commandExecutor.buildExecutableCallCount, 0)
+        XCTAssertEqual(commandExecutor.touchExecutableCallCount, 0)
+        XCTAssertEqual(fileHandle.isPrebuiltExecutableExistsCallCount, 1)
         XCTAssertEqual(commandExecutor.callListCommandOnExecutableCallCount, 1)
     }
 }
@@ -271,6 +311,7 @@ private final class MockFileHandle: SakeAppManager.FileHandle {
     private(set) var validatePackageSwiftExistsCallCount = 0
     private(set) var isExecutableOutdatedCallCount = 0
     private(set) var isExecutableOutdatedReturnValue: Bool
+    private(set) var isPrebuiltExecutableExistsCallCount = 0
     private(set) var getSavedSwiftVersionDumpCallCount = 0
     private(set) var saveSwiftVersionDumpCallCount = 0
     let swiftVersionDumpReturnValue: String?
@@ -302,6 +343,11 @@ private final class MockFileHandle: SakeAppManager.FileHandle {
     func isExecutableOlderThenSourceFiles(executablePath _: String) throws -> Bool {
         isExecutableOutdatedCallCount += 1
         return isExecutableOutdatedReturnValue
+    }
+
+    func isPrebuiltExecutableExists(path _: String) -> Bool {
+        isPrebuiltExecutableExistsCallCount += 1
+        return true
     }
 
     func getSavedSwiftVersionDump(binPath _: String) throws -> String? {

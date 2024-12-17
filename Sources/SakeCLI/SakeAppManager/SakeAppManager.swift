@@ -69,8 +69,8 @@ final class SakeAppManager {
         }
     }
 
-    func run(command: String, args: [String], caseConvertingStrategy: CaseConvertingStrategy) throws {
-        let executablePath = try buildSakeAppExecutableIfNeeded()
+    func run(prebuiltExecutablePath: String?, command: String, args: [String], caseConvertingStrategy: CaseConvertingStrategy) throws {
+        let executablePath = try getPrebuiltBinaryIfExistsyOrBuildFromSource(prebuiltExecutablePath: prebuiltExecutablePath)
         try commandExecutor.callRunCommandOnExecutable(
             executablePath: executablePath,
             command: command,
@@ -79,13 +79,25 @@ final class SakeAppManager {
         )
     }
 
-    func listAvailableCommands(caseConvertingStrategy: CaseConvertingStrategy, json: Bool) throws {
-        let executablePath = try buildSakeAppExecutableIfNeeded()
+    func listAvailableCommands(prebuiltExecutablePath: String?, caseConvertingStrategy: CaseConvertingStrategy, json: Bool) throws {
+        let executablePath = try getPrebuiltBinaryIfExistsyOrBuildFromSource(prebuiltExecutablePath: prebuiltExecutablePath)
         try commandExecutor.callListCommandOnExecutable(
             executablePath: executablePath,
             json: json,
             caseConvertingStrategy: caseConvertingStrategy
         )
+    }
+
+    private func getPrebuiltBinaryIfExistsyOrBuildFromSource(prebuiltExecutablePath: String?) throws -> String {
+        if let prebuiltExecutablePath {
+            if fileHandle.isPrebuiltExecutableExists(path: prebuiltExecutablePath) {
+                return prebuiltExecutablePath
+            } else {
+                throw Error.sakeAppPrebuiltBinaryNotFound(path: prebuiltExecutablePath)
+            }
+        } else {
+            return try buildSakeAppExecutableIfNeeded()
+        }
     }
 
     @discardableResult

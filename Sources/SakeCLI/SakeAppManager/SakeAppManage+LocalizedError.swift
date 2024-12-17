@@ -4,6 +4,7 @@ extension SakeAppManager {
     enum Error: Swift.Error {
         case sakeAppAlreadyInitialized(path: String)
         case sakeAppNotValid(ValidationError)
+        case sakeAppPrebuiltBinaryNotFound(path: String)
 
         case failedToReadSwiftVersion(stdout: String, stderr: String)
         case failedToCleanSakeApp(stdout: String, stderr: String)
@@ -69,6 +70,8 @@ extension SakeAppManager.Error: LocalizedError {
             "SakeApp already initialized at \(path)."
         case let .sakeAppNotValid(error):
             "SakeApp is not valid. Error: \(error.localizedDescription)"
+        case let .sakeAppPrebuiltBinaryNotFound(path):
+            "SakeApp prebuilt binary not found at \(path)."
         case let .failedToReadSwiftVersion(stdout, stderr):
             """
             Failed to read the Swift version.
