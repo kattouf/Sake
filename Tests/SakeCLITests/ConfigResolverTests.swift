@@ -46,10 +46,38 @@ final class ConfigResolverTests: XCTestCase {
 
     // MARK: - resolve
 
+    func testResolveShoultThrowErrorIfDefinedMutualExclusiveOptions() throws {
+        let resolver = ConfigResolver()
+
+        XCTAssertThrowsError(try resolver.resolve(
+            cliConfig: .mock(sakeAppPath: "cli-sourced-path", sakeAppPrebuiltBinaryPath: "cli-sourced-path"),
+            envConfig: .mock(sakeAppPath: nil, sakeAppPrebuiltBinaryPath: nil),
+            fileConfig: .mock(sakeAppPath: nil, sakeAppPrebuiltBinaryPath: nil)
+        )) { error in
+            XCTAssertEqual(error as? ConfigResolver.Error, .mutualExclusiveOptions(["sakeAppPath", "sakeAppPrebuiltBinaryPath"]))
+        }
+
+        XCTAssertThrowsError(try resolver.resolve(
+            cliConfig: .mock(sakeAppPath: "cli-sourced-path", sakeAppPrebuiltBinaryPath: nil),
+            envConfig: .mock(sakeAppPath: nil, sakeAppPrebuiltBinaryPath: "cli-sourced-path"),
+            fileConfig: .mock(sakeAppPath: nil, sakeAppPrebuiltBinaryPath: nil)
+        )) { error in
+            XCTAssertEqual(error as? ConfigResolver.Error, .mutualExclusiveOptions(["sakeAppPath", "sakeAppPrebuiltBinaryPath"]))
+        }
+
+        XCTAssertThrowsError(try resolver.resolve(
+            cliConfig: .mock(sakeAppPath: "cli-sourced-path", sakeAppPrebuiltBinaryPath: nil),
+            envConfig: .mock(sakeAppPath: nil, sakeAppPrebuiltBinaryPath: nil),
+            fileConfig: .mock(sakeAppPath: nil, sakeAppPrebuiltBinaryPath: "cli-sourced-path")
+        )) { error in
+            XCTAssertEqual(error as? ConfigResolver.Error, .mutualExclusiveOptions(["sakeAppPath", "sakeAppPrebuiltBinaryPath"]))
+        }
+    }
+
     func testConfigShouldResolvedByDefaultValueIfNothingElsePassed() throws {
         let resolver = ConfigResolver()
 
-        let resolvedConfig = resolver.resolve(
+        let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
             envConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
             fileConfig: nil
@@ -62,7 +90,7 @@ final class ConfigResolverTests: XCTestCase {
     func testConfigShouldResolvedByEnvVarIfPassed() throws {
         let resolver = ConfigResolver()
 
-        let resolvedConfig = resolver.resolve(
+        let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
             envConfig: .mock(configPath: "env-sourced-path", sakeAppPath: "env-sourced-path-2", caseConvertingStrategy: .toKebabCase),
             fileConfig: nil
@@ -75,7 +103,7 @@ final class ConfigResolverTests: XCTestCase {
     func testConfigShouldResolvedByCliIfPassed() throws {
         let resolver = ConfigResolver()
 
-        let resolvedConfig = resolver.resolve(
+        let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: "cli-sourced-path", sakeAppPath: "cli-sourced-path-2", caseConvertingStrategy: .toSnakeCase),
             envConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
             fileConfig: nil
@@ -88,7 +116,7 @@ final class ConfigResolverTests: XCTestCase {
     func testConfigShouldResolvedByFileConfigIfPassed() throws {
         let resolver = ConfigResolver()
 
-        let resolvedConfig = resolver.resolve(
+        let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
             envConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
             fileConfig: .mock(sakeAppPath: "file-sourced-path", caseConvertingStrategy: nil)
@@ -101,7 +129,7 @@ final class ConfigResolverTests: XCTestCase {
     func testConfigShouldResolvedByCliEvenIfEnvVarIsPassed() throws {
         let resolver = ConfigResolver()
 
-        let resolvedConfig = resolver.resolve(
+        let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: "cli-sourced-path", sakeAppPath: "cli-sourced-path-2", caseConvertingStrategy: .toSnakeCase),
             envConfig: .mock(configPath: "env-sourced-path", sakeAppPath: "env-sourced-path-2", caseConvertingStrategy: .toKebabCase),
             fileConfig: nil
@@ -114,7 +142,7 @@ final class ConfigResolverTests: XCTestCase {
     func testConfigShouldResolvedByCliIfFileConfigIsPassed() throws {
         let resolver = ConfigResolver()
 
-        let resolvedConfig = resolver.resolve(
+        let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: "cli-sourced-path", sakeAppPath: "cli-sourced-path-2", caseConvertingStrategy: .toSnakeCase),
             envConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
             fileConfig: .mock(sakeAppPath: "file-sourced-path", caseConvertingStrategy: nil)
@@ -127,7 +155,7 @@ final class ConfigResolverTests: XCTestCase {
     func testConfigShouldResolvedByEnvVarIfFileConfigIsPassed() throws {
         let resolver = ConfigResolver()
 
-        let resolvedConfig = resolver.resolve(
+        let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
             envConfig: .mock(configPath: "env-sourced-path", sakeAppPath: "env-sourced-path-2", caseConvertingStrategy: .toKebabCase),
             fileConfig: .mock(sakeAppPath: "file-sourced-path", caseConvertingStrategy: nil)
@@ -140,7 +168,7 @@ final class ConfigResolverTests: XCTestCase {
     func testConfigShouldResolvedByCliConfigIfFileAndEnvVarArePassed() throws {
         let resolver = ConfigResolver()
 
-        let resolvedConfig = resolver.resolve(
+        let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: "cli-sourced-path", sakeAppPath: "cli-sourced-path-2", caseConvertingStrategy: .toSnakeCase),
             envConfig: .mock(configPath: "env-sourced-path", sakeAppPath: "env-sourced-path-2", caseConvertingStrategy: .toKebabCase),
             fileConfig: .mock(sakeAppPath: "file-sourced-path", caseConvertingStrategy: nil)

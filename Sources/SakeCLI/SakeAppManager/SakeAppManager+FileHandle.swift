@@ -11,6 +11,8 @@ extension SakeAppManager {
         func validatePackageSwiftExists() throws
         func isExecutableOlderThenSourceFiles(executablePath: String) throws -> Bool
 
+        func isPrebuiltExecutableExists(path: String) -> Bool
+
         func getSavedSwiftVersionDump(binPath: String) throws -> String?
         func saveSwiftVersionDump(binPath: String, dump: String) throws
     }
@@ -97,6 +99,10 @@ extension SakeAppManager {
             }
 
             return false
+        }
+
+        func isPrebuiltExecutableExists(path: String) -> Bool {
+            FileManager.default.fileExists(atPath: path)
         }
 
         func getSavedSwiftVersionDump(binPath: String) throws -> String? {

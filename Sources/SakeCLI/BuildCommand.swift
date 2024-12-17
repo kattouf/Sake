@@ -11,13 +11,21 @@ struct BuildCommand: ParsableCommand {
     @OptionGroup
     var options: CommonOptions
 
+    @Flag(name: .long, help: "Print the path to the built SakeApp executable.")
+    var showBinPath: Bool = false
+
     func run() throws {
         do {
             let configManager = ConfigManager(cliConfig: CLIConfig(commonOptions: options, commandRelatedOptions: nil))
             let config = try configManager.resolvedConfig()
 
             let manager = SakeAppManager.default(sakeAppPath: config.sakeAppPath)
-            try manager.buildSakeAppExecutable()
+            if showBinPath {
+                let binPath = try manager.getExecutablePath()
+                print(binPath)
+            } else {
+                try manager.buildSakeAppExecutable()
+            }
         } catch {
             logError(error.localizedDescription)
             BuildCommand.exit(withError: ExitCode.failure)

@@ -9,6 +9,15 @@
     "shell": "system"
   },
   {
+    "label": "Build for tests",
+    "command": "swift build --build-tests",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "hide": "never",
+    "shell": "system"
+  },
+  {
     "label": "Unit Tests",
     "command": "sake unit_tests",
     "use_new_terminal": false,
@@ -20,6 +29,15 @@
   {
     "label": "Integration Tests",
     "command": "sake integration_tests",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "hide": "never",
+    "shell": "system"
+  },
+  {
+    "label": "Format",
+    "command": "sake format",
     "use_new_terminal": false,
     "allow_concurrent_runs": false,
     "reveal": "always",

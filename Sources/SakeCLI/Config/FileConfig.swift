@@ -4,17 +4,27 @@ import Yams
 
 struct FileConfig: Decodable {
     let sakeAppPath: String?
+    let sakeAppPrebuiltBinaryPath: String?
     let caseConvertingStrategy: CaseConvertingStrategy?
 
     enum CodingKeys: String, CodingKey {
         case sakeAppPath = "sake_app_path"
+        case sakeAppPrebuiltBinaryPath = "sake_app_prebuilt_binary_path"
         case caseConvertingStrategy = "case_converting_strategy"
     }
 }
 
 extension FileConfig {
-    static func mock(sakeAppPath: String? = nil, caseConvertingStrategy: CaseConvertingStrategy? = nil) -> FileConfig {
-        FileConfig(sakeAppPath: sakeAppPath, caseConvertingStrategy: caseConvertingStrategy)
+    static func mock(
+        sakeAppPath: String? = nil,
+        sakeAppPrebuiltBinaryPath: String? = nil,
+        caseConvertingStrategy: CaseConvertingStrategy? = nil
+    ) -> FileConfig {
+        FileConfig(
+            sakeAppPath: sakeAppPath,
+            sakeAppPrebuiltBinaryPath: sakeAppPrebuiltBinaryPath,
+            caseConvertingStrategy: caseConvertingStrategy
+        )
     }
 }
 
