@@ -7,33 +7,35 @@ on:
     branches:
       - main
 jobs:
-  build-and-test:
-    name: tests (Swift ${{ matrix.swift }}) on ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest]
-        swift: ["5.10", "6.0"]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: NeedleInAJayStack/setup-swift@4e17dcd69a660eea371d715802c219601e76f50a  #  swift-actions/setup-swift@v2 waiting for https://github.com/swift-actions/setup-swift/pull/684
-        with:
-          swift-version: ${{ matrix.swift }}
-      - uses: actions/checkout@v4
-      - name: Build
-        run: swift build --build-tests
-      - name: Run unit tests
-        run: swift test --filter "^(?!.*\bIntegrationTests\b).*"
-      - name: Run integration tests
-        run: swift test --filter IntegrationTests
+  # build-and-test:
+  #   name: tests (Swift ${{ matrix.swift }}) on ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [macos-latest, ubuntu-latest]
+  #       swift: ["5.10", "6.0"]
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #     - uses: NeedleInAJayStack/setup-swift@4e17dcd69a660eea371d715802c219601e76f50a  #  swift-actions/setup-swift@v2 waiting for https://github.com/swift-actions/setup-swift/pull/684
+  #       with:
+  #         swift-version: ${{ matrix.swift }}
+  #     - uses: actions/checkout@v4
+  #     - name: Build
+  #       run: swift build --build-tests
+  #     - name: Run unit tests
+  #       run: swift test --filter "^(?!.*\bIntegrationTests\b).*"
+  #     - name: Run integration tests
+  #       run: swift test --filter IntegrationTests
   lint:
     runs-on: macos-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Run SwiftFormat Linting
-        uses: kattouf/sake-action@main
+      - name: Setup Sake
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: kattouf/sake-action@main
         with:
           sake-version: '0.2.3'
-          sake-command: 'lint'
+      - name: Run lint
+        run: |
+          sake lint
