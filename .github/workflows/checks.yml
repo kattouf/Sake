@@ -31,7 +31,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Run SwiftFormat Linting
-        uses: kattouf/sake-action@v1
+        uses: kattouf/sake-action@main
         with:
           sake-version: '0.2.3'
           sake-command: 'lint'
