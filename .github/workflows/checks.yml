@@ -32,6 +32,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Run SwiftFormat Linting
         uses: kattouf/sake-action@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           sake-version: '0.2.3'
           sake-command: 'lint'
