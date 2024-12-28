@@ -31,4 +31,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Run SwiftFormat Linting
-        run: swiftformat Sources SakeApp Tests Package.swift --lint --reporter github-actions-log
+        uses: kattouf/sake-action@v1
+        with:
+          sake-version: '0.2.3'
+          sake-command: 'lint'
