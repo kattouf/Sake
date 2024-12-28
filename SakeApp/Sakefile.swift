@@ -15,6 +15,7 @@ struct Commands: SakeApp {
         )
     }
 
+    // sample change
     public static var lint: Command {
         Command(
             description: "Lint code",
