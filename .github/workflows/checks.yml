@@ -6,6 +6,8 @@ on:
   pull_request:
     branches:
       - main
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   build-and-test:
     name: tests (Swift ${{ matrix.swift }}) on ${{ matrix.os }}
