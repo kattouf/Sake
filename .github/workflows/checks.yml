@@ -24,6 +24,7 @@ jobs:
         uses: jdx/mise-action@v2
         with:
           version: ${{ env.MISE_VERSION }}
+          install: false
       - name: Setup Sake
         id: setup-sake
         uses: kattouf/sake-action@main
@@ -44,6 +45,7 @@ jobs:
         uses: jdx/mise-action@v2
         with:
           version: ${{ env.MISE_VERSION }}
+          install: false
       - name: Setup Sake
         id: setup-sake
         uses: kattouf/sake-action@main
