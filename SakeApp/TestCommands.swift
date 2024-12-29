@@ -20,6 +20,16 @@ struct TestCommands {
         )
     }
 
+    public static var buildTests: Command {
+        Command(
+            description: "Build tests",
+            dependencies: [cleanIfNeeded],
+            run: { _ in
+                try runAndPrint(bash: "swift build --build-tests")
+            }
+        )
+    }
+
     public static var unitTests: Command {
         Command(
             description: "Run unit tests",

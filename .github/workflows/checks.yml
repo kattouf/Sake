@@ -23,10 +23,12 @@ jobs:
         uses: kattouf/sake-action@main
         with:
           swift-version: ${{ matrix.swift }}
+      - name: Build tests
+        run: sake build_tests --sake-app-prebuilt-binary-path ${{ steps.setup-sake.outputs.sake_app_prebuilt_binary_path }}
       - name: Run unit tests
-        run: sake unit_tests
+        run: sake unit_tests --sake-app-prebuilt-binary-path ${{ steps.setup-sake.outputs.sake_app_prebuilt_binary_path }}
       - name: Run integration tests
-        run: sake integration_tests
+        run: sake integration_tests --sake-app-prebuilt-binary-path ${{ steps.setup-sake.outputs.sake_app_prebuilt_binary_path }}
   lint:
     runs-on: macos-latest
     steps:
