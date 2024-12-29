@@ -34,8 +34,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: kattouf/sake-action@main
-        with:
-          sake-version: '0.2.4'
       - name: Run lint
         run: |
           sake lint
