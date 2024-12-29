@@ -33,7 +33,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Setup Sake
+        id: setup-sake
         uses: kattouf/sake-action@main
       - name: Run lint
         run: |
-          sake lint
+          sake lint --sake-app-prebuilt-binary-path ${{ steps.setup-sake.outputs.sake_app_prebuilt_binary_path }}
