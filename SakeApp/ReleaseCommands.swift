@@ -150,9 +150,8 @@ struct ReleaseCommands {
                             let platform = target.arch == .arm ? "linux/arm64" : "linux/amd64"
                             let dockerExec =
                                 "docker run --rm --volume \(context.projectRoot):/workdir --workdir /workdir --platform \(platform) swift:\(Constants.swiftVersion)"
-                            let buildFlags = (buildFlags + ["--static-swift-stdlib"]).joined(separator: " ")
                             return (
-                                "\(dockerExec) swift build \(buildFlags)",
+                                "\(dockerExec) swift build --static-swift-stdlib \(buildFlags)",
                                 "\(dockerExec) swift package clean",
                                 "\(dockerExec) strip -s",
                                 "zip -j"
