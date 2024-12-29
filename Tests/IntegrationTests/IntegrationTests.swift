@@ -13,13 +13,15 @@ final class IntegrationTests: XCTestCase {
         let sakeAppPath = tempDirectory.appendingPathComponent("my-sake-app").path
 
         print("Creating SakeApp...")
-        let sakeInitResult = SwiftShell.run(bash: "SAKE_APP_PREBUILT_BINARY_PATH= \(sakeExecutablePath) init --sake-app-path \(sakeAppPath)")
+        let sakeInitResult = SwiftShell
+            .run(bash: "SAKE_APP_PREBUILT_BINARY_PATH= \(sakeExecutablePath) init --sake-app-path \(sakeAppPath)")
         if !sakeInitResult.succeeded {
             XCTFail("Failed to init Sake app: stdout: \(sakeInitResult.stdout), stderr: \(sakeInitResult.stderror)")
         }
 
         print("Running SakeApp...")
-        let sakeRunResult = SwiftShell.run(bash: "SAKE_APP_PREBUILT_BINARY_PATH= \(sakeExecutablePath) hello --sake-app-path \(sakeAppPath)")
+        let sakeRunResult = SwiftShell
+            .run(bash: "SAKE_APP_PREBUILT_BINARY_PATH= \(sakeExecutablePath) hello --sake-app-path \(sakeAppPath)")
         if sakeRunResult.succeeded {
             XCTAssertTrue(sakeRunResult.stdout.contains("Hello, world!"))
         } else {
