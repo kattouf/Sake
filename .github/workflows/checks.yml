@@ -8,6 +8,7 @@ on:
       - main
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MISE_VERSION: 2024.12.21
 jobs:
   build-and-test:
     name: tests (Swift ${{ matrix.swift }}) on ${{ matrix.os }}
@@ -19,6 +20,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Setup Mise
+        uses: jdx/mise-action@v2
+        with:
+          version: ${{ env.MISE_VERSION }}
       - name: Setup Sake
         id: setup-sake
         uses: kattouf/sake-action@main
@@ -35,6 +40,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Setup Mise
+        uses: jdx/mise-action@v2
+        with:
+          version: ${{ env.MISE_VERSION }}
       - name: Setup Sake
         id: setup-sake
         uses: kattouf/sake-action@main
