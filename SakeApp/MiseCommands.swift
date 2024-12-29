@@ -22,7 +22,7 @@ struct MiseCommands {
                 run("mise", "which", "xcbeautify").succeeded
             },
             run: { _ in
-                try runAndPrint("mise", "install", "xcbeautify")
+                try runAndPrint("mise", "install", "spm:cpisciotta/xcbeautify")
             }
         )
     }
