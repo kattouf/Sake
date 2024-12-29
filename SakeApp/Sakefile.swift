@@ -1,5 +1,4 @@
 import ArgumentParser
-import CryptoKit
 import Foundation
 import Sake
 import SwiftShell
