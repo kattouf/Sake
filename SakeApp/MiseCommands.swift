@@ -2,15 +2,15 @@ import Sake
 import SwiftShell
 
 @CommandGroup
-struct BrewCommands {
+struct MiseCommands {
     static var ensureSwiftFormatInstalled: Command {
         Command(
             description: "Ensure swiftformat is installed",
             skipIf: { _ in
-                run("which", "swiftformat").succeeded
+                run("mise", "which", "swiftformat").succeeded
             },
             run: { _ in
-                try runAndPrint("brew", "install", "swiftformat")
+                try runAndPrint("mise", "install", "swiftformat")
             }
         )
     }
@@ -19,10 +19,10 @@ struct BrewCommands {
         Command(
             description: "Ensure xcbeautify is installed",
             skipIf: { _ in
-                run("which", "xcbeautify").succeeded
+                run("mise", "which", "xcbeautify").succeeded
             },
             run: { _ in
-                try runAndPrint("brew", "install", "xcbeautify")
+                try runAndPrint("mise", "install", "xcbeautify")
             }
         )
     }
@@ -31,10 +31,10 @@ struct BrewCommands {
         Command(
             description: "Ensure gh is installed",
             skipIf: { _ in
-                run("which", "gh").succeeded
+                run("mise", "which", "gh").succeeded
             },
             run: { _ in
-                try runAndPrint("brew", "install", "gh")
+                try runAndPrint("mise", "install", "gh")
             }
         )
     }
@@ -43,10 +43,10 @@ struct BrewCommands {
         Command(
             description: "Ensure git-cliff is installed",
             skipIf: { _ in
-                run("which", "git-cliff").succeeded
+                run("mise", "which", "git-cliff").succeeded
             },
             run: { _ in
-                try runAndPrint("brew", "install", "git-cliff")
+                try runAndPrint("mise", "install", "git-cliff")
             }
         )
     }

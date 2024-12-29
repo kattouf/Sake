@@ -23,9 +23,9 @@ struct TestCommands {
     public static var unitTests: Command {
         Command(
             description: "Run unit tests",
-            dependencies: [cleanIfNeeded, BrewCommands.ensureXcbeautifyInstalled],
+            dependencies: [cleanIfNeeded, MiseCommands.ensureXcbeautifyInstalled],
             run: { _ in
-                try runAndPrint(bash: "swift test --filter \"^(?!.*\\bIntegrationTests\\b).*\" | xcbeautify")
+                try runAndPrint(bash: "swift test --filter \"^(?!.*\\bIntegrationTests\\b).*\" | mise exec -- xcbeautify")
             }
         )
     }
@@ -33,9 +33,9 @@ struct TestCommands {
     public static var integrationTests: Command {
         Command(
             description: "Run integration tests",
-            dependencies: [cleanIfNeeded, BrewCommands.ensureXcbeautifyInstalled],
+            dependencies: [cleanIfNeeded, MiseCommands.ensureXcbeautifyInstalled],
             run: { _ in
-                try runAndPrint(bash: "swift test --filter IntegrationTests | xcbeautify")
+                try runAndPrint(bash: "swift test --filter IntegrationTests | mise exec -- xcbeautify")
             }
         )
     }
