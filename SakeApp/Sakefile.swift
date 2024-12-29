@@ -18,9 +18,9 @@ struct Commands: SakeApp {
     public static var lint: Command {
         Command(
             description: "Lint code",
-            dependencies: [BrewCommands.ensureSwiftFormatInstalled],
+            dependencies: [MiseCommands.ensureSwiftFormatInstalled],
             run: { _ in
-                try runAndPrint("swiftformat", "Sources", "SakeApp", "Tests", "Package.swift", "--lint")
+                try runAndPrint("mise", "exec", "--", "swiftformat", "Sources", "SakeApp", "Tests", "Package.swift", "--lint")
             }
         )
     }
@@ -28,9 +28,9 @@ struct Commands: SakeApp {
     public static var format: Command {
         Command(
             description: "Format code",
-            dependencies: [BrewCommands.ensureSwiftFormatInstalled],
+            dependencies: [MiseCommands.ensureSwiftFormatInstalled],
             run: { _ in
-                try runAndPrint("swiftformat", "Sources", "SakeApp", "Tests", "Package.swift")
+                try runAndPrint("mise", "exec", "--", "swiftformat", "Sources", "SakeApp", "Tests", "Package.swift")
             }
         )
     }

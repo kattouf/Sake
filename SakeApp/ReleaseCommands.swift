@@ -269,7 +269,7 @@ struct ReleaseCommands {
     static var generateReleaseNotes: Command {
         Command(
             description: "Generate release notes",
-            dependencies: [BrewCommands.ensureGitCliffInstalled],
+            dependencies: [MiseCommands.ensureGitCliffInstalled],
             skipIf: { context in
                 let arguments = try ReleaseArguments.parse(context.arguments)
                 try arguments.validate()
@@ -289,7 +289,19 @@ struct ReleaseCommands {
 
                 let version = arguments.version
                 let releaseNotesPath = releaseNotesPath(version: version)
-                try runAndPrint("git", "cliff", "--latest", "--strip=all", "--tag", version, "--output", releaseNotesPath)
+                try runAndPrint(
+                    "mise",
+                    "exec",
+                    "--",
+                    "git",
+                    "cliff",
+                    "--latest",
+                    "--strip=all",
+                    "--tag",
+                    version,
+                    "--output",
+                    releaseNotesPath
+                )
                 print("Release notes generated at \(releaseNotesPath)")
             }
         )
@@ -298,13 +310,13 @@ struct ReleaseCommands {
     static var draftReleaseWithArtifacts: Command {
         Command(
             description: "Draft a release on GitHub",
-            dependencies: [BrewCommands.ensureGhInstalled],
+            dependencies: [MiseCommands.ensureGhInstalled],
             skipIf: { context in
                 let arguments = try ReleaseArguments.parse(context.arguments)
                 try arguments.validate()
 
                 let tagName = arguments.version
-                let ghViewResult = run(bash: "gh release view \(tagName)")
+                let ghViewResult = run(bash: "mise exec -- gh release view \(tagName)")
                 if ghViewResult.succeeded {
                     print("Release \(tagName) already exists. Skipping...")
                     return true
@@ -320,7 +332,7 @@ struct ReleaseCommands {
                 let tagName = arguments.version
                 let releaseTitle = arguments.version
                 let draftReleaseCommand =
-                    "gh release create \(tagName) \(Constants.buildArtifactsDirectory)/*.zip --title '\(releaseTitle)' --draft --verify-tag --notes-file \(releaseNotesPath(version: tagName))"
+                    "mise exec -- gh release create \(tagName) \(Constants.buildArtifactsDirectory)/*.zip --title '\(releaseTitle)' --draft --verify-tag --notes-file \(releaseNotesPath(version: tagName))"
                 try runAndPrint(bash: draftReleaseCommand)
             }
         )
