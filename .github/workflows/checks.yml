@@ -15,16 +15,11 @@ jobs:
         swift: ["5.10", "6.0"]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: NeedleInAJayStack/setup-swift@4e17dcd69a660eea371d715802c219601e76f50a  #  swift-actions/setup-swift@v2 waiting for https://github.com/swift-actions/setup-swift/pull/684
-        with:
-          swift-version: ${{ matrix.swift }}
       - uses: actions/checkout@v4
       - name: Setup Sake
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: kattouf/sake-action@main
         with:
-          sake-version: '0.2.4'
+          swift-version: ${{ matrix.swift }}
       - name: Run unit tests
         run: sake unit_tests
       - name: Run integration tests
@@ -35,11 +30,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Setup Sake
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: kattouf/sake-action@main
         with:
-          sake-version: '0.2.4'
+          swift-version: ${{ matrix.swift }}
       - name: Run lint
         run: |
           sake lint
