@@ -28,12 +28,6 @@ struct ENVConfig {
     }
 }
 
-private extension String {
-    func nilIfEmpty() -> String? {
-        isEmpty ? nil : self
-    }
-}
-
 extension ENVConfig {
     static func mock(
         configPath: String? = nil,

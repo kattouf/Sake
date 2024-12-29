@@ -7,9 +7,9 @@ struct CLIConfig {
     let caseConvertingStrategy: CaseConvertingStrategy?
 
     init(commonOptions: CommonOptions, commandRelatedOptions: CommandRelatedCommonOptions?) {
-        configPath = commonOptions.configPath
-        sakeAppPath = commonOptions.sakeAppPath
-        sakeAppPrebuiltBinaryPath = commandRelatedOptions?.sakeAppPrebuiltBinaryPath
+        configPath = commonOptions.configPath?.nilIfEmpty()
+        sakeAppPath = commonOptions.sakeAppPath?.nilIfEmpty()
+        sakeAppPrebuiltBinaryPath = commandRelatedOptions?.sakeAppPrebuiltBinaryPath?.nilIfEmpty()
         caseConvertingStrategy = commandRelatedOptions?.caseConvertingStrategy
     }
 
