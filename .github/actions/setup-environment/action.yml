@@ -10,8 +10,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
     - name: Setup Mise
       uses: jdx/mise-action@v2
       with:

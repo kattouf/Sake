@@ -18,6 +18,8 @@ jobs:
         swift: ["5.10", "6.0"]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Setup Environment
         uses: ./.github/actions/setup-environment
         with:
@@ -32,6 +34,8 @@ jobs:
   lint:
     runs-on: macos-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Setup Environment
         uses: ./.github/actions/setup-environment
         with:
