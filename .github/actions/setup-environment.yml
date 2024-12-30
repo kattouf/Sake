@@ -1,0 +1,25 @@
+name: Setup Environment
+description: Sets up the environment for the workflow
+inputs:
+  swift-version:
+    description: 'The version of Swift to use'
+    required: true
+  mise-version:
+    description: 'The version of Mise to use'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Setup Mise
+      uses: jdx/mise-action@v2
+      with:
+        version: ${{ inputs.mise-version }}
+        install: false
+    - uses: NeedleInAJayStack/setup-swift@4e17dcd69a660eea371d715802c219601e76f50a
+      with:
+        swift-version: ${{ inputs.swift-version }}
+    - name: Setup Sake
+      id: setup-sake
+      uses: kattouf/setup-sake@main

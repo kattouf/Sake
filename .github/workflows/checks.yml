@@ -18,17 +18,10 @@ jobs:
         swift: ["5.10", "6.0"]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Setup Mise
-        uses: jdx/mise-action@v2
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
         with:
-          version: ${{ env.MISE_VERSION }}
-          install: false
-      - name: Setup Sake
-        id: setup-sake
-        uses: kattouf/setup-sake@main
-        with:
+          mise-version: ${{ env.MISE_VERSION }}
           swift-version: ${{ matrix.swift }}
       - name: Build tests
         run: sake build_tests
@@ -39,16 +32,11 @@ jobs:
   lint:
     runs-on: macos-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Setup Mise
-        uses: jdx/mise-action@v2
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
         with:
-          version: ${{ env.MISE_VERSION }}
-          install: false
-      - name: Setup Sake
-        id: setup-sake
-        uses: kattouf/setup-sake@main
+          mise-version: ${{ env.MISE_VERSION }}
+          swift-version: ${{ matrix.swift }}
       - name: Run lint
         run: |
           sake lint
