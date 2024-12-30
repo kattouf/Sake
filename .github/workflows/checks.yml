@@ -27,7 +27,7 @@ jobs:
           install: false
       - name: Setup Sake
         id: setup-sake
-        uses: kattouf/sake-action@main
+        uses: kattouf/setup-sake@main
         with:
           swift-version: ${{ matrix.swift }}
       - name: Build tests
@@ -48,7 +48,7 @@ jobs:
           install: false
       - name: Setup Sake
         id: setup-sake
-        uses: kattouf/sake-action@main
+        uses: kattouf/setup-sake@main
       - name: Run lint
         run: |
           sake lint
