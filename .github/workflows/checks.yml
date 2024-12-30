@@ -30,24 +30,25 @@ jobs:
         uses: kattouf/setup-sake@main
         with:
           swift-version: ${{ matrix.swift }}
-      - name: Check xcbeautify
+      - name: Build tests
+        run: sake build_tests
+      - name: Run unit tests
+        run: sake unit_tests
+      - name: Run integration tests
+        run: sake integration_tests
+  lint:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Mise
+        uses: jdx/mise-action@v2
+        with:
+          version: ${{ env.MISE_VERSION }}
+          install: false
+      - name: Setup Sake
+        id: setup-sake
+        uses: kattouf/setup-sake@main
+      - name: Run lint
         run: |
-          mise install xcbeautify
-          mise x -- xcbeautify --version
-
-  # lint:
-  #   runs-on: macos-latest
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
-  #     - name: Setup Mise
-  #       uses: jdx/mise-action@v2
-  #       with:
-  #         version: ${{ env.MISE_VERSION }}
-  #         install: false
-  #     - name: Setup Sake
-  #       id: setup-sake
-  #       uses: kattouf/setup-sake@main
-  #     - name: Run lint
-  #       run: |
-  #         sake lint
+          sake lint
