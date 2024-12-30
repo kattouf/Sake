@@ -28,9 +28,9 @@ jobs:
       - name: Build tests
         run: sake build_tests
       - name: Run unit tests
-        run: sake unit_tests
+        run: sake unit_tests --skip-build
       - name: Run integration tests
-        run: sake integration_tests
+        run: sake integration_tests --skip-build
   lint:
     runs-on: macos-latest
     steps:
