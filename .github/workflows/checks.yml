@@ -21,7 +21,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Setup Environment
-        uses: ./.github/actions/setup-environment
+        uses: ./.github/actions/setup-environment.yml
         with:
           mise-version: ${{ env.MISE_VERSION }}
           swift-version: ${{ matrix.swift }}
@@ -37,7 +37,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Setup Environment
-        uses: ./.github/actions/setup-environment
+        uses: ./.github/actions/setup-environment.yml
         with:
           mise-version: ${{ env.MISE_VERSION }}
           swift-version: ${{ matrix.swift }}
