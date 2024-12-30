@@ -20,4 +20,4 @@ runs:
         swift-version: ${{ inputs.swift-version }}
     - name: Setup Sake
       id: setup-sake
-      uses: kattouf/setup-sake@main
+      uses: kattouf/setup-sake@v1
