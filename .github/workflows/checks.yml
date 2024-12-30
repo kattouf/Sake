@@ -32,6 +32,7 @@ jobs:
           swift-version: ${{ matrix.swift }}
       - name: Check xcbeautify
         run: |
+          mise install xcbeautify
           mise x -- xcbeautify --version
 
   # lint:
