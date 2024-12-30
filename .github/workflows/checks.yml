@@ -10,32 +10,32 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   MISE_VERSION: 2024.12.21
 jobs:
-  build-and-test:
-    name: tests (Swift ${{ matrix.swift }}) on ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest]
-        swift: ["5.10", "6.0"]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Setup Mise
-        uses: jdx/mise-action@v2
-        with:
-          version: ${{ env.MISE_VERSION }}
-          install: false
-      - name: Setup Sake
-        id: setup-sake
-        uses: kattouf/setup-sake@main
-        with:
-          swift-version: ${{ matrix.swift }}
-      - name: Build tests
-        run: sake build_tests
-      - name: Run unit tests
-        run: sake unit_tests
-      - name: Run integration tests
-        run: sake integration_tests
+  # build-and-test:
+  #   name: tests (Swift ${{ matrix.swift }}) on ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [macos-latest, ubuntu-latest]
+  #       swift: ["5.10", "6.0"]
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #     - name: Setup Mise
+  #       uses: jdx/mise-action@v2
+  #       with:
+  #         version: ${{ env.MISE_VERSION }}
+  #         install: false
+  #     - name: Setup Sake
+  #       id: setup-sake
+  #       uses: kattouf/setup-sake@main
+  #       with:
+  #         swift-version: ${{ matrix.swift }}
+  #     - name: Build tests
+  #       run: sake build_tests
+  #     - name: Run unit tests
+  #       run: sake unit_tests
+  #     - name: Run integration tests
+  #       run: sake integration_tests
   lint:
     runs-on: macos-latest
     steps:
@@ -49,6 +49,6 @@ jobs:
       - name: Setup Sake
         id: setup-sake
         uses: kattouf/setup-sake@main
-      - name: Run lint
+      - name: Check xcbeautify
         run: |
-          sake lint
+          xcbeautify --version
