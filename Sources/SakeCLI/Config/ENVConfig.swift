@@ -8,10 +8,10 @@ struct ENVConfig {
     let caseConvertingStrategy: CaseConvertingStrategy?
 
     init() {
-        configPath = ProcessInfo.processInfo.environment["SAKE_CONFIG_PATH"]
-        sakeAppPath = ProcessInfo.processInfo.environment["SAKE_APP_PATH"]
-        sakeAppPrebuiltBinaryPath = ProcessInfo.processInfo.environment["SAKE_APP_PREBUILT_BINARY_PATH"]
-        caseConvertingStrategy = ProcessInfo.processInfo.environment["SAKE_CASE_CONVERTING_STRATEGY"]
+        configPath = ProcessInfo.processInfo.environment["SAKE_CONFIG_PATH"]?.nilIfEmpty()
+        sakeAppPath = ProcessInfo.processInfo.environment["SAKE_APP_PATH"]?.nilIfEmpty()
+        sakeAppPrebuiltBinaryPath = ProcessInfo.processInfo.environment["SAKE_APP_PREBUILT_BINARY_PATH"]?.nilIfEmpty()
+        caseConvertingStrategy = ProcessInfo.processInfo.environment["SAKE_CASE_CONVERTING_STRATEGY"]?.nilIfEmpty()
             .flatMap(CaseConvertingStrategy.init(rawValue:))
     }
 

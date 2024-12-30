@@ -40,6 +40,11 @@ final class FileConfigManager {
 
     func load() throws -> FileConfig {
         let data = try Data(contentsOf: URL(fileURLWithPath: configPath))
-        return try YAMLDecoder().decode(FileConfig.self, from: data)
+        let decoded = try YAMLDecoder().decode(FileConfig.self, from: data)
+        return FileConfig(
+            sakeAppPath: decoded.sakeAppPath?.nilIfEmpty(),
+            sakeAppPrebuiltBinaryPath: decoded.sakeAppPrebuiltBinaryPath?.nilIfEmpty(),
+            caseConvertingStrategy: decoded.caseConvertingStrategy
+        )
     }
 }

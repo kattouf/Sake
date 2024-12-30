@@ -7,6 +7,9 @@ struct TestCommands {
     struct TestArguments: ParsableArguments {
         @Flag(name: .long, help: "Clean build artifacts before running tests")
         var clean: Bool = false
+
+        @Flag(name: .long, help: "Skip building before running tests")
+        var skipBuild: Bool = false
     }
 
     public static var test: Command {
@@ -20,12 +23,33 @@ struct TestCommands {
         )
     }
 
+    public static var buildTests: Command {
+        Command(
+            description: "Build tests",
+            dependencies: [cleanIfNeeded],
+            run: { _ in
+                try runAndPrint(bash: "swift build --build-tests")
+            }
+        )
+    }
+
     public static var unitTests: Command {
         Command(
             description: "Run unit tests",
-            dependencies: [cleanIfNeeded, MiseCommands.ensureXcbeautifyInstalled],
-            run: { _ in
-                try runAndPrint(bash: "swift test --filter \"^(?!.*\\bIntegrationTests\\b).*\" | mise exec -- xcbeautify")
+            dependencies: [cleanIfNeeded],
+            run: { context in
+                let arguments = try TestArguments.parse(context.arguments)
+                let skipBuild = arguments.skipBuild ? " --skip-build" : ""
+                let shouldBeautifyLog = context.environment["GITHUB_ACTIONS"] == nil
+                let beautifyLog = shouldBeautifyLog ? " | mise exec -- xcbeautify" : ""
+                if shouldBeautifyLog {
+                    try await CommandRunner(
+                        command: MiseCommands.ensureXcbeautifyInstalled,
+                        context: context
+                    )
+                    .run()
+                }
+                try runAndPrint(bash: "swift test --filter \"^(?!.*\\bIntegrationTests\\b).*\"\(skipBuild)\(beautifyLog)")
             }
         )
     }
@@ -33,9 +57,20 @@ struct TestCommands {
     public static var integrationTests: Command {
         Command(
             description: "Run integration tests",
-            dependencies: [cleanIfNeeded, MiseCommands.ensureXcbeautifyInstalled],
-            run: { _ in
-                try runAndPrint(bash: "swift test --filter IntegrationTests | mise exec -- xcbeautify")
+            dependencies: [cleanIfNeeded],
+            run: { context in
+                let arguments = try TestArguments.parse(context.arguments)
+                let skipBuild = arguments.skipBuild ? " --skip-build" : ""
+                let shouldBeautifyLog = context.environment["GITHUB_ACTIONS"] == nil
+                let beautifyLog = shouldBeautifyLog ? " | mise exec -- xcbeautify" : ""
+                if shouldBeautifyLog {
+                    try await CommandRunner(
+                        command: MiseCommands.ensureXcbeautifyInstalled,
+                        context: context
+                    )
+                    .run()
+                }
+                try runAndPrint(bash: "swift test --filter IntegrationTests\(skipBuild)\(beautifyLog)")
             }
         )
     }

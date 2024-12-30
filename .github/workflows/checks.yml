@@ -6,6 +6,9 @@ on:
   pull_request:
     branches:
       - main
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MISE_VERSION: 2024.12.21
 jobs:
   build-and-test:
     name: tests (Swift ${{ matrix.swift }}) on ${{ matrix.os }}
@@ -15,20 +18,29 @@ jobs:
         swift: ["5.10", "6.0"]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: NeedleInAJayStack/setup-swift@4e17dcd69a660eea371d715802c219601e76f50a  #  swift-actions/setup-swift@v2 waiting for https://github.com/swift-actions/setup-swift/pull/684
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
         with:
+          mise-version: ${{ env.MISE_VERSION }}
           swift-version: ${{ matrix.swift }}
-      - uses: actions/checkout@v4
-      - name: Build
-        run: swift build --build-tests
+      - name: Build tests
+        run: sake build_tests
       - name: Run unit tests
-        run: swift test --filter "^(?!.*\bIntegrationTests\b).*"
+        run: sake unit_tests --skip-build
       - name: Run integration tests
-        run: swift test --filter IntegrationTests
+        run: sake integration_tests --skip-build
   lint:
     runs-on: macos-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Run SwiftFormat Linting
-        run: swiftformat Sources SakeApp Tests Package.swift --lint --reporter github-actions-log
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+        with:
+          mise-version: ${{ env.MISE_VERSION }}
+          swift-version: 6.0
+      - name: Run lint
+        run: |
+          sake lint
