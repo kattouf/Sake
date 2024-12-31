@@ -48,4 +48,4 @@ This feature enhances the usability of Sake by making command discovery and exec
 
 ### Fig Completion
 
-Support for Fig autocompletion is coming soon! You can track the progress on this feature in the [Fig Autocomplete PR](https://github.com/withfig/autocomplete/pull/2491).
+Sake also supports Fig completion, which is a popular shell completion tool for modern shells. To enable Fig completion, follow the instructions provided in the [Fig documentation](https://github.com/withfig/autocomplete).
