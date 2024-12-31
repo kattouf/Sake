@@ -24,6 +24,7 @@ Sake also supports configuration via environment variables. The following enviro
 
 - **`SAKE_CONFIG_PATH`**: Path to the `.sake.yml` file.
 - **`SAKE_APP_PATH`**: Path to the SakeApp package.
+- **`SAKE_APP_PREBUILT_BINARY_PATH`**: Path to the SakeApp prebuilt binary.
 - **`SAKE_CASE_CONVERTING_STRATEGY`**: [Commands name conversion strategy](/commands-name-conversions.md).
 
 For example, you can set these variables in your environment:
@@ -31,8 +32,14 @@ For example, you can set these variables in your environment:
 ```bash
 export SAKE_CONFIG_PATH="/path/to/.sake.yml"
 export SAKE_APP_PATH="/path/to/SakeApp"
+export SAKE_APP_PREBUILT_BINARY_PATH="/path/to/prebuilt/binary/SakeApp-executable"
 export SAKE_CASE_CONVERTING_STRATEGY="toKebabCase"
 ```
+
+::: info
+The environment variables `SAKE_APP_PREBUILT_BINARY_PATH` and `SAKE_APP_PATH` are mutually exclusive. You should set only one of these variables at a time. Setting both will result in a configuration error.
+:::
+
 
 ### Configuration file (.sake.yml)
 
@@ -41,7 +48,12 @@ You can define configuration options in the `.sake.yml` file, located in the roo
 ```yaml
 case_converting_strategy: toSnakeCase # available values: keepOriginal, toSnakeCase, toKebabCase
 sake_app_path: some/path
+sake_app_prebuilt_binary_path: some/path/to/prebuilt/binary/SakeApp-executable
 ```
+
+::: info
+The configuration parameters `sake_app_path` and `sake_app_prebuilt_binary_path` are mutually exclusive. You should set only one of these variables at a time. Setting both will result in a configuration error.
+:::
 
 ### Resolution order
 
