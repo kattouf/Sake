@@ -47,10 +47,23 @@ struct Commands: SakeApp {
 
 To use `ArgumentParser` in your `SakeApp`, you need to add it to your `Package.swift` file:
 
-```swift
+```swift{3}
 dependencies: [
+    .package(url: "https://github.com/kattouf/Sake", from: "0.1.0"),
     .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0")
 ]
 ```
-
+And then adding the product to `SakeApp` target that needs access to the library:
+```swift{6}
+targets: [
+    .executableTarget(
+        name: "SakeApp",
+        dependencies: [
+            "Sake",
+            .product(name: "ArgumentParser", package: "swift-argument-parser"),
+        ],
+        path: "."
+    ),
+]
+```
 This makes it easy to parse arguments and enhance the functionality of your commands.

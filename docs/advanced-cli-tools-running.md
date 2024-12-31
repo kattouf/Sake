@@ -32,8 +32,9 @@ In this example, the `build` command uses `SwiftShell`'s `runAndPrint` function 
 
 To use `SwiftShell` in your Sake commands, add it to your `SakeApp/Package.swift` file:
 
-```swift
+```swift{3}
 dependencies: [
+    .package(url: "https://github.com/kattouf/Sake", from: "0.1.0"),
     .package(url: "https://github.com/kareman/SwiftShell", from: "5.1.0")
 ]
 ```
