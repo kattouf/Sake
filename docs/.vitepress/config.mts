@@ -27,6 +27,7 @@ export default defineConfig({
           { text: "Passing Arguments", link: "/passing-arguments" },
           { text: "Configuration", link: "/configuration" },
           { text: "Shell Completion", link: "/shell-completion" },
+          { text: "Continuous Integration", link: "/continuous-integration" },
         ],
       },
       {
