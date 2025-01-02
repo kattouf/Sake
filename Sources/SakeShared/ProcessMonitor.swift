@@ -6,7 +6,15 @@ import Foundation
 /// Synchronise shell subprocesses
 public final class ProcessMonitor {
     #if canImport(SwiftShell)
-        private let processes = NSHashTable<PrintedAsyncCommand>.weakObjects()
+        private final class WeakBox<T: AnyObject> {
+            weak var value: T?
+
+            init(_ value: T) {
+                self.value = value
+            }
+        }
+
+        private var processes = [WeakBox<PrintedAsyncCommand>]()
     #endif
     private lazy var signalSource = DispatchSource.makeSignalSource(signal: SIGINT, queue: .global(qos: .userInitiated))
     private var interruptionTasks: [ProcessInterruptionTask] = []
@@ -28,7 +36,7 @@ public final class ProcessMonitor {
                 return
             }
             #if canImport(SwiftShell)
-                self.processes.allObjects.forEach { $0.interrupt() }
+                self.processes.forEach { $0.value?.interrupt() }
             #endif
             self.interruptionTasks.forEach { $0.run() }
             exit(SIGINT)
@@ -39,7 +47,7 @@ public final class ProcessMonitor {
     #if canImport(SwiftShell)
         /// Keep links to processes to interrupt them on SIGINT
         public func addProcess(_ process: PrintedAsyncCommand) {
-            processes.add(process)
+            processes.append(.init(process))
         }
     #endif
 
