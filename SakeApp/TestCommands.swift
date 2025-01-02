@@ -16,9 +16,9 @@ struct TestCommands {
         Command(
             description: "Run tests",
             dependencies: [
-                cleanIfNeeded,
-                unitTests.mapArguments { arguments in arguments.filter { $0 != "--clean" } },
-                integrationTests.mapArguments { arguments in arguments.filter { $0 != "--clean" } },
+                buildTests,
+                unitTests.mapArguments { arguments in arguments + ["--skip-build"] },
+                integrationTests.mapArguments { arguments in arguments + ["--skip-build"] },
             ]
         )
     }
@@ -27,6 +27,10 @@ struct TestCommands {
         Command(
             description: "Build tests",
             dependencies: [cleanIfNeeded],
+            skipIf: { context in
+                let arguments = try TestArguments.parse(context.arguments)
+                return arguments.skipBuild
+            },
             run: { context in
                 try interruptableRunAndPrint(bash: "swift build --build-tests", interruptionHandler: context.interruptionHandler)
             }
@@ -36,10 +40,8 @@ struct TestCommands {
     public static var unitTests: Command {
         Command(
             description: "Run unit tests",
-            dependencies: [cleanIfNeeded],
+            dependencies: [buildTests],
             run: { context in
-                let arguments = try TestArguments.parse(context.arguments)
-                let skipBuild = arguments.skipBuild ? " --skip-build" : ""
                 let shouldBeautifyLog = context.environment["GITHUB_ACTIONS"] == nil
                 let beautifyLog = shouldBeautifyLog ? " | mise exec -- xcbeautify --disable-logging" : ""
                 if shouldBeautifyLog {
@@ -50,7 +52,7 @@ struct TestCommands {
                     .run()
                 }
                 try interruptableRunAndPrint(
-                    bash: "swift test --filter \"^(?!.*\\bIntegrationTests\\b).*\"\(skipBuild)\(beautifyLog)",
+                    bash: "swift test --skip-build --filter \"^(?!.*\\bIntegrationTests\\b).*\"\(beautifyLog)",
                     interruptionHandler: context.interruptionHandler
                 )
             }
@@ -60,10 +62,8 @@ struct TestCommands {
     public static var integrationTests: Command {
         Command(
             description: "Run integration tests",
-            dependencies: [cleanIfNeeded],
+            dependencies: [buildTests],
             run: { context in
-                let arguments = try TestArguments.parse(context.arguments)
-                let skipBuild = arguments.skipBuild ? " --skip-build" : ""
                 let shouldBeautifyLog = context.environment["GITHUB_ACTIONS"] == nil
                 let beautifyLog = shouldBeautifyLog ? " | mise exec -- xcbeautify --disable-logging" : ""
                 if shouldBeautifyLog {
@@ -74,7 +74,7 @@ struct TestCommands {
                     .run()
                 }
                 try interruptableRunAndPrint(
-                    bash: "swift test --filter IntegrationTests\(skipBuild)\(beautifyLog)",
+                    bash: "swift test --skip-build --filter IntegrationTests\(beautifyLog)",
                     interruptionHandler: context.interruptionHandler
                 )
             }
