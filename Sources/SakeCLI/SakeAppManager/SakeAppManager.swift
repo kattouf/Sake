@@ -7,7 +7,10 @@ final class SakeAppManager {
 
     static func `default`(sakeAppPath: String?) -> Self {
         let fileHandle = DefaultFileHandle(path: sakeAppPath)
-        let commandExecutor = DefaultCommandExecutor(fileHandle: fileHandle)
+        let processMonitor = ProcessMonitor()
+        processMonitor.monitor()
+        let shellExecutor = ShellExecutor(processMonitor: processMonitor)
+        let commandExecutor = DefaultCommandExecutor(fileHandle: fileHandle, shellExecutor: shellExecutor)
         return Self(fileHandle: fileHandle, commandExecutor: commandExecutor)
     }
 
