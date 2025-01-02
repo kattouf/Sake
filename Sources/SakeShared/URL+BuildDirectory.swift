@@ -1,6 +1,6 @@
 import Foundation
 
-public extension URL {
+package extension URL {
     func findBuildDirectory() -> URL? {
         var currentURL = self
 

@@ -1,19 +1,19 @@
 import Foundation
 
-public struct CommandGroupsJSON: Codable {
-    public struct Command: Codable {
-        public let name: String
-        public let description: String?
+package struct CommandGroupsJSON: Codable {
+    package struct Command: Codable {
+        package let name: String
+        package let description: String?
 
-        public init(name: String, description: String?) {
+        package init(name: String, description: String?) {
             self.name = name
             self.description = description
         }
     }
 
-    public let groups: [String: [Command]]
+    package let groups: [String: [Command]]
 
-    public init(groups: [String: [Command]]) {
+    package init(groups: [String: [Command]]) {
         self.groups = groups
     }
 }

@@ -4,7 +4,7 @@ import Foundation
 #endif
 
 /// Synchronise shell subprocesses
-public final class ProcessMonitor {
+package final class ProcessMonitor {
     #if canImport(SwiftShell)
         private final class WeakBox<T: AnyObject> {
             weak var value: T?
@@ -20,10 +20,10 @@ public final class ProcessMonitor {
     private var interruptionTasks: [ProcessInterruptionTask] = []
     private var isRunning = false
 
-    public init() {}
+    package init() {}
 
     /// Catch SIGINT, clean up all subprocesses, and terminate root process manually
-    public func monitor() {
+    package func monitor() {
         if isRunning {
             return /* Process monitor is already in progress */
         }
@@ -46,14 +46,14 @@ public final class ProcessMonitor {
 
     #if canImport(SwiftShell)
         /// Keep links to processes to interrupt them on SIGINT
-        public func addProcess(_ process: PrintedAsyncCommand) {
+        package func addProcess(_ process: PrintedAsyncCommand) {
             processes.append(.init(process))
         }
     #endif
 
     /// Add a job to run after interruption
     @discardableResult
-    public func runOnInterruption(_ job: @escaping () -> Void) -> ProcessInterruptionTask {
+    package func runOnInterruption(_ job: @escaping () -> Void) -> ProcessInterruptionTask {
         let interruptionTask = ProcessInterruptionTask(job: job)
         interruptionTasks.append(interruptionTask)
         return interruptionTask
