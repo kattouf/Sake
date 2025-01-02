@@ -41,7 +41,9 @@ export default defineConfig({
             link: "/commands-conditional-execution",
           },
           { text: "Grouping", link: "/commands-grouping" },
-          { text: "Command Name Converions", link: "/commands-name-conversions" }
+          { text: "Command Name Converions", link: "/commands-name-conversions" },
+          { text: "Sharing Data Between Commands", link: "/sharing-data-between-commands" },
+          { text: "Interruption Handling", link: "/interruption-handling" },
         ],
       },
       {
