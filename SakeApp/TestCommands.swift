@@ -41,7 +41,7 @@ struct TestCommands {
                 let arguments = try TestArguments.parse(context.arguments)
                 let skipBuild = arguments.skipBuild ? " --skip-build" : ""
                 let shouldBeautifyLog = context.environment["GITHUB_ACTIONS"] == nil
-                let beautifyLog = shouldBeautifyLog ? " | mise exec -- xcbeautify" : ""
+                let beautifyLog = shouldBeautifyLog ? " | mise exec -- xcbeautify --disable-logging" : ""
                 if shouldBeautifyLog {
                     try await CommandRunner(
                         command: MiseCommands.ensureXcbeautifyInstalled,
@@ -62,7 +62,7 @@ struct TestCommands {
                 let arguments = try TestArguments.parse(context.arguments)
                 let skipBuild = arguments.skipBuild ? " --skip-build" : ""
                 let shouldBeautifyLog = context.environment["GITHUB_ACTIONS"] == nil
-                let beautifyLog = shouldBeautifyLog ? " | mise exec -- xcbeautify" : ""
+                let beautifyLog = shouldBeautifyLog ? " | mise exec -- xcbeautify --disable-logging" : ""
                 if shouldBeautifyLog {
                     try await CommandRunner(
                         command: MiseCommands.ensureXcbeautifyInstalled,

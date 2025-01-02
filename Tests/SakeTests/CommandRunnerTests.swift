@@ -165,7 +165,8 @@ private extension Command.Context {
             environment: [:],
             appDirectory: "",
             runDirectory: "",
-            storage: .init()
+            storage: .init(),
+            interruptionHandler: .init(processMonitor: .init())
         )
     }
 }
