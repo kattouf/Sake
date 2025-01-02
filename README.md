@@ -30,7 +30,7 @@ Hello, Stranger!
 > [!IMPORTANT]
 > Sake is under active development, with ongoing updates and improvements. Use with caution in production environments.
 
-[📚 Documentation](https://sakeswift.org) • [🚀 Getting Started](#getting-started) • [💻 GitHub](https://github.com/kattouf/Sake)
+[📚 Documentation](https://sakeswift.org) • [🚀 Getting Started](#-getting-started) • [💻 GitHub](https://github.com/kattouf/Sake)
 
 ## ⭐️ Key Features
 
