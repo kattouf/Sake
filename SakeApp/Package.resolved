@@ -6,7 +6,7 @@
       "location" : "https://github.com/kattouf/Sake.git",
       "state" : {
         "branch" : "main",
-        "revision" : "8e04ff5437c05bc6f5d7999d5d35919b82ab58ee"
+        "revision" : "7ffd0ca30ddc02f13c94701d72f12f5f005e6f96"
       }
     },
     {
@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax",
       "state" : {
-        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
-        "version" : "509.1.1"
+        "revision" : "0687f71944021d616d34d922343dcef086855920",
+        "version" : "600.0.1"
       }
     },
     {
