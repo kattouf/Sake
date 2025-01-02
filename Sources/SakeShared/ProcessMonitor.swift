@@ -1,15 +1,21 @@
 import Foundation
-import SwiftShell
+#if canImport(SwiftShell)
+    import SwiftShell
+#endif
 
 /// Synchronise shell subprocesses
-final class ProcessMonitor {
-    private let processes = NSHashTable<PrintedAsyncCommand>.weakObjects()
+public final class ProcessMonitor {
+    #if canImport(SwiftShell)
+        private let processes = NSHashTable<PrintedAsyncCommand>.weakObjects()
+    #endif
     private let signalSource = DispatchSource.makeSignalSource(signal: SIGINT, queue: .global(qos: .userInitiated))
     private var interruptionTasks: [ProcessInterruptionTask] = []
     private var isRunning = false
 
+    public init() {}
+
     /// Catch SIGINT, clean up all subprocesses, and terminate root process manually
-    func monitor() {
+    public func monitor() {
         if isRunning {
             return /* Process monitor is already in progress */
         }
@@ -21,22 +27,25 @@ final class ProcessMonitor {
             guard let self else {
                 return
             }
-            print(" ✕ Interruption, please wait a bit. Cancelling \(self.processes.count) processes...")
-            self.processes.allObjects.forEach { $0.interrupt() }
+            #if canImport(SwiftShell)
+                self.processes.allObjects.forEach { $0.interrupt() }
+            #endif
             self.interruptionTasks.forEach { $0.run() }
             exit(SIGINT)
         }
         signalSource.resume()
     }
 
-    /// Keep links to processes to interrupt them on SIGINT
-    func addProcess(_ process: PrintedAsyncCommand) {
-        processes.add(process)
-    }
+    #if canImport(SwiftShell)
+        /// Keep links to processes to interrupt them on SIGINT
+        public func addProcess(_ process: PrintedAsyncCommand) {
+            processes.add(process)
+        }
+    #endif
 
     /// Add a job to run after interruption
     @discardableResult
-    func runOnInterruption(_ job: @escaping () -> Void) -> ProcessInterruptionTask {
+    public func runOnInterruption(_ job: @escaping () -> Void) -> ProcessInterruptionTask {
         let interruptionTask = ProcessInterruptionTask(job: job)
         interruptionTasks.append(interruptionTask)
         return interruptionTask

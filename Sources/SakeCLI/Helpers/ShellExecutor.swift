@@ -1,4 +1,5 @@
 import Foundation
+import SakeShared
 import SwiftShell
 
 final class ShellExecutor {
