@@ -1,11 +1,13 @@
-# 🍶Sake
+# 🍶 Sake
 
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fkattouf%2FSake%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/kattouf/Sake)
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fkattouf%2FSake%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/kattouf/Sake)
+[![Platforms](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fkattouf%2FSake%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/kattouf/Sake)
+[![Swift Versions](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fkattouf%2FSake%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/kattouf/Sake)
 [![Latest Release](https://img.shields.io/github/release/kattouf/Sake.svg)](https://github.com/kattouf/Sake/releases/latest)
-![](https://github.com/kattouf/Sake/actions/workflows/checks.yml/badge.svg?branch=main)
+![Build Status](https://github.com/kattouf/Sake/actions/workflows/checks.yml/badge.svg?branch=main)
 
-A Swift-based utility for managing project commands, inspired by Make.
+Swift-based utility for managing project commands, inspired by Make. Write your project commands in Swift and enjoy type safety, code reuse, and seamless integration.
+
+### ✨ Quick Example
 
 ``` swift
 struct Commands: SakeApp {
@@ -25,83 +27,56 @@ struct Commands: SakeApp {
 Hello, Stranger!
 ```
 
-
 > [!IMPORTANT]
 > Sake is under active development, with ongoing updates and improvements. Use with caution in production environments.
 
-[Full Documentation](https://sakeswift.org) • [Getting Started](#getting-started)
+[📚 Documentation](https://sakeswift.org) • [🚀 Getting Started](#getting-started) • [💻 GitHub](https://github.com/kattouf/Sake)
 
-## Features
+## ⭐️ Key Features
 
-- **Command Dependencies**: Define commands that depend on other commands, allowing for clear and organized workflows.
-- **Conditional Execution**: Set conditions under which a command will or will not be executed.
-- **Command Listing**: Easily list all available commands in your SakeApp project.
-- **Command Grouping**: Organize commands into groups for better structure and maintainability.
-- **Swift-based Configuration**: Use Swift to define and manage your commands, ensuring type safety and flexibility.
+- **Type-Safe Commands**: Write commands in Swift with full IDE support and compile-time checks
+- **Command Dependencies**: Define commands that depend on other commands
+- **Conditional Execution**: Skip commands based on custom conditions
+- **Command Groups**: Organize commands into logical groups
+- **Shell Completion**: Tab completion for all commands
+- **Extensible**: Use any Swift package to enhance your commands
 
-## Who It's For?
-
-Sake is designed for Swift developers who prefer to stay within the Swift ecosystem for managing command execution, rather than switching to shell scripting or using tools like Make. By leveraging Swift, Sake ensures type safety, readability, and maintainability in defining commands, making it an intuitive solution for automating project tasks.
-
-## Getting Started
-
-To start using Sake, follow these steps:
+## 📚 Getting Started
 
 1. **Install Sake**
    ```bash
    brew install kattouf/sake/sake
    ```
-   Other methods [here](https://sakeswift.org/installation.html)
+   See [other installation methods](https://sakeswift.org/installation.html)
 
 2. **Initialize a new SakeApp:**
-
-   Run the following command to generate a new SakeApp template in the current directory:
-
    ```bash
    sake init
    ```
 
-   This will create a new project structure in the `SakeApp` directory with a basic `Sakefile.swift` containing a simple command.
-
-3. **Inspect the generated `Sakefile.swift`:**
-
-   Navigate to the `SakeApp` directory and open `Sakefile.swift` to see the pre-defined `hello` command:
-
-   ```swift
-   import Foundation
-   import Sake
-
-   @main
-   @CommandGroup
-   struct Commands: SakeApp {
-       public static var hello: Command {
-           Command(
-               run: { _ in
-                   print("Hello, world!")
-               }
-           )
-       }
-   }
-   ```
-
-4. **Run your first command:**
-
-   To execute the `hello` command, run:
-
+3. **Run your first command:**
    ```bash
    sake hello
    ```
 
-   This will print `Hello, world!` in your terminal.
+## 📖 Example Use Cases
 
-## Full Documentation
+- **Build Automation**: Compile your project with different configurations and run tests
+- **Release Management**: Automate version updates and App Store submissions
+- **Code Quality**: Run formatters and linters to maintain consistent code style
+- **Swift Package Management**: Handle package dependencies and updates
+- **Documentation**: Keep your project documentation up to date
 
-See full documentation at [sakeswift.org](https://sakeswift.org/).
+## 🤝 Contributing
 
-## Contributing
+We welcome contributions! Whether it's:
+- 🐛 Bug Reports
+- 💡 Feature Requests
+- 📖 Documentation Improvements
+- 🔧 Code Contributions
 
-I’m open to suggestions and would be happy to receive any reports, questions, or pull requests. Feel free to contribute by opening issues or submitting pull requests to help improve Sake!
+Check out our [Contribution Guide](https://sakeswift.org/contribution-guide.html) to get started.
 
-## License
+## 📜 License
 
-Sake is released under the MIT License. See the [LICENSE](./LICENSE) file for more details.
+Sake is released under the MIT License. See the [LICENSE](./LICENSE) file for details.
