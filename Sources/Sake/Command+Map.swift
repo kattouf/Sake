@@ -61,7 +61,8 @@ public extension Command.Context {
             environment: environment,
             appDirectory: appDirectory,
             runDirectory: runDirectory,
-            storage: storage
+            storage: storage,
+            interruptionHandler: interruptionHandler
         )
     }
 
@@ -79,7 +80,8 @@ public extension Command.Context {
             environment: transform(environment),
             appDirectory: appDirectory,
             runDirectory: runDirectory,
-            storage: storage
+            storage: storage,
+            interruptionHandler: interruptionHandler
         )
     }
 }

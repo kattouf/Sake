@@ -8,7 +8,8 @@ final class CommandMapTests: XCTestCase {
             environment: ["foo": "bar"],
             appDirectory: "/path/to/app",
             runDirectory: "/path/to/run",
-            storage: .init()
+            storage: .init(),
+            interruptionHandler: .init(processMonitor: .init())
         )
 
         let mappedCommandContext = try commandContext.mapArguments { arguments in
@@ -27,7 +28,8 @@ final class CommandMapTests: XCTestCase {
             environment: ["foo": "bar"],
             appDirectory: "/path/to/app",
             runDirectory: "/path/to/run",
-            storage: .init()
+            storage: .init(),
+            interruptionHandler: .init(processMonitor: .init())
         )
 
         let mappedCommandContext = try commandContext.mapEnvironment { environment in
@@ -61,7 +63,8 @@ final class CommandMapTests: XCTestCase {
             environment: ["foo": "bar"],
             appDirectory: "/path/to/app",
             runDirectory: "/path/to/run",
-            storage: .init()
+            storage: .init(),
+            interruptionHandler: .init(processMonitor: .init())
         )
 
         let mappedCommand = command.mapArguments { arguments in
@@ -102,7 +105,8 @@ final class CommandMapTests: XCTestCase {
             environment: ["foo": "bar"],
             appDirectory: "/path/to/app",
             runDirectory: "/path/to/run",
-            storage: .init()
+            storage: .init(),
+            interruptionHandler: .init(processMonitor: .init())
         )
 
         let mappedCommand = command.mapEnvironment { environment in

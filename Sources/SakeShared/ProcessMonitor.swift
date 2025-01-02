@@ -8,7 +8,7 @@ public final class ProcessMonitor {
     #if canImport(SwiftShell)
         private let processes = NSHashTable<PrintedAsyncCommand>.weakObjects()
     #endif
-    private let signalSource = DispatchSource.makeSignalSource(signal: SIGINT, queue: .global(qos: .userInitiated))
+    private lazy var signalSource = DispatchSource.makeSignalSource(signal: SIGINT, queue: .global(qos: .userInitiated))
     private var interruptionTasks: [ProcessInterruptionTask] = []
     private var isRunning = false
 

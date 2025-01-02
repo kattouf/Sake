@@ -1,4 +1,5 @@
 import Foundation
+import SakeShared
 
 public extension Command {
     /// Represents the context in which a command is executed.
@@ -32,6 +33,12 @@ public extension Command {
         /// This storage is used to share data between commands and store information
         public let storage: Storage
 
+        /// A handler for process interruptions.
+        ///
+        /// This handler can be used to register cleanup tasks or other actions to be executed
+        /// when the command (process) is interrupted.
+        public let interruptionHandler: InterruptionHandler
+
         /// Initializes a new `Context` for command execution.
         ///
         /// - Parameters:
@@ -40,23 +47,53 @@ public extension Command {
         ///   - appDirectory: The directory where the app is located.
         ///   - runDirectory: The directory from which the command is run.
         ///   - storage: A storage container for the context.
-        public init(
+        ///   - interruptionHandler: A handler for interruptions.
+        init(
             arguments: [String],
             environment: [String: String],
             appDirectory: String,
             runDirectory: String,
-            storage: Storage
+            storage: Storage,
+            interruptionHandler: InterruptionHandler
         ) {
             self.arguments = arguments
             self.environment = environment
             self.appDirectory = appDirectory
             self.runDirectory = runDirectory
             self.storage = storage
+            self.interruptionHandler = interruptionHandler
         }
     }
 }
 
+#if canImport(SwiftShell)
+    import SwiftShell
+#endif
+
 public extension Command.Context {
+    /// Represents a handler for interruptions.
+    ///
+    /// The `InterruptionHandler` class provides a way to register cleanup tasks or other actions.
+    final class InterruptionHandler: @unchecked Sendable {
+        private let processMonitor: ProcessMonitor
+
+        init(processMonitor: ProcessMonitor) {
+            self.processMonitor = processMonitor
+        }
+
+        /// Registers a closure to be executed when the command is interrupted.
+        public func register(_ handler: @escaping () -> Void) {
+            processMonitor.runOnInterruption(handler)
+        }
+
+        #if canImport(SwiftShell)
+            /// Registers a `SwiftShell` command to be interrupted sequentially when the command is interrupted.
+            public func register(_ asyncCommand: PrintedAsyncCommand) {
+                processMonitor.addProcess(asyncCommand)
+            }
+        #endif
+    }
+
     /// Represents a storage container for the context.
     ///
     /// The `Storage` class provides a thread-safe storage container for the context.
@@ -65,7 +102,7 @@ public extension Command.Context {
         private var dictionary: [String: Any] = [:]
         private let lock = NSRecursiveLock()
 
-        public init() {}
+        init() {}
 
         public subscript(key: String) -> Any? {
             get { get(forKey: key) }

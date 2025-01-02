@@ -25,15 +25,18 @@ struct RunCommand: SakeParsableCommand {
         let commands = try commandsPreprocessor.allCommands()
 
         if let command = commands[command] {
+            let processMonitor = ProcessMonitor()
             let context = Command.Context(
                 arguments: args,
                 environment: ProcessInfo.processInfo.environment,
                 appDirectory: Bundle.main.bundleURL.findBuildDirectory()?.deletingLastPathComponent()
                     .path ?? "<Could not find SakeApp directory>",
                 runDirectory: FileManager.default.currentDirectoryPath,
-                storage: Command.Context.Storage()
+                storage: Command.Context.Storage(),
+                interruptionHandler: Command.Context.InterruptionHandler(processMonitor: processMonitor)
             )
             let runner = CommandRunner(command: command, context: context)
+            processMonitor.monitor()
             do {
                 try await runner.run()
             } catch {
