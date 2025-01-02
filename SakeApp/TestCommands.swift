@@ -27,8 +27,8 @@ struct TestCommands {
         Command(
             description: "Build tests",
             dependencies: [cleanIfNeeded],
-            run: { _ in
-                try runAndPrint(bash: "swift build --build-tests")
+            run: { context in
+                try interruptableRunAndPrint(bash: "swift build --build-tests", interruptionHandler: context.interruptionHandler)
             }
         )
     }
@@ -49,7 +49,10 @@ struct TestCommands {
                     )
                     .run()
                 }
-                try runAndPrint(bash: "swift test --filter \"^(?!.*\\bIntegrationTests\\b).*\"\(skipBuild)\(beautifyLog)")
+                try interruptableRunAndPrint(
+                    bash: "swift test --filter \"^(?!.*\\bIntegrationTests\\b).*\"\(skipBuild)\(beautifyLog)",
+                    interruptionHandler: context.interruptionHandler
+                )
             }
         )
     }
@@ -70,7 +73,10 @@ struct TestCommands {
                     )
                     .run()
                 }
-                try runAndPrint(bash: "swift test --filter IntegrationTests\(skipBuild)\(beautifyLog)")
+                try interruptableRunAndPrint(
+                    bash: "swift test --filter IntegrationTests\(skipBuild)\(beautifyLog)",
+                    interruptionHandler: context.interruptionHandler
+                )
             }
         )
     }
@@ -82,8 +88,8 @@ struct TestCommands {
                 let arguments = try TestArguments.parse(context.arguments)
                 return !arguments.clean
             },
-            run: { _ in
-                try runAndPrint("swift", "package", "clean")
+            run: { context in
+                try interruptableRunAndPrint(bash: "swift package clean", interruptionHandler: context.interruptionHandler)
             }
         )
     }

@@ -166,8 +166,8 @@ struct ReleaseCommands {
                         }
                     }()
 
-                    try runAndPrint(bash: swiftClean)
-                    try runAndPrint(bash: swiftBuild)
+                    try interruptableRunAndPrint(bash: swiftClean, interruptionHandler: context.interruptionHandler)
+                    try interruptableRunAndPrint(bash: swiftBuild, interruptionHandler: context.interruptionHandler)
 
                     let binPath: String = run(bash: "\(swiftBuild) --show-bin-path").stdout
                     if binPath.isEmpty {
@@ -175,11 +175,12 @@ struct ReleaseCommands {
                     }
                     let executablePath = binPath + "/\(Constants.executableName)"
 
-                    try runAndPrint(bash: "\(strip) \(executablePath)")
+                    try interruptableRunAndPrint(bash: "\(strip) \(executablePath)", interruptionHandler: context.interruptionHandler)
 
                     let executableArchivePath = executableArchivePath(target: target, version: version)
-                    try runAndPrint(
-                        bash: "\(zip) \(executableArchivePath) \(executablePath.replacingOccurrences(of: "/workdir", with: context.projectRoot))"
+                    try interruptableRunAndPrint(
+                        bash: "\(zip) \(executableArchivePath) \(executablePath.replacingOccurrences(of: "/workdir", with: context.projectRoot))",
+                        interruptionHandler: context.interruptionHandler
                     )
                 }
 
