@@ -7,8 +7,6 @@
 
 Swift-based utility for managing project commands, inspired by Make. Write your project commands in Swift and enjoy type safety, code reuse, and seamless integration.
 
-### ✨ Quick Example
-
 ``` swift
 struct Commands: SakeApp {
     public static var sayHello: Command {
@@ -62,9 +60,8 @@ Hello, Stranger!
 ## 📖 Example Use Cases
 
 - **Build Automation**: Compile your project with different configurations and run tests
-- **Release Management**: Automate version updates and App Store submissions
+- **Release Management**: Automate version updates
 - **Code Quality**: Run formatters and linters to maintain consistent code style
-- **Swift Package Management**: Handle package dependencies and updates
 - **Documentation**: Keep your project documentation up to date
 
 ## 🤝 Contributing
