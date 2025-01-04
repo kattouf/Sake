@@ -18,7 +18,7 @@ final class SakeAppManagerTests: XCTestCase {
 
     // MARK: - Initialize
 
-    func testSakeAppManager_whenInitialize_shouldThrowError_IfAlreadyInitialized() throws {
+    func testSakeAppManager_whenInitialize_shouldThrowError_IfAlreadyInitialized() {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: false
         )
