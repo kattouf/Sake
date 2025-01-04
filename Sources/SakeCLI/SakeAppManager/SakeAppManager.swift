@@ -19,7 +19,7 @@ extension SakeAppManager {
         return Self(fileHandle: fileHandle, commandExecutor: commandExecutor)
     }
 
-    func validate() throws {
+    func validateProject() throws {
         try fileHandle.validatePackageSwiftExists()
         let dump = try commandExecutor.packageDump()
         guard let dumpData = dump.data(using: .utf8) else {
@@ -48,12 +48,14 @@ extension SakeAppManager {
     }
 }
 
+// MARK: - Unitialized mode
+
 extension SakeAppManager where Mode == SakeAppManagerUnitializedMode {
     @discardableResult
-    consuming func initialize() throws -> SakeAppManager<SakeAppManagerInitializedMode> {
+    consuming func initializeProject() throws -> SakeAppManager<SakeAppManagerInitializedMode> {
         let alreadyExists: Bool
         do {
-            try validate()
+            try validateProject()
             alreadyExists = true
         } catch {
             alreadyExists = false
@@ -65,16 +67,18 @@ extension SakeAppManager where Mode == SakeAppManagerUnitializedMode {
         log("Creating SakeApp package at path: \(fileHandle.path)...")
         try fileHandle.createProjectFiles()
 
-        try validate()
+        try validateProject()
         log("SakeApp package initialized successfully.")
 
         return SakeAppManager<SakeAppManagerInitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
     }
 }
 
+// MARK: - Initialized mode
+
 extension SakeAppManager where Mode == SakeAppManagerInitializedMode {
     func clean() throws {
-        try validate()
+        try validateProject()
 
         log("Cleaning SakeApp package at path: \(fileHandle.path)...")
         try commandExecutor.packageClean()
@@ -82,7 +86,7 @@ extension SakeAppManager where Mode == SakeAppManagerInitializedMode {
     }
 
     func run(prebuiltExecutablePath: String?, command: String, args: [String], caseConvertingStrategy: CaseConvertingStrategy) throws {
-        let executablePath = try getPrebuiltBinaryIfExistsyOrBuildFromSource(prebuiltExecutablePath: prebuiltExecutablePath)
+        let executablePath = try getPrebuiltBinaryIfExistsOrBuildFromSource(prebuiltExecutablePath: prebuiltExecutablePath)
         try commandExecutor.callRunCommandOnExecutable(
             executablePath: executablePath,
             command: command,
@@ -92,7 +96,7 @@ extension SakeAppManager where Mode == SakeAppManagerInitializedMode {
     }
 
     func listAvailableCommands(prebuiltExecutablePath: String?, caseConvertingStrategy: CaseConvertingStrategy, json: Bool) throws {
-        let executablePath = try getPrebuiltBinaryIfExistsyOrBuildFromSource(prebuiltExecutablePath: prebuiltExecutablePath)
+        let executablePath = try getPrebuiltBinaryIfExistsOrBuildFromSource(prebuiltExecutablePath: prebuiltExecutablePath)
         try commandExecutor.callListCommandOnExecutable(
             executablePath: executablePath,
             json: json,
@@ -100,7 +104,7 @@ extension SakeAppManager where Mode == SakeAppManagerInitializedMode {
         )
     }
 
-    private func getPrebuiltBinaryIfExistsyOrBuildFromSource(prebuiltExecutablePath: String?) throws -> String {
+    private func getPrebuiltBinaryIfExistsOrBuildFromSource(prebuiltExecutablePath: String?) throws -> String {
         if let prebuiltExecutablePath {
             if fileHandle.isPrebuiltExecutableExists(path: prebuiltExecutablePath) {
                 return prebuiltExecutablePath
@@ -108,28 +112,28 @@ extension SakeAppManager where Mode == SakeAppManagerInitializedMode {
                 throw SakeAppManagerError.sakeAppPrebuiltBinaryNotFound(path: prebuiltExecutablePath)
             }
         } else {
-            return try buildSakeAppExecutableIfNeeded()
+            return try buildExecutableIfNeeded()
         }
     }
 
     @discardableResult
-    func buildSakeAppExecutableIfNeeded() throws -> String {
+    func buildExecutableIfNeeded() throws -> String {
         let executablePath = try getExecutablePath()
         if try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath) {
             if try isSwiftVersionWasChanged() {
                 log("Swift version was changed")
                 try clean()
             }
-            return try buildSakeAppExecutable()
+            return try buildExecutable()
         }
 
         return executablePath
     }
 
     @discardableResult
-    func buildSakeAppExecutable() throws -> String {
+    func buildExecutable() throws -> String {
         let executablePath = try getExecutablePath()
-        try validate()
+        try validateProject()
         log("Building SakeApp package... (this may take a moment)")
         try commandExecutor.buildExecutable()
         // touch the executable to force update the modification date

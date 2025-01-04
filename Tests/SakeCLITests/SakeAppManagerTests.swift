@@ -28,7 +28,7 @@ final class SakeAppManagerTests: XCTestCase {
         let manager = SakeAppManager<SakeAppManagerUnitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
         do {
-            try manager.initialize()
+            try manager.initializeProject()
             XCTFail("Expected error to be thrown")
         } catch {
             let sakeAppManagerError = error as! SakeAppManagerError
@@ -51,7 +51,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<SakeAppManagerUnitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.initialize()
+        try manager.initializeProject()
 
         XCTAssertEqual(fileHandle.createProjectFilesCallCount, 1)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 0)
@@ -86,7 +86,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<SakeAppManagerInitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.validate()
+        try manager.validateProject()
 
         XCTAssertEqual(fileHandle.validatePackageSwiftExistsCallCount, 1)
         XCTAssertEqual(commandExecutor.packageDumpCallCount, 1)
@@ -101,7 +101,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<SakeAppManagerInitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        XCTAssertThrowsError(try manager.validate()) { error in
+        XCTAssertThrowsError(try manager.validateProject()) { error in
             let sakeAppManagerError = error as! SakeAppManagerError
             if case .sakeAppNotValid(.failedToReadPackageSwift) = sakeAppManagerError {
                 XCTAssertTrue(true)
@@ -132,7 +132,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<SakeAppManagerInitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        XCTAssertThrowsError(try manager.validate()) { error in
+        XCTAssertThrowsError(try manager.validateProject()) { error in
             let sakeAppManagerError = error as! SakeAppManagerError
             if case .sakeAppNotValid(.failedToFindSakeAppExecutableInPackageProducts) = sakeAppManagerError {
                 XCTAssertTrue(true)
@@ -153,7 +153,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<SakeAppManagerInitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.buildSakeAppExecutableIfNeeded()
+        try manager.buildExecutableIfNeeded()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
@@ -169,7 +169,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<SakeAppManagerInitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.buildSakeAppExecutableIfNeeded()
+        try manager.buildExecutableIfNeeded()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 0)
@@ -187,7 +187,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<SakeAppManagerInitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.buildSakeAppExecutableIfNeeded()
+        try manager.buildExecutableIfNeeded()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 1)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
@@ -205,7 +205,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<SakeAppManagerInitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.buildSakeAppExecutableIfNeeded()
+        try manager.buildExecutableIfNeeded()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
@@ -221,7 +221,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<SakeAppManagerInitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.buildSakeAppExecutableIfNeeded()
+        try manager.buildExecutableIfNeeded()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)

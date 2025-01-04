@@ -17,8 +17,8 @@ struct InitCommand: ParsableCommand {
             let config = try configManager.resolvedConfig()
 
             let uninitializedManager = SakeAppManager<SakeAppManagerUnitializedMode>.makeDefault(sakeAppPath: config.sakeAppPath)
-            let initializedSakeAppManager = try uninitializedManager.initialize()
-            try initializedSakeAppManager.buildSakeAppExecutable()
+            let initializedSakeAppManager = try uninitializedManager.initializeProject()
+            try initializedSakeAppManager.buildExecutable()
         } catch {
             logError(error.localizedDescription)
             InitCommand.exit(withError: ExitCode.failure)

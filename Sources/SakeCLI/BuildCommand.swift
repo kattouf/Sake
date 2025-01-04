@@ -24,7 +24,7 @@ struct BuildCommand: ParsableCommand {
                 let binPath = try manager.getExecutablePath()
                 print(binPath)
             } else {
-                try manager.buildSakeAppExecutable()
+                try manager.buildExecutable()
             }
         } catch {
             logError(error.localizedDescription)
