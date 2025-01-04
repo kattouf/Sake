@@ -49,6 +49,7 @@ extension SakeAppManager {
 }
 
 extension SakeAppManager where Mode == SakeAppManagerUnitializedMode {
+    @discardableResult
     consuming func initialize() throws -> SakeAppManager<SakeAppManagerInitializedMode> {
         let alreadyExists: Bool
         do {
