@@ -19,7 +19,7 @@ struct BuildCommand: ParsableCommand {
             let configManager = ConfigManager(cliConfig: CLIConfig(commonOptions: options, commandRelatedOptions: nil))
             let config = try configManager.resolvedConfig()
 
-            let manager = _SakeAppManager<SakeAppManagerInitializedMode>.makeDefault(sakeAppPath: config.sakeAppPath)
+            let manager = SakeAppManager<SakeAppManagerInitializedMode>.makeDefault(sakeAppPath: config.sakeAppPath)
             if showBinPath {
                 let binPath = try manager.getExecutablePath()
                 print(binPath)

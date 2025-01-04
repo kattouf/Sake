@@ -1,19 +1,19 @@
 import Foundation
 
-extension SakeAppManager {
-    enum Error: Swift.Error {
-        case sakeAppAlreadyInitialized(path: String)
-        case sakeAppNotValid(ValidationError)
-        case sakeAppPrebuiltBinaryNotFound(path: String)
+enum SakeAppManagerError: Swift.Error {
+    case sakeAppAlreadyInitialized(path: String)
+    case sakeAppNotValid(ValidationError)
+    case sakeAppPrebuiltBinaryNotFound(path: String)
 
-        case failedToReadSwiftVersion(stdout: String, stderr: String)
-        case failedToCleanSakeApp(stdout: String, stderr: String)
-        case failedToBuildSakeApp(stdout: String, stderr: String)
-        case failedToReadSakeAppBinPath(stdout: String, stderr: String)
+    case failedToReadSwiftVersion(stdout: String, stderr: String)
+    case failedToCleanSakeApp(stdout: String, stderr: String)
+    case failedToBuildSakeApp(stdout: String, stderr: String)
+    case failedToReadSakeAppBinPath(stdout: String, stderr: String)
 
-        case sakeAppError(SakeAppError)
-    }
+    case sakeAppError(SakeAppError)
+}
 
+extension SakeAppManagerError {
     enum SakeAppError: Swift.Error {
         case businessError
         case unexpectedError
@@ -27,7 +27,7 @@ extension SakeAppManager {
     }
 }
 
-extension SakeAppManager.ValidationError: LocalizedError {
+extension SakeAppManagerError.ValidationError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case let .failedToFindPackageSwift(path):
@@ -52,7 +52,7 @@ extension SakeAppManager.ValidationError: LocalizedError {
     }
 }
 
-extension SakeAppManager.SakeAppError: LocalizedError {
+extension SakeAppManagerError.SakeAppError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .businessError:
@@ -63,7 +63,7 @@ extension SakeAppManager.SakeAppError: LocalizedError {
     }
 }
 
-extension SakeAppManager.Error: LocalizedError {
+extension SakeAppManagerError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case let .sakeAppAlreadyInitialized(path):

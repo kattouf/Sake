@@ -23,16 +23,16 @@ struct ListCommand: ParsableCommand {
             let configManager = ConfigManager(cliConfig: CLIConfig(commonOptions: options, commandRelatedOptions: commandRelatedOptions))
             let config = try configManager.resolvedConfig()
 
-            let manager = _SakeAppManager<SakeAppManagerInitializedMode>.makeDefault(sakeAppPath: config.sakeAppPath)
+            let manager = SakeAppManager<SakeAppManagerInitializedMode>.makeDefault(sakeAppPath: config.sakeAppPath)
             try manager.listAvailableCommands(
                 prebuiltExecutablePath: config.sakeAppPrebuiltBinaryPath,
                 caseConvertingStrategy: config.caseConvertingStrategy,
                 json: json
             )
         } catch {
-            if case let SakeAppManager.Error.sakeAppError(sakeAppError) = error {
+            if case let SakeAppManagerError.sakeAppError(sakeAppError) = error {
                 // log only unexpected errors, business errors are already pretty logged by the SakeApp
-                if case SakeAppManager.SakeAppError.unexpectedError = sakeAppError {
+                if case SakeAppManagerError.SakeAppError.unexpectedError = sakeAppError {
                     logError(error.localizedDescription)
                 }
             } else {

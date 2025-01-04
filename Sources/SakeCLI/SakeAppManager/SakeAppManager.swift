@@ -4,20 +4,18 @@ import SakeShared
 enum SakeAppManagerUnitializedMode {}
 enum SakeAppManagerInitializedMode {}
 
-enum SakeAppManager {}
-
-struct _SakeAppManager<Mode>: ~Copyable {
-    let fileHandle: SakeAppManager.FileHandle
-    let commandExecutor: SakeAppManager.CommandExecutor
+struct SakeAppManager<Mode>: ~Copyable {
+    let fileHandle: SakeAppManagerFileHandle
+    let commandExecutor: SakeAppManagerCommandExecutor
 }
 
-extension _SakeAppManager {
+extension SakeAppManager {
     static func makeDefault(sakeAppPath: String) -> Self {
-        let fileHandle = SakeAppManager.DefaultFileHandle(path: sakeAppPath)
+        let fileHandle = DefaultSakeAppManagerFileHandle(path: sakeAppPath)
         let processMonitor = ProcessMonitor()
         processMonitor.monitor()
         let shellExecutor = ShellExecutor(processMonitor: processMonitor)
-        let commandExecutor = SakeAppManager.DefaultCommandExecutor(fileHandle: fileHandle, shellExecutor: shellExecutor)
+        let commandExecutor = DefaultSakeAppManagerCommandExecutor(fileHandle: fileHandle, shellExecutor: shellExecutor)
         return Self(fileHandle: fileHandle, commandExecutor: commandExecutor)
     }
 
@@ -25,7 +23,7 @@ extension _SakeAppManager {
         try fileHandle.validatePackageSwiftExists()
         let dump = try commandExecutor.packageDump()
         guard let dumpData = dump.data(using: .utf8) else {
-            throw SakeAppManager.Error.sakeAppNotValid(.failedToReadPackageSwift(
+            throw SakeAppManagerError.sakeAppNotValid(.failedToReadPackageSwift(
                 path: fileHandle.packageSwiftPath,
                 reason: "Can't decode as utf8 string"
             ))
@@ -35,14 +33,14 @@ extension _SakeAppManager {
         do {
             packageDescription = try JSONDecoder().decode(PackageDescription.self, from: dumpData)
         } catch {
-            throw SakeAppManager.Error.sakeAppNotValid(.failedToReadPackageSwift(
+            throw SakeAppManagerError.sakeAppNotValid(.failedToReadPackageSwift(
                 path: fileHandle.packageSwiftPath,
                 reason: "Can't decode as PackageDescription object. Error: \(error)"
             ))
         }
 
         guard packageDescription.products.contains(where: { $0.type.isExecutable && $0.name == Constants.sakeAppExecutableName }) else {
-            throw SakeAppManager.Error.sakeAppNotValid(.failedToFindSakeAppExecutableInPackageProducts(
+            throw SakeAppManagerError.sakeAppNotValid(.failedToFindSakeAppExecutableInPackageProducts(
                 path: fileHandle.packageSwiftPath,
                 executableName: Constants.sakeAppExecutableName
             ))
@@ -50,8 +48,8 @@ extension _SakeAppManager {
     }
 }
 
-extension _SakeAppManager where Mode == SakeAppManagerUnitializedMode {
-    consuming func initialize() throws -> _SakeAppManager<SakeAppManagerInitializedMode> {
+extension SakeAppManager where Mode == SakeAppManagerUnitializedMode {
+    consuming func initialize() throws -> SakeAppManager<SakeAppManagerInitializedMode> {
         let alreadyExists: Bool
         do {
             try validate()
@@ -60,7 +58,7 @@ extension _SakeAppManager where Mode == SakeAppManagerUnitializedMode {
             alreadyExists = false
         }
         guard !alreadyExists else {
-            throw SakeAppManager.Error.sakeAppAlreadyInitialized(path: fileHandle.path)
+            throw SakeAppManagerError.sakeAppAlreadyInitialized(path: fileHandle.path)
         }
 
         log("Creating SakeApp package at path: \(fileHandle.path)...")
@@ -69,11 +67,11 @@ extension _SakeAppManager where Mode == SakeAppManagerUnitializedMode {
         try validate()
         log("SakeApp package initialized successfully.")
 
-        return _SakeAppManager<SakeAppManagerInitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        return SakeAppManager<SakeAppManagerInitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
     }
 }
 
-extension _SakeAppManager where Mode == SakeAppManagerInitializedMode {
+extension SakeAppManager where Mode == SakeAppManagerInitializedMode {
     func clean() throws {
         try validate()
 
@@ -106,7 +104,7 @@ extension _SakeAppManager where Mode == SakeAppManagerInitializedMode {
             if fileHandle.isPrebuiltExecutableExists(path: prebuiltExecutablePath) {
                 return prebuiltExecutablePath
             } else {
-                throw SakeAppManager.Error.sakeAppPrebuiltBinaryNotFound(path: prebuiltExecutablePath)
+                throw SakeAppManagerError.sakeAppPrebuiltBinaryNotFound(path: prebuiltExecutablePath)
             }
         } else {
             return try buildSakeAppExecutableIfNeeded()
