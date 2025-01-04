@@ -31,14 +31,8 @@ final class DefaultSakeAppManagerFileHandle: SakeAppManagerFileHandle {
         path + "/Sakefile.swift"
     }
 
-    let defaultAppDirectoryName = "SakeApp"
-
-    init(path: String?) {
-        if let path {
-            self.path = URL(fileURLWithPath: path).standardizedFileURL.path
-        } else {
-            self.path = FileManager.default.currentDirectoryPath + "/" + defaultAppDirectoryName
-        }
+    init(path: String) {
+        self.path = URL(fileURLWithPath: path).standardizedFileURL.path
     }
 
     func createProjectFiles() throws {
