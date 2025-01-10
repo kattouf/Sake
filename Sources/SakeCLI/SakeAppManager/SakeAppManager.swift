@@ -4,10 +4,17 @@ import SakeShared
 enum SakeAppManagerUnitializedMode {}
 enum SakeAppManagerInitializedMode {}
 
-struct SakeAppManager<Mode>: ~Copyable {
-    let fileHandle: SakeAppManagerFileHandle
-    let commandExecutor: SakeAppManagerCommandExecutor
-}
+#if swift(>=6.0)
+    struct SakeAppManager<Mode>: ~Copyable {
+        let fileHandle: SakeAppManagerFileHandle
+        let commandExecutor: SakeAppManagerCommandExecutor
+    }
+#else
+    struct SakeAppManager<Mode> {
+        let fileHandle: SakeAppManagerFileHandle
+        let commandExecutor: SakeAppManagerCommandExecutor
+    }
+#endif
 
 extension SakeAppManager {
     static func makeDefault(sakeAppPath: String) -> Self {
