@@ -16,7 +16,7 @@ struct InitCommand: ParsableCommand {
             let configManager = ConfigManager(cliConfig: CLIConfig(commonOptions: options, commandRelatedOptions: nil))
             let config = try configManager.resolvedConfig()
 
-            let uninitializedManager = SakeAppManager<SakeAppManagerUnitializedMode>.makeDefault(sakeAppPath: config.sakeAppPath)
+            let uninitializedManager = SakeAppManager<UninitializedMode>.makeDefault(sakeAppPath: config.sakeAppPath)
             let initializedSakeAppManager = try uninitializedManager.initializeProject()
             try initializedSakeAppManager.buildExecutable()
         } catch {

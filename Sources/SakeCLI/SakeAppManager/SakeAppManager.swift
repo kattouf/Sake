@@ -1,8 +1,8 @@
 import Foundation
 import SakeShared
 
-enum SakeAppManagerUnitializedMode {}
-enum SakeAppManagerInitializedMode {}
+enum UninitializedMode {}
+enum InitializedMode {}
 
 #if swift(>=6.0)
     struct SakeAppManager<Mode>: ~Copyable {
@@ -29,16 +29,22 @@ extension SakeAppManager {
 
 // MARK: - Unitialized mode
 
-extension SakeAppManager where Mode == SakeAppManagerUnitializedMode {
+extension SakeAppManager where Mode == UninitializedMode {
     @discardableResult
-    consuming func initializeProject() throws -> SakeAppManager<SakeAppManagerInitializedMode> {
-        let alreadyExists: Bool
-        do {
-            let initializedManager = SakeAppManager<SakeAppManagerInitializedMode>(
+    consuming func initializeProject() throws -> SakeAppManager<InitializedMode> {
+        @discardableResult
+        func initAndValidateInitializedManager() throws -> SakeAppManager<InitializedMode> {
+            let initializedManager = SakeAppManager<InitializedMode>(
                 fileHandle: fileHandle,
                 commandExecutor: commandExecutor
             )
             try initializedManager.validateProject()
+            return initializedManager
+        }
+
+        let alreadyExists: Bool
+        do {
+            try initAndValidateInitializedManager()
             alreadyExists = true
         } catch {
             alreadyExists = false
@@ -50,11 +56,7 @@ extension SakeAppManager where Mode == SakeAppManagerUnitializedMode {
         log("Creating SakeApp package at path: \(fileHandle.path)...")
         try fileHandle.createProjectFiles()
 
-        let initializedManager = SakeAppManager<SakeAppManagerInitializedMode>(
-            fileHandle: fileHandle,
-            commandExecutor: commandExecutor
-        )
-        try initializedManager.validateProject()
+        let initializedManager = try initAndValidateInitializedManager()
         log("SakeApp package initialized successfully.")
 
         return initializedManager
@@ -63,7 +65,7 @@ extension SakeAppManager where Mode == SakeAppManagerUnitializedMode {
 
 // MARK: - Initialized mode
 
-extension SakeAppManager where Mode == SakeAppManagerInitializedMode {
+extension SakeAppManager where Mode == InitializedMode {
     func validateProject() throws {
         try fileHandle.validatePackageSwiftExists()
         let dump = try commandExecutor.packageDump()

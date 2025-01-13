@@ -15,7 +15,7 @@ enum ShellCompletionCommandListGenerator {
             ))
             let config = try configManager.resolvedConfig()
 
-            let manager = SakeAppManager<SakeAppManagerInitializedMode>.makeDefault(sakeAppPath: config.sakeAppPath)
+            let manager = SakeAppManager<InitializedMode>.makeDefault(sakeAppPath: config.sakeAppPath)
             guard
                 let commandsListJSON = manager.getListAvailableCommandsOutputIfExecutablePresented(
                     caseConvertingStrategy: config.caseConvertingStrategy,
@@ -33,7 +33,7 @@ enum ShellCompletionCommandListGenerator {
     }
 }
 
-private extension SakeAppManager where Mode == SakeAppManagerInitializedMode {
+private extension SakeAppManager where Mode == InitializedMode {
     func getListAvailableCommandsOutputIfExecutablePresented(caseConvertingStrategy: CaseConvertingStrategy, json: Bool) -> String? {
         guard let executablePath = try? getExecutablePath(), FileManager.default.fileExists(atPath: executablePath) else {
             return nil
