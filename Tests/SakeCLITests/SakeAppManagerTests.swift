@@ -16,19 +16,35 @@ final class SakeAppManagerTests: XCTestCase {
     }
     """
 
+    // MARK: - Factory methods
+
+    func testSakeAppManager_inInitializedMode_shouldNotInitialize_ifSakeAppDirectoryDoesNotExists() throws {
+        XCTAssertThrowsError(try SakeAppManager<InitializedMode>.makeInInitializedMode(sakeAppPath: "jepa")) { error in
+            let sakeAppManagerError = error as! SakeAppManagerError
+            if case .sakeAppNotInitialized = sakeAppManagerError {
+                XCTAssertTrue(true)
+            } else {
+                XCTFail("Unexpected error: \(sakeAppManagerError)")
+            }
+        }
+    }
+
     // MARK: - Initialize
 
-    func testSakeAppManager_whenInitialize_shouldThrowError_IfAlreadyInitialized() throws {
+    func testSakeAppManager_whenInitialize_shouldThrowError_IfAlreadyInitialized() {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: false
         )
         let commandExecutor = MockCommandExecutor(
             packageDumpReturnValue: { _ in self.validPackageDump }
         )
-        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        let manager = SakeAppManager<UninitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        XCTAssertThrowsError(try manager.initialize()) { error in
-            let sakeAppManagerError = error as! SakeAppManager.Error
+        do {
+            try manager.initializeProject()
+            XCTFail("Expected error to be thrown")
+        } catch {
+            let sakeAppManagerError = error as! SakeAppManagerError
             if case .sakeAppAlreadyInitialized = sakeAppManagerError {
                 XCTAssertTrue(true)
             } else {
@@ -37,7 +53,7 @@ final class SakeAppManagerTests: XCTestCase {
         }
     }
 
-    func testSakeAppManager_whenInitialize_shouldCreateFiles_buildExecutable_andValidate() throws {
+    func testSakeAppManager_whenInitialize_shouldCreateFiles_andValidate() throws {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: true
         )
@@ -46,13 +62,13 @@ final class SakeAppManagerTests: XCTestCase {
                 callCount == 0 ? "" : self.validPackageDump
             }
         )
-        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        let manager = SakeAppManager<UninitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.initialize()
+        try manager.initializeProject()
 
         XCTAssertEqual(fileHandle.createProjectFilesCallCount, 1)
-        XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
-        XCTAssertEqual(commandExecutor.touchExecutableCallCount, 1)
+        XCTAssertEqual(commandExecutor.buildExecutableCallCount, 0)
+        XCTAssertEqual(commandExecutor.touchExecutableCallCount, 0)
         XCTAssertTrue(fileHandle.validatePackageSwiftExistsCallCount > 0)
     }
 
@@ -65,7 +81,7 @@ final class SakeAppManagerTests: XCTestCase {
         let commandExecutor = MockCommandExecutor(
             packageDumpReturnValue: { _ in self.validPackageDump }
         )
-        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
         try manager.clean()
 
@@ -81,9 +97,9 @@ final class SakeAppManagerTests: XCTestCase {
         let commandExecutor = MockCommandExecutor(
             packageDumpReturnValue: { _ in self.validPackageDump }
         )
-        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.validate()
+        try manager.validateProject()
 
         XCTAssertEqual(fileHandle.validatePackageSwiftExistsCallCount, 1)
         XCTAssertEqual(commandExecutor.packageDumpCallCount, 1)
@@ -96,10 +112,10 @@ final class SakeAppManagerTests: XCTestCase {
         let commandExecutor = MockCommandExecutor(
             packageDumpReturnValue: { _ in "jepa" }
         )
-        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        XCTAssertThrowsError(try manager.validate()) { error in
-            let sakeAppManagerError = error as! SakeAppManager.Error
+        XCTAssertThrowsError(try manager.validateProject()) { error in
+            let sakeAppManagerError = error as! SakeAppManagerError
             if case .sakeAppNotValid(.failedToReadPackageSwift) = sakeAppManagerError {
                 XCTAssertTrue(true)
             } else {
@@ -127,10 +143,10 @@ final class SakeAppManagerTests: XCTestCase {
             """
             }
         )
-        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        XCTAssertThrowsError(try manager.validate()) { error in
-            let sakeAppManagerError = error as! SakeAppManager.Error
+        XCTAssertThrowsError(try manager.validateProject()) { error in
+            let sakeAppManagerError = error as! SakeAppManagerError
             if case .sakeAppNotValid(.failedToFindSakeAppExecutableInPackageProducts) = sakeAppManagerError {
                 XCTAssertTrue(true)
             } else {
@@ -148,9 +164,9 @@ final class SakeAppManagerTests: XCTestCase {
         let commandExecutor = MockCommandExecutor(
             packageDumpReturnValue: { _ in self.validPackageDump }
         )
-        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.buildSakeAppExecutableIfNeeded()
+        try manager.buildExecutableIfNeeded()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
@@ -164,9 +180,9 @@ final class SakeAppManagerTests: XCTestCase {
         let commandExecutor = MockCommandExecutor(
             packageDumpReturnValue: { _ in self.validPackageDump }
         )
-        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.buildSakeAppExecutableIfNeeded()
+        try manager.buildExecutableIfNeeded()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 0)
@@ -182,9 +198,9 @@ final class SakeAppManagerTests: XCTestCase {
             swiftVersionDumpReturnValue: "1.0.1",
             packageDumpReturnValue: { _ in self.validPackageDump }
         )
-        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.buildSakeAppExecutableIfNeeded()
+        try manager.buildExecutableIfNeeded()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 1)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
@@ -200,9 +216,9 @@ final class SakeAppManagerTests: XCTestCase {
             swiftVersionDumpReturnValue: "1.0.1",
             packageDumpReturnValue: { _ in self.validPackageDump }
         )
-        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.buildSakeAppExecutableIfNeeded()
+        try manager.buildExecutableIfNeeded()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
@@ -216,9 +232,9 @@ final class SakeAppManagerTests: XCTestCase {
         let commandExecutor = MockCommandExecutor(
             packageDumpReturnValue: { _ in self.validPackageDump }
         )
-        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.buildSakeAppExecutableIfNeeded()
+        try manager.buildExecutableIfNeeded()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
@@ -234,7 +250,7 @@ final class SakeAppManagerTests: XCTestCase {
         let commandExecutor = MockCommandExecutor(
             packageDumpReturnValue: { _ in self.validPackageDump }
         )
-        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
         try manager.run(prebuiltExecutablePath: nil, command: "command", args: ["arg1", "arg2"], caseConvertingStrategy: .keepOriginal)
 
@@ -252,7 +268,7 @@ final class SakeAppManagerTests: XCTestCase {
         let commandExecutor = MockCommandExecutor(
             packageDumpReturnValue: { _ in self.validPackageDump }
         )
-        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
         try manager.listAvailableCommands(prebuiltExecutablePath: nil, caseConvertingStrategy: .keepOriginal, json: false)
 
@@ -272,7 +288,7 @@ final class SakeAppManagerTests: XCTestCase {
         let commandExecutor = MockCommandExecutor(
             packageDumpReturnValue: { _ in self.validPackageDump }
         )
-        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
         try manager.run(prebuiltExecutablePath: "path", command: "command", args: ["arg1", "arg2"], caseConvertingStrategy: .keepOriginal)
 
@@ -290,7 +306,7 @@ final class SakeAppManagerTests: XCTestCase {
         let commandExecutor = MockCommandExecutor(
             packageDumpReturnValue: { _ in self.validPackageDump }
         )
-        let manager = SakeAppManager(fileHandle: fileHandle, commandExecutor: commandExecutor)
+        let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
         try manager.listAvailableCommands(prebuiltExecutablePath: "path", caseConvertingStrategy: .keepOriginal, json: false)
 
@@ -302,7 +318,7 @@ final class SakeAppManagerTests: XCTestCase {
     }
 }
 
-private final class MockFileHandle: SakeAppManager.FileHandle {
+private final class MockFileHandle: SakeAppManagerFileHandle {
     let path: String
     let gitignorePath: String
     let packageSwiftPath: String
@@ -360,7 +376,7 @@ private final class MockFileHandle: SakeAppManager.FileHandle {
     }
 }
 
-private final class MockCommandExecutor: SakeAppManager.CommandExecutor {
+private final class MockCommandExecutor: SakeAppManagerCommandExecutor {
     private(set) var swiftVersionDumpCallCount = 0
     private(set) var packageDumpCallCount = 0
     private(set) var packageCleanCallCount = 0

@@ -3,21 +3,21 @@ import XCTest
 
 final class DefaultFileHandleTests: XCTestCase {
     func testAbosultePath() {
-        let fileHandle = SakeAppManager.DefaultFileHandle(path: "/path/to/sakeapp")
+        let fileHandle = DefaultSakeAppManagerFileHandle(path: "/path/to/sakeapp")
         XCTAssertEqual(fileHandle.path, "/path/to/sakeapp")
     }
 
     func testRelativePath() {
-        let fileHandle = SakeAppManager.DefaultFileHandle(path: "path/to/sakeapp")
+        let fileHandle = DefaultSakeAppManagerFileHandle(path: "path/to/sakeapp")
         XCTAssertEqual(fileHandle.path, FileManager.default.currentDirectoryPath + "/path/to/sakeapp")
 
-        let fileHandle2 = SakeAppManager.DefaultFileHandle(path: "./path/to/sakeapp")
+        let fileHandle2 = DefaultSakeAppManagerFileHandle(path: "./path/to/sakeapp")
         XCTAssertEqual(fileHandle2.path, FileManager.default.currentDirectoryPath + "/path/to/sakeapp")
     }
 
     func testCreateProjectFiles() throws {
         let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
-        let fileHandle = SakeAppManager.DefaultFileHandle(path: tempDirectory)
+        let fileHandle = DefaultSakeAppManagerFileHandle(path: tempDirectory)
         try fileHandle.createProjectFiles()
 
         XCTAssertTrue(FileManager.default.fileExists(atPath: fileHandle.gitignorePath))
@@ -28,7 +28,7 @@ final class DefaultFileHandleTests: XCTestCase {
     }
 
     func testValidatePackageSwiftExists() throws {
-        let fileHandle = SakeAppManager.DefaultFileHandle(path: "/tmp/sakeapp")
+        let fileHandle = DefaultSakeAppManagerFileHandle(path: "/tmp/sakeapp")
         try fileHandle.createProjectFiles()
 
         try fileHandle.validatePackageSwiftExists()
@@ -38,7 +38,7 @@ final class DefaultFileHandleTests: XCTestCase {
 
     func testSaveAndGetSwiftVersionDump() throws {
         let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
-        let fileHandle = SakeAppManager.DefaultFileHandle(path: tempDirectory)
+        let fileHandle = DefaultSakeAppManagerFileHandle(path: tempDirectory)
         let buildPath = fileHandle.path + "/.build"
         try FileManager.default.createDirectory(atPath: buildPath, withIntermediateDirectories: true, attributes: nil)
 
@@ -52,7 +52,7 @@ final class DefaultFileHandleTests: XCTestCase {
 
     func testIsExecutableOutdated() throws {
         let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-        let fileHandle = SakeAppManager.DefaultFileHandle(path: tempDirectory.path)
+        let fileHandle = DefaultSakeAppManagerFileHandle(path: tempDirectory.path)
         try fileHandle.createProjectFiles()
 
         let executablePath = tempDirectory.appendingPathComponent(".build").appendingPathComponent("my-exec").path
@@ -76,7 +76,7 @@ final class DefaultFileHandleTests: XCTestCase {
 
     func testIsExecutableDoesNotBecomeOutdatedDueToHiddenFiles() throws {
         let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-        let fileHandle = SakeAppManager.DefaultFileHandle(path: tempDirectory.path)
+        let fileHandle = DefaultSakeAppManagerFileHandle(path: tempDirectory.path)
         try fileHandle.createProjectFiles()
 
         let hiddenDirectory = tempDirectory.appendingPathComponent(".hidden")
