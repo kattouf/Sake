@@ -25,7 +25,45 @@ extension SakeAppManager {
         let commandExecutor = DefaultSakeAppManagerCommandExecutor(fileHandle: fileHandle, shellExecutor: shellExecutor)
         return Self(fileHandle: fileHandle, commandExecutor: commandExecutor)
     }
+}
 
+// MARK: - Unitialized mode
+
+extension SakeAppManager where Mode == SakeAppManagerUnitializedMode {
+    @discardableResult
+    consuming func initializeProject() throws -> SakeAppManager<SakeAppManagerInitializedMode> {
+        let alreadyExists: Bool
+        do {
+            let initializedManager = SakeAppManager<SakeAppManagerInitializedMode>(
+                fileHandle: fileHandle,
+                commandExecutor: commandExecutor
+            )
+            try initializedManager.validateProject()
+            alreadyExists = true
+        } catch {
+            alreadyExists = false
+        }
+        guard !alreadyExists else {
+            throw SakeAppManagerError.sakeAppAlreadyInitialized(path: fileHandle.path)
+        }
+
+        log("Creating SakeApp package at path: \(fileHandle.path)...")
+        try fileHandle.createProjectFiles()
+
+        let initializedManager = SakeAppManager<SakeAppManagerInitializedMode>(
+            fileHandle: fileHandle,
+            commandExecutor: commandExecutor
+        )
+        try initializedManager.validateProject()
+        log("SakeApp package initialized successfully.")
+
+        return initializedManager
+    }
+}
+
+// MARK: - Initialized mode
+
+extension SakeAppManager where Mode == SakeAppManagerInitializedMode {
     func validateProject() throws {
         try fileHandle.validatePackageSwiftExists()
         let dump = try commandExecutor.packageDump()
@@ -53,37 +91,7 @@ extension SakeAppManager {
             ))
         }
     }
-}
 
-// MARK: - Unitialized mode
-
-extension SakeAppManager where Mode == SakeAppManagerUnitializedMode {
-    @discardableResult
-    consuming func initializeProject() throws -> SakeAppManager<SakeAppManagerInitializedMode> {
-        let alreadyExists: Bool
-        do {
-            try validateProject()
-            alreadyExists = true
-        } catch {
-            alreadyExists = false
-        }
-        guard !alreadyExists else {
-            throw SakeAppManagerError.sakeAppAlreadyInitialized(path: fileHandle.path)
-        }
-
-        log("Creating SakeApp package at path: \(fileHandle.path)...")
-        try fileHandle.createProjectFiles()
-
-        try validateProject()
-        log("SakeApp package initialized successfully.")
-
-        return SakeAppManager<SakeAppManagerInitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
-    }
-}
-
-// MARK: - Initialized mode
-
-extension SakeAppManager where Mode == SakeAppManagerInitializedMode {
     func clean() throws {
         try validateProject()
 
