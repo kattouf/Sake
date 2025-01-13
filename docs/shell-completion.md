@@ -4,6 +4,8 @@ outline: deep
 
 # Shell Completion
 
+## Shell-Runned Completion
+
 Sake supports shell completion for streamlined command usage. To enable shell completion, follow the installation instructions provided in the [Swift Argument Parser documentation](https://apple.github.io/swift-argument-parser/documentation/argumentparser/installingcompletionscripts/#Installing-Zsh-Completions).
 
 With shell completion configured, you can use `Tab` to auto-complete available commands, including built-in Sake commands and custom ones defined in your Sake project.
@@ -46,6 +48,6 @@ Here, typing `che` followed by `Tab` auto-completes to `check`, assuming `check`
 
 This feature enhances the usability of Sake by making command discovery and execution faster and more efficient.
 
-### Fig Completion
+## Fig Completion
 
 Sake also supports Fig completion, which is a popular shell completion tool for modern shells. To enable Fig completion, follow the instructions provided in the [Fig documentation](https://github.com/withfig/autocomplete).
