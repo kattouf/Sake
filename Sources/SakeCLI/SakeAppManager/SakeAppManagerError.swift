@@ -1,6 +1,7 @@
 import Foundation
 
 enum SakeAppManagerError: Swift.Error {
+    case sakeAppNotInitialized(path: String)
     case sakeAppAlreadyInitialized(path: String)
     case sakeAppNotValid(ValidationError)
     case sakeAppPrebuiltBinaryNotFound(path: String)
@@ -66,6 +67,8 @@ extension SakeAppManagerError.SakeAppError: LocalizedError {
 extension SakeAppManagerError: LocalizedError {
     var errorDescription: String? {
         switch self {
+        case let .sakeAppNotInitialized(path):
+            "SakeApp not found at \(path)."
         case let .sakeAppAlreadyInitialized(path):
             "SakeApp already initialized at \(path)."
         case let .sakeAppNotValid(error):

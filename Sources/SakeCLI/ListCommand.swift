@@ -23,7 +23,7 @@ struct ListCommand: ParsableCommand {
             let configManager = ConfigManager(cliConfig: CLIConfig(commonOptions: options, commandRelatedOptions: commandRelatedOptions))
             let config = try configManager.resolvedConfig()
 
-            let manager = SakeAppManager<InitializedMode>.makeDefault(sakeAppPath: config.sakeAppPath)
+            let manager: SakeAppManager<InitializedMode> = try .makeInInitializedMode(sakeAppPath: config.sakeAppPath)
             try manager.listAvailableCommands(
                 prebuiltExecutablePath: config.sakeAppPrebuiltBinaryPath,
                 caseConvertingStrategy: config.caseConvertingStrategy,

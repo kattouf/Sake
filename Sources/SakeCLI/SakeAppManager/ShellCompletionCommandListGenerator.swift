@@ -15,7 +15,7 @@ enum ShellCompletionCommandListGenerator {
             ))
             let config = try configManager.resolvedConfig()
 
-            let manager = SakeAppManager<InitializedMode>.makeDefault(sakeAppPath: config.sakeAppPath)
+            let manager: SakeAppManager<InitializedMode> = try .makeInInitializedMode(sakeAppPath: config.sakeAppPath)
             guard
                 let commandsListJSON = manager.getListAvailableCommandsOutputIfExecutablePresented(
                     caseConvertingStrategy: config.caseConvertingStrategy,
