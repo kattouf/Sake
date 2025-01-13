@@ -1,6 +1,8 @@
 import Foundation
 import SakeShared
 
+// MARK: - SakeAppManager
+
 enum UninitializedMode {}
 enum InitializedMode {}
 
@@ -15,6 +17,8 @@ enum InitializedMode {}
         let commandExecutor: SakeAppManagerCommandExecutor
     }
 #endif
+
+// MARK: - Factory methods
 
 extension SakeAppManager {
     static func makeInUninitializedMode(sakeAppPath: String) -> SakeAppManager<UninitializedMode> {

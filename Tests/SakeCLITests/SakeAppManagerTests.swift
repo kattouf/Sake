@@ -16,6 +16,19 @@ final class SakeAppManagerTests: XCTestCase {
     }
     """
 
+    // MARK: - Factory methods
+
+    func testSakeAppManager_inInitializedMode_shouldNotInitialize_ifSakeAppDirectoryDoesNotExists() throws {
+        XCTAssertThrowsError(try SakeAppManager<InitializedMode>.makeInInitializedMode(sakeAppPath: "jepa")) { error in
+            let sakeAppManagerError = error as! SakeAppManagerError
+            if case .sakeAppNotInitialized = sakeAppManagerError {
+                XCTAssertTrue(true)
+            } else {
+                XCTFail("Unexpected error: \(sakeAppManagerError)")
+            }
+        }
+    }
+
     // MARK: - Initialize
 
     func testSakeAppManager_whenInitialize_shouldThrowError_IfAlreadyInitialized() {
