@@ -19,7 +19,7 @@ final class SakeAppManagerTests: XCTestCase {
     // MARK: - Factory methods
 
     func testSakeAppManager_inInitializedMode_shouldNotInitialize_ifSakeAppDirectoryDoesNotExists() throws {
-        XCTAssertThrowsError(try SakeAppManager<InitializedMode>.makeInInitializedMode(sakeAppPath: "/jepa/nonexistent/dir")) { error in
+        XCTAssertThrowsError(try SakeAppManager<InitializedMode>.makeInInitializedMode(sakeAppPath: "jepa")) { error in
             let sakeAppManagerError = error as! SakeAppManagerError
             if case .sakeAppNotInitialized = sakeAppManagerError {
                 XCTAssertTrue(true)
@@ -27,17 +27,6 @@ final class SakeAppManagerTests: XCTestCase {
                 XCTFail("Unexpected error: \(sakeAppManagerError)")
             }
         }
-    }
-
-    func testSakeAppManager_inInitializedMode_shouldInitializeByParentSakeAppDirectory_ifSpecifiedSakeAppDirectoryDoesNotExists() throws {
-        let tempDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).path
-        let parentSideSakeAppDirectory = tempDirectory + "/SakeApp"
-        let specifiedSakeAppDirectory = tempDirectory + "/some/other/dir/jepa"
-
-        try FileManager.default.createDirectory(atPath: parentSideSakeAppDirectory, withIntermediateDirectories: true, attributes: nil)
-
-        let manager = try SakeAppManager<InitializedMode>.makeInInitializedMode(sakeAppPath: specifiedSakeAppDirectory)
-        XCTAssertEqual(manager.fileHandle.path, parentSideSakeAppDirectory)
     }
 
     // MARK: - Initialize
