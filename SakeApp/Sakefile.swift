@@ -19,8 +19,18 @@ struct Commands: SakeApp {
         Command(
             description: "Lint code",
             dependencies: [MiseCommands.ensureSwiftFormatInstalled],
-            run: { _ in
-                try runAndPrint("mise", "exec", "--", "swiftformat", "Sources", "SakeApp", "Tests", "Package.swift", "--lint")
+            run: { context in
+                try runAndPrint(
+                    "mise",
+                    "exec",
+                    "--",
+                    "swiftformat",
+                    "\(context.projectRoot)/Sources",
+                    "\(context.projectRoot)/SakeApp",
+                    "\(context.projectRoot)/Tests",
+                    "\(context.projectRoot)/Package.swift",
+                    "--lint"
+                )
             }
         )
     }
@@ -29,8 +39,17 @@ struct Commands: SakeApp {
         Command(
             description: "Format code",
             dependencies: [MiseCommands.ensureSwiftFormatInstalled],
-            run: { _ in
-                try runAndPrint("mise", "exec", "--", "swiftformat", "Sources", "SakeApp", "Tests", "Package.swift")
+            run: { context in
+                try runAndPrint(
+                    "mise",
+                    "exec",
+                    "--",
+                    "swiftformat",
+                    "\(context.projectRoot)/Sources",
+                    "\(context.projectRoot)/SakeApp",
+                    "\(context.projectRoot)/Tests",
+                    "\(context.projectRoot)/Package.swift"
+                )
             }
         )
     }
