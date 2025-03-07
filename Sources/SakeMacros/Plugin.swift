@@ -3,6 +3,6 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 
 @main
-struct Plugin: CompilerPlugin {
+struct Plugin : CompilerPlugin {
     let providingMacros: [Macro.Type] = [CommandGroupMacro.self]
 }
