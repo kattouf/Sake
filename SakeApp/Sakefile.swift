@@ -6,6 +6,7 @@ import SwiftShell
 @main
 @CommandGroup
 struct Commands: SakeApp {
+    // jepa
     public static var configuration: SakeAppConfiguration {
         SakeAppConfiguration(
             commandGroups: [
