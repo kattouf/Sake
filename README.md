@@ -62,7 +62,6 @@ Hello, Stranger!
 - **Build Automation**: Compile your project with different configurations and run tests
 - **Release Management**: Automate version updates
 - **Code Quality**: Run formatters and linters to maintain consistent code style
-- **Documentation**: Keep your project documentation up to date
 
 ## 🤝 Contributing
 
@@ -72,7 +71,9 @@ We welcome contributions! Whether it's:
 - 📖 Documentation Improvements
 - 🔧 Code Contributions
 
-Check out our [Contribution Guide](https://sakeswift.org/contribution-guide.html) to get started.
+👋 **Before writing code**: We kindly ask that you open a discussion or issue first to discuss your proposed changes. This helps ensure your time is well-spent on features or fixes that align with the project's direction and prevents duplicate efforts.
+
+Check out our [Contribution Guide](https://sakeswift.org/contribution-guide.html) to find more details on how to get started.
 
 ## 📜 License
 

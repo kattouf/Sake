@@ -2,6 +2,10 @@
 
 Thank you for considering contributing to Sake! To ensure a smooth collaboration, please follow the guidelines below before submitting your Pull Request:
 
+### Before Writing Code
+
+We kindly ask that you open a discussion or issue first to discuss your proposed changes. This helps ensure your time is well-spent on features or fixes that align with the project's direction and prevents duplicate efforts.
+
 ### Code Formatting and Testing
 
 Before committing your code and opening a Pull Request, make sure to:
