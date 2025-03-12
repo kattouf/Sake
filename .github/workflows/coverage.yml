@@ -1,0 +1,26 @@
+name: Code Coverage
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  coverage:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run tests with coverage
+        run: |
+          swift test --enable-code-coverage
+          xcrun llvm-cov export -format="lcov" .build/debug/SakePackageTests.xctest/Contents/MacOS/SakePackageTests -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.lcov
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
