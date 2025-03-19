@@ -8,22 +8,78 @@
 
 Swift-based utility for managing project commands, inspired by Make. Write your project commands in Swift and enjoy type safety, code reuse, and seamless integration.
 
+## ⭐️ Key Features
+
+- **Swift-Native Workflow**: Write, execute, and manage all your project commands in Swift with full IDE support, type safety, and seamless integration
+- **Command Dependencies**: Define commands that depend on other commands
+- **Conditional Execution**: Skip commands based on custom conditions
+- **Command Listing**: Display all available commands with their descriptions
+
+## 🏃 Less Talk, More Action
+
+First, take a look at what you can accomplish with Sake, and then we'll dive into how to make it happen:
+
+Define your project commands like this:
 ``` swift
+// Sakefile.swift
+
 struct Commands: SakeApp {
-    public static var sayHello: Command {
+
+    // MARK: - Code style
+
+    public static var format: Command {
         Command(
+            description: "Format source code",
+            dependencies: [BrewCommands.ensureSwiftFormatInstalled],
             run: { context in
-                let name = context.arguments.first ?? "World"
-                print("Hello, \(name)!")
+                try runAndPrint("swiftformat", "Sources", "Package.swift")
+            }
+        )
+    }
+
+    // MARK: - Tests
+
+    struct TestArguments: ParsableArguments {
+        @Flag(name: .long, help: "Skip building before running tests")
+        var skipBuild: Bool = false
+    }
+
+    public static var runTests: Command {
+        Command(
+            description: "Run unit tests",
+            dependencies: [buildTests],
+            run: { context in
+                try runAndPrint("swift", "test", "--skip-build"")
+            }
+        )
+    }
+
+    public static var buildTests: Command {
+        Command(
+            description: "Build tests",
+            skipIf: { context in
+                let arguments = try TestArguments.parse(context.arguments)
+                return arguments.skipBuild
+            },
+            run: { context in
+                try runAndPrint("swift", "build", "--build-tests")
             }
         )
     }
 }
 ```
 
+Then run them like this:
 ``` sh
-❯ sake sayHello Stranger
-Hello, Stranger!
+❯ sake list
+Commands:
+ * format - Format source code
+ * runTests - Run unit tests
+ * buildTests - Build tests
+
+❯ sake runTests --skip-build
+...
+Executed 21 tests, with 0 failures (0 unexpected) in 0.144 (0.146) seconds
 ```
 
 > [!IMPORTANT]
@@ -31,16 +87,7 @@ Hello, Stranger!
 
 [📚 Documentation](https://sakeswift.org) • [🚀 Getting Started](#-getting-started) • [💻 GitHub](https://github.com/kattouf/Sake)
 
-## ⭐️ Key Features
-
-- **Type-Safe Commands**: Write commands in Swift with full IDE support and compile-time checks
-- **Command Dependencies**: Define commands that depend on other commands
-- **Conditional Execution**: Skip commands based on custom conditions
-- **Command Groups**: Organize commands into logical groups
-- **Shell Completion**: Tab completion for all commands
-- **Extensible**: Use any Swift package to enhance your commands
-
-## 📚 Getting Started
+## 🚀 Getting Started
 
 1. **Install Sake**
    ```bash
