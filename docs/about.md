@@ -10,8 +10,7 @@ For more details on how Sake works internally, refer to the [How It Works](/how-
 
 ::: warning
 
-Sake is under active development, with ongoing updates and improvements.  
-Use with caution in production environments.
+Sake is feature-complete but hasn’t been battle-tested in production yet. Use with care.
 
 For a list of known limitations and considerations, please refer to the [Limitations](/limitations.md) section.
 

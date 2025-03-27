@@ -83,7 +83,7 @@ Executed 21 tests, with 0 failures (0 unexpected) in 0.144 (0.146) seconds
 ```
 
 > [!IMPORTANT]
-> Sake is under active development, with ongoing updates and improvements. Use with caution in production environments.
+> Sake is feature-complete but hasn’t been battle-tested in production yet. Use with care.
 
 [📚 Documentation](https://sakeswift.org) • [🚀 Getting Started](#-getting-started) • [💻 GitHub](https://github.com/kattouf/Sake)
 
