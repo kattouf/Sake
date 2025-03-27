@@ -32,7 +32,7 @@ struct Commands: SakeApp {
             description: "Format source code",
             dependencies: [BrewCommands.ensureSwiftFormatInstalled],
             run: { context in
-                try runAndPrint("swiftformat", "Sources", "Package.swift")
+                try SwiftShell.runAndPrint("swiftformat", "Sources", "Package.swift")
             }
         )
     }
@@ -49,7 +49,7 @@ struct Commands: SakeApp {
             description: "Run unit tests",
             dependencies: [buildTests],
             run: { context in
-                try runAndPrint("swift", "test", "--skip-build"")
+                try SwiftShell.runAndPrint("swift", "test", "--skip-build"")
             }
         )
     }
@@ -62,7 +62,7 @@ struct Commands: SakeApp {
                 return arguments.skipBuild
             },
             run: { context in
-                try runAndPrint("swift", "build", "--build-tests")
+                try SwiftShell.runAndPrint("swift", "build", "--build-tests")
             }
         )
     }
