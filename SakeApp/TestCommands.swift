@@ -1,5 +1,6 @@
 import ArgumentParser
 import Sake
+import SakeSwiftShell
 import SwiftShell
 
 @CommandGroup

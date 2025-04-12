@@ -1,4 +1,5 @@
 import Sake
+import SakeSwiftShell
 import SwiftShell
 
 @CommandGroup

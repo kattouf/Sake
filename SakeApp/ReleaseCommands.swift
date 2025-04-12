@@ -2,6 +2,7 @@ import ArgumentParser
 import Crypto
 import Foundation
 import Sake
+import SakeSwiftShell
 import SwiftShell
 
 @CommandGroup
