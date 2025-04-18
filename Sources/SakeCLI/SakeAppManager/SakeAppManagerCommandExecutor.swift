@@ -94,7 +94,7 @@ final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor 
         args: [String],
         caseConvertingStrategy: CaseConvertingStrategy
     ) throws {
-        let args = args.isEmpty ? "" : " \(args.joined(separator: " "))"
+        let args = args.isEmpty ? "" : " \(args.map { $0.shellQuoted }.joined(separator: " "))"
 
         do {
             try shellExecutor
