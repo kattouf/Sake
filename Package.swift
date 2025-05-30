@@ -6,15 +6,16 @@ import PackageDescription
 
 let package = Package(
     name: "Sake",
-    platforms: [.macOS(.v10_15)], // required by SwiftSyntax
+    platforms: [.macOS(.v13)], // required by swift-subprocess
     products: [
         .executable(name: "sake", targets: ["SakeCLI"]),
         .library(name: "Sake", targets: ["Sake"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/kareman/SwiftShell", from: "5.1.0"),
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
-        .package(url: "https://github.com/apple/swift-syntax", from: "601.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-subprocess.git", branch: "main"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "601.0.0"),
+        .package(url: "https://github.com/kareman/SwiftShell", from: "5.1.0"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "6.0.0"),
     ],
     targets: [
@@ -22,9 +23,10 @@ let package = Package(
             name: "SakeCLI",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                "SwiftShell",
+                .product(name: "Subprocess", package: "swift-subprocess"),
+                .product(name: "SwiftShell", package: "SwiftShell"),
+                .product(name: "Yams", package: "Yams"),
                 "SakeShared",
-                "Yams",
             ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency"),
