@@ -15,7 +15,6 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
         .package(url: "https://github.com/swiftlang/swift-subprocess.git", branch: "main"),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "601.0.0"),
-        .package(url: "https://github.com/kareman/SwiftShell", from: "5.1.0"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "6.0.0"),
     ],
     targets: [
@@ -24,9 +23,8 @@ let package = Package(
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Subprocess", package: "swift-subprocess"),
-                .product(name: "SwiftShell", package: "SwiftShell"),
                 .product(name: "Yams", package: "Yams"),
-                "SakeShared",
+                .target(name: "SakeShared"),
             ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency"),
@@ -43,8 +41,8 @@ let package = Package(
             name: "Sake",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                "SakeMacros",
-                "SakeShared",
+                .target(name: "SakeMacros"),
+                .target(name: "SakeShared"),
             ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency"),
@@ -54,7 +52,7 @@ let package = Package(
         .testTarget(
             name: "SakeTests",
             dependencies: [
-                "Sake",
+                .target(name: "Sake"),
             ]
         ),
         .target(
@@ -80,15 +78,15 @@ let package = Package(
         .testTarget(
             name: "SakeMacrosTests",
             dependencies: [
-                "SakeMacros",
+                .target(name: "SakeMacros"),
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ]
         ),
         .testTarget(
             name: "IntegrationTests",
             dependencies: [
-                "SwiftShell",
-                "SakeShared",
+                .product(name: "Subprocess", package: "swift-subprocess"),
+                .target(name: "SakeShared"),
             ]
         ),
     ]

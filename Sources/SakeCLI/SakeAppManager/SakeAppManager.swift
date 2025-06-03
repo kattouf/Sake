@@ -40,9 +40,7 @@ extension SakeAppManager {
 
     private static func makeDefault(sakeAppPath: String) -> Self {
         let fileHandle = DefaultSakeAppManagerFileHandle(path: sakeAppPath)
-        let processMonitor = ProcessMonitor()
-        processMonitor.monitor()
-        let shellExecutor = ShellExecutor(processMonitor: processMonitor)
+        let shellExecutor = ShellExecutor()
         let commandExecutor = DefaultSakeAppManagerCommandExecutor(fileHandle: fileHandle, shellExecutor: shellExecutor)
         return Self(fileHandle: fileHandle, commandExecutor: commandExecutor)
     }

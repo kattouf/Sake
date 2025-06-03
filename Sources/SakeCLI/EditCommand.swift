@@ -1,7 +1,6 @@
 import ArgumentParser
 import Foundation
 import SakeShared
-import SwiftShell
 
 struct EditCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
@@ -29,9 +28,7 @@ struct EditCommand: AsyncParsableCommand {
     }
 
     private func openXcode(_ sakeAppPath: String) async throws {
-        let processMonitor = ProcessMonitor()
-        processMonitor.monitor()
-        let executor = ShellExecutor(processMonitor: processMonitor)
+        let executor = ShellExecutor()
         try await executor.runAndPrint("xed \(sakeAppPath)")
     }
 }

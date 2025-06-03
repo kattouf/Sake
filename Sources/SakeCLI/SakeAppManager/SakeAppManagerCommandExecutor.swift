@@ -1,5 +1,4 @@
 import SakeShared
-import SwiftShell
 
 protocol SakeAppManagerCommandExecutor {
     func swiftVersionDump() async throws -> String
@@ -78,14 +77,11 @@ final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor 
     func callListCommandOnExecutable(executablePath: String, json: Bool, caseConvertingStrategy: CaseConvertingStrategy) async throws {
         let jsonFlag = json ? " --json" : ""
 
-        do {
-            try await shellExecutor
-                .runAndPrint(
-                    "\(executablePath.shellQuoted) list --case-converting-strategy \(caseConvertingStrategy.rawValue)\(jsonFlag)"
-                )
-        } catch let SwiftShell.CommandError.returnedErrorCode(_, exitCode) {
-            try handleSakeAppExitCode(exitCode: exitCode)
-        }
+        let exitCode = try await shellExecutor
+            .runAndPrint(
+                "\(executablePath.shellQuoted) list --case-converting-strategy \(caseConvertingStrategy.rawValue)\(jsonFlag)"
+            )
+        try handleSakeAppExitCode(exitCode: exitCode)
     }
 
     func callRunCommandOnExecutable(
@@ -96,14 +92,11 @@ final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor 
     ) async throws {
         let args = args.isEmpty ? "" : " \(args.map { $0.shellQuoted }.joined(separator: " "))"
 
-        do {
-            try await shellExecutor
-                .runAndPrint(
-                    "\(executablePath.shellQuoted) run --case-converting-strategy \(caseConvertingStrategy.rawValue) \(command)\(args)"
-                )
-        } catch let SwiftShell.CommandError.returnedErrorCode(_, exitCode) {
-            try handleSakeAppExitCode(exitCode: exitCode)
-        }
+        let exitCode = try await shellExecutor
+            .runAndPrint(
+                "\(executablePath.shellQuoted) run --case-converting-strategy \(caseConvertingStrategy.rawValue) \(command)\(args)"
+            )
+        try handleSakeAppExitCode(exitCode: exitCode)
     }
 
     private func handleSakeAppExitCode(exitCode: Int) throws {

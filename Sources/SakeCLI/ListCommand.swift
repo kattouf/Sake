@@ -1,6 +1,5 @@
 import ArgumentParser
 import Foundation
-import SwiftShell
 
 struct ListCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(

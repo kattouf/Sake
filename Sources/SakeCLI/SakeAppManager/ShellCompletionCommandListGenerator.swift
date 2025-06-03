@@ -65,8 +65,7 @@ private extension SakeAppManagerCommandExecutor {
         json: Bool,
         caseConvertingStrategy: CaseConvertingStrategy
     ) async -> String? {
-        let processMonitor = ProcessMonitor()
-        let shellExecutor = ShellExecutor(processMonitor: processMonitor)
+        let shellExecutor = ShellExecutor()
 
         let jsonFlag = json ? " --json" : ""
         let command = "\(executablePath.shellQuoted) list --case-converting-strategy \(caseConvertingStrategy.rawValue)\(jsonFlag)"
