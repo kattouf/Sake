@@ -2,7 +2,7 @@ import ArgumentParser
 import Foundation
 import SwiftShell
 
-struct RunCommand: ParsableCommand {
+struct RunCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "run",
         abstract: "Run the specified command from the SakeApp."
@@ -23,13 +23,13 @@ struct RunCommand: ParsableCommand {
     @Argument(parsing: .allUnrecognized, help: "Arguments to pass to the command.")
     var args: [String] = []
 
-    func run() throws {
+    func run() async throws {
         do {
             let configManager = ConfigManager(cliConfig: CLIConfig(commonOptions: options, commandRelatedOptions: commandRelatedOptions))
             let config = try configManager.resolvedConfig()
 
             let manager: SakeAppManager<InitializedMode> = try .makeInInitializedMode(sakeAppPath: config.sakeAppPath)
-            try manager.run(
+            try await manager.run(
                 prebuiltExecutablePath: config.sakeAppPrebuiltBinaryPath,
                 command: command,
                 args: args,

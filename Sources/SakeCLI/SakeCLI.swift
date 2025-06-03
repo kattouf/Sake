@@ -2,8 +2,8 @@ import ArgumentParser
 import Foundation
 
 @main
-struct SakeCLI: ParsableCommand {
-    private static let subcommands: [ParsableCommand.Type] = [
+struct SakeCLI: AsyncParsableCommand {
+    private static let subcommands: [any ParsableCommand.Type] = [
         InitCommand.self,
         CleanCommand.self,
         BuildCommand.self,
@@ -11,9 +11,9 @@ struct SakeCLI: ParsableCommand {
         ListCommand.self,
     ] + platformSpecificSubcommands
     #if os(macOS)
-        private static let platformSpecificSubcommands: [ParsableCommand.Type] = [EditCommand.self]
+        private static let platformSpecificSubcommands: [any ParsableCommand.Type] = [EditCommand.self]
     #else
-        private static let platformSpecificSubcommands: [ParsableCommand.Type] = []
+        private static let platformSpecificSubcommands: [any ParsableCommand.Type] = []
     #endif
 
     static let configuration = CommandConfiguration(

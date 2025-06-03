@@ -1,11 +1,24 @@
 import ArgumentParser
 import Foundation
 import SakeShared
-import SwiftShell
 
 enum ShellCompletionCommandListGenerator {
     @Sendable
     static func generate(arguments: [String]) -> [String] {
+        let semaphore = DispatchSemaphore(value: 0)
+        var result: [String] = []
+
+        Task {
+            result = await generateAsync(arguments: arguments)
+            semaphore.signal()
+        }
+
+        semaphore.wait()
+        return result
+    }
+
+    @Sendable
+    static func generateAsync(arguments: [String]) async -> [String] {
         do {
             let arguments = try RunCommand.parse(arguments)
 
@@ -17,7 +30,7 @@ enum ShellCompletionCommandListGenerator {
 
             let manager: SakeAppManager<InitializedMode> = try .makeInInitializedMode(sakeAppPath: config.sakeAppPath)
             guard
-                let commandsListJSON = manager.getListAvailableCommandsOutputIfExecutablePresented(
+                let commandsListJSON = await manager.getListAvailableCommandsOutputIfExecutablePresented(
                     caseConvertingStrategy: config.caseConvertingStrategy,
                     json: true
                 ),
@@ -34,11 +47,11 @@ enum ShellCompletionCommandListGenerator {
 }
 
 private extension SakeAppManager where Mode == InitializedMode {
-    func getListAvailableCommandsOutputIfExecutablePresented(caseConvertingStrategy: CaseConvertingStrategy, json: Bool) -> String? {
-        guard let executablePath = try? getExecutablePath(), FileManager.default.fileExists(atPath: executablePath) else {
+    func getListAvailableCommandsOutputIfExecutablePresented(caseConvertingStrategy: CaseConvertingStrategy, json: Bool) async -> String? {
+        guard let executablePath = try? await getExecutablePath(), FileManager.default.fileExists(atPath: executablePath) else {
             return nil
         }
-        return commandExecutor.callListCommandOnExecutableAndCaptureOutput(
+        return await commandExecutor.callListCommandOnExecutableAndCaptureOutput(
             executablePath: executablePath,
             json: json,
             caseConvertingStrategy: caseConvertingStrategy
@@ -51,9 +64,14 @@ private extension SakeAppManagerCommandExecutor {
         executablePath: String,
         json: Bool,
         caseConvertingStrategy: CaseConvertingStrategy
-    ) -> String? {
+    ) async -> String? {
+        let processMonitor = ProcessMonitor()
+        let shellExecutor = ShellExecutor(processMonitor: processMonitor)
+
         let jsonFlag = json ? " --json" : ""
-        let result = SwiftShell.run(bash: "\(executablePath) list --case-converting-strategy \(caseConvertingStrategy.rawValue)\(jsonFlag)")
+        let command = "\(executablePath.shellQuoted) list --case-converting-strategy \(caseConvertingStrategy.rawValue)\(jsonFlag)"
+
+        let result = await shellExecutor.run(command)
         return result.succeeded ? result.stdout : nil
     }
 }

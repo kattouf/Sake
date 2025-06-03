@@ -16,7 +16,7 @@ final class ShellExecutor {
         self.processMonitor = processMonitor
     }
 
-    func runAndPrint(_ command: String) throws {
+    func runAndPrint(_ command: String) async throws {
         let currentShell = getCurrentShell()
         let asyncCommand = SwiftShell.runAsyncAndPrint(currentShell, "-c", command)
         processMonitor.addProcess(asyncCommand)
@@ -24,7 +24,7 @@ final class ShellExecutor {
     }
 
     @discardableResult
-    func run(_ command: String) -> RunOutput {
+    func run(_ command: String) async -> RunOutput {
         var stdout: String?
         var stderror: String?
 

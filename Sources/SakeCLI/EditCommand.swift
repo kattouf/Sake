@@ -3,7 +3,7 @@ import Foundation
 import SakeShared
 import SwiftShell
 
-struct EditCommand: ParsableCommand {
+struct EditCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "edit",
         abstract: "Open the SakeApp in Xcode"
@@ -12,13 +12,13 @@ struct EditCommand: ParsableCommand {
     @OptionGroup
     var options: CommonOptions
 
-    func run() throws {
+    func run() async throws {
         do {
             let configManager = ConfigManager(cliConfig: CLIConfig(commonOptions: options, commandRelatedOptions: nil))
             let config = try configManager.resolvedConfig()
 
             #if os(macOS)
-                try openXcode(config.sakeAppPath)
+                try await openXcode(config.sakeAppPath)
             #else
                 logError("Unsupported platform")
             #endif
@@ -28,10 +28,10 @@ struct EditCommand: ParsableCommand {
         }
     }
 
-    private func openXcode(_ sakeAppPath: String) throws {
+    private func openXcode(_ sakeAppPath: String) async throws {
         let processMonitor = ProcessMonitor()
         processMonitor.monitor()
         let executor = ShellExecutor(processMonitor: processMonitor)
-        try executor.runAndPrint("xed \(sakeAppPath)")
+        try await executor.runAndPrint("xed \(sakeAppPath)")
     }
 }

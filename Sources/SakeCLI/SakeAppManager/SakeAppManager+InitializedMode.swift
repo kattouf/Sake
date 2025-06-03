@@ -4,9 +4,9 @@ import SakeShared
 // MARK: - Initialized mode
 
 extension SakeAppManager where Mode == InitializedMode {
-    func validateProject() throws {
+    func validateProject() async throws {
         try fileHandle.validatePackageSwiftExists()
-        let dump = try commandExecutor.packageDump()
+        let dump = try await commandExecutor.packageDump()
         guard let dumpData = dump.data(using: .utf8) else {
             throw SakeAppManagerError.sakeAppNotValid(.failedToReadPackageSwift(
                 path: fileHandle.packageSwiftPath,
@@ -32,17 +32,17 @@ extension SakeAppManager where Mode == InitializedMode {
         }
     }
 
-    func clean() throws {
-        try validateProject()
+    func clean() async throws {
+        try await validateProject()
 
         log("Cleaning SakeApp package at path: \(fileHandle.path)...")
-        try commandExecutor.packageClean()
+        try await commandExecutor.packageClean()
         log("SakeApp package cleaned successfully.")
     }
 
-    func run(prebuiltExecutablePath: String?, command: String, args: [String], caseConvertingStrategy: CaseConvertingStrategy) throws {
-        let executablePath = try getPrebuiltBinaryIfExistsOrBuildFromSource(prebuiltExecutablePath: prebuiltExecutablePath)
-        try commandExecutor.callRunCommandOnExecutable(
+    func run(prebuiltExecutablePath: String?, command: String, args: [String], caseConvertingStrategy: CaseConvertingStrategy) async throws {
+        let executablePath = try await getPrebuiltBinaryIfExistsOrBuildFromSource(prebuiltExecutablePath: prebuiltExecutablePath)
+        try await commandExecutor.callRunCommandOnExecutable(
             executablePath: executablePath,
             command: command,
             args: args,
@@ -50,16 +50,16 @@ extension SakeAppManager where Mode == InitializedMode {
         )
     }
 
-    func listAvailableCommands(prebuiltExecutablePath: String?, caseConvertingStrategy: CaseConvertingStrategy, json: Bool) throws {
-        let executablePath = try getPrebuiltBinaryIfExistsOrBuildFromSource(prebuiltExecutablePath: prebuiltExecutablePath)
-        try commandExecutor.callListCommandOnExecutable(
+    func listAvailableCommands(prebuiltExecutablePath: String?, caseConvertingStrategy: CaseConvertingStrategy, json: Bool) async throws {
+        let executablePath = try await getPrebuiltBinaryIfExistsOrBuildFromSource(prebuiltExecutablePath: prebuiltExecutablePath)
+        try await commandExecutor.callListCommandOnExecutable(
             executablePath: executablePath,
             json: json,
             caseConvertingStrategy: caseConvertingStrategy
         )
     }
 
-    private func getPrebuiltBinaryIfExistsOrBuildFromSource(prebuiltExecutablePath: String?) throws -> String {
+    private func getPrebuiltBinaryIfExistsOrBuildFromSource(prebuiltExecutablePath: String?) async throws -> String {
         if let prebuiltExecutablePath {
             if fileHandle.isPrebuiltExecutableExists(path: prebuiltExecutablePath) {
                 return prebuiltExecutablePath
@@ -67,70 +67,70 @@ extension SakeAppManager where Mode == InitializedMode {
                 throw SakeAppManagerError.sakeAppPrebuiltBinaryNotFound(path: prebuiltExecutablePath)
             }
         } else {
-            return try buildExecutableIfNeeded()
+            return try await buildExecutableIfNeeded()
         }
     }
 
     @discardableResult
-    func buildExecutableIfNeeded() throws -> String {
-        let executablePath = try getExecutablePath()
+    func buildExecutableIfNeeded() async throws -> String {
+        let executablePath = try await getExecutablePath()
         if try fileHandle.isExecutableOlderThenSourceFiles(executablePath: executablePath) {
-            if try isSwiftVersionWasChanged() {
+            if try await isSwiftVersionWasChanged() {
                 log("Swift version was changed")
-                try clean()
+                try await clean()
             }
-            return try buildExecutable()
+            return try await buildExecutable()
         }
 
         return executablePath
     }
 
     @discardableResult
-    func buildExecutable() throws -> String {
-        let executablePath = try getExecutablePath()
-        try validateProject()
+    func buildExecutable() async throws -> String {
+        let executablePath = try await getExecutablePath()
+        try await validateProject()
         log("Building SakeApp package... (this may take a moment)")
-        try commandExecutor.buildExecutable()
+        try await commandExecutor.buildExecutable()
         // touch the executable to force update the modification date
-        commandExecutor.touchExecutable(executablePath: executablePath)
-        try saveLastUsedSwiftVersion()
+        await commandExecutor.touchExecutable(executablePath: executablePath)
+        try await saveLastUsedSwiftVersion()
         return executablePath
     }
 
-    func getExecutablePath() throws -> String {
-        try getBinPath() + "/" + Constants.sakeAppExecutableName
+    func getExecutablePath() async throws -> String {
+        try await getBinPath() + "/" + Constants.sakeAppExecutableName
     }
 
-    private func isSwiftVersionWasChanged() throws -> Bool {
-        guard let lastSwiftVersion = try fileHandle.getSavedSwiftVersionDump(binPath: getBinPath()) else {
+    private func isSwiftVersionWasChanged() async throws -> Bool {
+        guard let lastSwiftVersion = try fileHandle.getSavedSwiftVersionDump(binPath: try await getBinPath()) else {
             return false
         }
-        let swiftVersion = try commandExecutor.swiftVersionDump()
+        let swiftVersion = try await commandExecutor.swiftVersionDump()
         return lastSwiftVersion != swiftVersion
     }
 
-    private func saveLastUsedSwiftVersion() throws {
-        try fileHandle.saveSwiftVersionDump(binPath: getBinPath(), dump: swiftVersionDump())
+    private func saveLastUsedSwiftVersion() async throws {
+        try fileHandle.saveSwiftVersionDump(binPath: try await getBinPath(), dump: try await swiftVersionDump())
     }
 
     private nonisolated(unsafe) static var swiftVersionDumpCache: String?
-    private func swiftVersionDump() throws -> String {
+    private func swiftVersionDump() async throws -> String {
         if let swiftVersionDump = Self.swiftVersionDumpCache {
             return swiftVersionDump
         }
 
-        let swiftVersionDump = try commandExecutor.swiftVersionDump()
+        let swiftVersionDump = try await commandExecutor.swiftVersionDump()
         Self.swiftVersionDumpCache = swiftVersionDump
         return swiftVersionDump
     }
 
     private nonisolated(unsafe) static var binPathCache: String?
-    private func getBinPath() throws -> String {
+    private func getBinPath() async throws -> String {
         if let binPath = Self.binPathCache {
             return binPath
         }
 
-        let binPath = try commandExecutor.packageShowBinPath()
+        let binPath = try await commandExecutor.packageShowBinPath()
 
         Self.binPathCache = binPath
         return binPath

@@ -2,19 +2,19 @@ import SakeShared
 import SwiftShell
 
 protocol SakeAppManagerCommandExecutor {
-    func swiftVersionDump() throws -> String
-    func packageDump() throws -> String
-    func packageClean() throws
-    func packageShowBinPath() throws -> String
-    func buildExecutable() throws
-    func touchExecutable(executablePath: String)
-    func callListCommandOnExecutable(executablePath: String, json: Bool, caseConvertingStrategy: CaseConvertingStrategy) throws
+    func swiftVersionDump() async throws -> String
+    func packageDump() async throws -> String
+    func packageClean() async throws
+    func packageShowBinPath() async throws -> String
+    func buildExecutable() async throws
+    func touchExecutable(executablePath: String) async
+    func callListCommandOnExecutable(executablePath: String, json: Bool, caseConvertingStrategy: CaseConvertingStrategy) async throws
     func callRunCommandOnExecutable(
         executablePath: String,
         command: String,
         args: [String],
         caseConvertingStrategy: CaseConvertingStrategy
-    ) throws
+    ) async throws
 }
 
 final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor {
@@ -26,16 +26,16 @@ final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor 
         self.shellExecutor = shellExecutor
     }
 
-    func swiftVersionDump() throws -> String {
-        let dumpResult = shellExecutor.run("swift --version")
+    func swiftVersionDump() async throws -> String {
+        let dumpResult = await shellExecutor.run("swift --version")
         guard dumpResult.succeeded else {
             throw SakeAppManagerError.failedToReadSwiftVersion(stdout: dumpResult.stdout, stderr: dumpResult.stderror)
         }
         return dumpResult.stdout
     }
 
-    func packageDump() throws -> String {
-        let dumpResult = shellExecutor.run("swift package dump-package --package-path \(fileHandle.path.shellQuoted)")
+    func packageDump() async throws -> String {
+        let dumpResult = await shellExecutor.run("swift package dump-package --package-path \(fileHandle.path.shellQuoted)")
         guard dumpResult.succeeded else {
             throw SakeAppManagerError.sakeAppNotValid(.failedToDumpPackageSwift(
                 path: fileHandle.packageSwiftPath,
@@ -46,40 +46,40 @@ final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor 
         return dumpResult.stdout
     }
 
-    func packageClean() throws {
-        let result = shellExecutor.run("swift package clean --package-path \(fileHandle.path.shellQuoted)")
+    func packageClean() async throws {
+        let result = await shellExecutor.run("swift package clean --package-path \(fileHandle.path.shellQuoted)")
         if !result.succeeded {
             throw SakeAppManagerError.failedToCleanSakeApp(stdout: result.stdout, stderr: result.stderror)
         }
     }
 
-    func packageShowBinPath() throws -> String {
-        let showBinPathResult = shellExecutor.run("swift build --package-path \(fileHandle.path.shellQuoted) --show-bin-path")
+    func packageShowBinPath() async throws -> String {
+        let showBinPathResult = await shellExecutor.run("swift build --package-path \(fileHandle.path.shellQuoted) --show-bin-path")
         guard showBinPathResult.succeeded else {
             throw SakeAppManagerError.failedToReadSakeAppBinPath(stdout: showBinPathResult.stdout, stderr: showBinPathResult.stderror)
         }
         return showBinPathResult.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    func buildExecutable() throws {
+    func buildExecutable() async throws {
         let swiftcFlags = "-Xswiftc -gnone -Xswiftc -Onone"
-        let buildResult = shellExecutor
+        let buildResult = await shellExecutor
             .run("swift build \(swiftcFlags) --package-path \(fileHandle.path.shellQuoted) --product \(Constants.sakeAppExecutableName)")
         guard buildResult.succeeded else {
             throw SakeAppManagerError.failedToBuildSakeApp(stdout: buildResult.stdout, stderr: buildResult.stderror)
         }
     }
 
-    func touchExecutable(executablePath: String) {
+    func touchExecutable(executablePath: String) async {
         // touch -m is used to update the modification date of the executable file (used to check if it's outdated)
-        shellExecutor.run("touch -m \(executablePath.shellQuoted)")
+        await shellExecutor.run("touch -m \(executablePath.shellQuoted)")
     }
 
-    func callListCommandOnExecutable(executablePath: String, json: Bool, caseConvertingStrategy: CaseConvertingStrategy) throws {
+    func callListCommandOnExecutable(executablePath: String, json: Bool, caseConvertingStrategy: CaseConvertingStrategy) async throws {
         let jsonFlag = json ? " --json" : ""
 
         do {
-            try shellExecutor
+            try await shellExecutor
                 .runAndPrint(
                     "\(executablePath.shellQuoted) list --case-converting-strategy \(caseConvertingStrategy.rawValue)\(jsonFlag)"
                 )
@@ -93,11 +93,11 @@ final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor 
         command: String,
         args: [String],
         caseConvertingStrategy: CaseConvertingStrategy
-    ) throws {
+    ) async throws {
         let args = args.isEmpty ? "" : " \(args.map { $0.shellQuoted }.joined(separator: " "))"
 
         do {
-            try shellExecutor
+            try await shellExecutor
                 .runAndPrint(
                     "\(executablePath.shellQuoted) run --case-converting-strategy \(caseConvertingStrategy.rawValue) \(command)\(args)"
                 )
@@ -117,15 +117,5 @@ final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor 
         default:
             throw SakeAppManagerError.sakeAppError(.unexpectedError)
         }
-    }
-}
-
-private extension String {
-    /// Shell-safe quoting for an individual argument (wraps in `"` and escapes `"` and `\`)
-    var shellQuoted: String {
-        let escaped = self
-            .replacingOccurrences(of: "\\", with: "\\\\")
-            .replacingOccurrences(of: "\"", with: "\\\"")
-        return "\"\(escaped)\""
     }
 }

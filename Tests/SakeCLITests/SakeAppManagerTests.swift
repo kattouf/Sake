@@ -74,7 +74,7 @@ final class SakeAppManagerTests: XCTestCase {
 
     // MARK: - Clean
 
-    func testSakeAppManager_whenClean_shouldPackageClean() throws {
+    func testSakeAppManager_whenClean_shouldPackageClean() async throws {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: false
         )
@@ -83,7 +83,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.clean()
+        try await manager.clean()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 1)
     }
@@ -157,7 +157,7 @@ final class SakeAppManagerTests: XCTestCase {
 
     // MARK: - Build
 
-    func testSakeAppManager_whenBuildSakeAppExecutableIfNeeded_shouldBuildExecutable_ifOutdated() throws {
+    func testSakeAppManager_whenBuildSakeAppExecutableIfNeeded_shouldBuildExecutable_ifOutdated() async throws {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: true
         )
@@ -166,14 +166,14 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.buildExecutableIfNeeded()
+        try await manager.buildExecutableIfNeeded()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
         XCTAssertEqual(commandExecutor.touchExecutableCallCount, 1)
     }
 
-    func testSakeAppManager_whenBuildSakeAppExecutableIfNeeded_shouldNotBuildExecutable_ifNotOutdated() throws {
+    func testSakeAppManager_whenBuildSakeAppExecutableIfNeeded_shouldNotBuildExecutable_ifNotOutdated() async throws {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: false
         )
@@ -182,14 +182,14 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.buildExecutableIfNeeded()
+        try await manager.buildExecutableIfNeeded()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 0)
         XCTAssertEqual(commandExecutor.touchExecutableCallCount, 0)
     }
 
-    func testSakeAppManager_whenBuildSakeAppExecutableIfNeeded_shouldCleanPackageFirst_ifSwiftVersionWasChanged() throws {
+    func testSakeAppManager_whenBuildSakeAppExecutableIfNeeded_shouldCleanPackageFirst_ifSwiftVersionWasChanged() async throws {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: true,
             swiftVersionDumpReturnValue: "1.0.0"
@@ -200,14 +200,14 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.buildExecutableIfNeeded()
+        try await manager.buildExecutableIfNeeded()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 1)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
         XCTAssertEqual(commandExecutor.touchExecutableCallCount, 1)
     }
 
-    func testSakeAppManager_whenBuildSakeAppExecutableIfNeeded_shouldNotCleanPackageFirst_ifLastSwiftVersionDumpMissed() throws {
+    func testSakeAppManager_whenBuildSakeAppExecutableIfNeeded_shouldNotCleanPackageFirst_ifLastSwiftVersionDumpMissed() async throws {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: true,
             swiftVersionDumpReturnValue: nil
@@ -218,14 +218,14 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.buildExecutableIfNeeded()
+        try await manager.buildExecutableIfNeeded()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
         XCTAssertEqual(commandExecutor.touchExecutableCallCount, 1)
     }
 
-    func testSakeAppManager_whenBuildSakeAppExecutableIfNeeded_shouldTouchExecutable() throws {
+    func testSakeAppManager_whenBuildSakeAppExecutableIfNeeded_shouldTouchExecutable() async throws {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: true
         )
@@ -234,7 +234,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.buildExecutableIfNeeded()
+        try await manager.buildExecutableIfNeeded()
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
@@ -243,7 +243,7 @@ final class SakeAppManagerTests: XCTestCase {
 
     // MARK: - Run
 
-    func testSakeAppManager_whenRunCommandOnExecutable_shouldCallRunCommand() throws {
+    func testSakeAppManager_whenRunCommandOnExecutable_shouldCallRunCommand() async throws {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: true
         )
@@ -252,7 +252,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.run(prebuiltExecutablePath: nil, command: "command", args: ["arg1", "arg2"], caseConvertingStrategy: .keepOriginal)
+        try await manager.run(prebuiltExecutablePath: nil, command: "command", args: ["arg1", "arg2"], caseConvertingStrategy: .keepOriginal)
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
@@ -261,7 +261,7 @@ final class SakeAppManagerTests: XCTestCase {
         XCTAssertEqual(commandExecutor.callRunCommandOnExecutableCallCount, 1)
     }
 
-    func testSakeAppManager_whenListAvailableCommands_shouldCallListCommand() throws {
+    func testSakeAppManager_whenListAvailableCommands_shouldCallListCommand() async throws {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: true
         )
@@ -270,7 +270,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.listAvailableCommands(prebuiltExecutablePath: nil, caseConvertingStrategy: .keepOriginal, json: false)
+        try await manager.listAvailableCommands(prebuiltExecutablePath: nil, caseConvertingStrategy: .keepOriginal, json: false)
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
@@ -281,7 +281,7 @@ final class SakeAppManagerTests: XCTestCase {
 
     // MARK: Run prebuilt
 
-    func testSakeAppManager_whenRunCommandOnPrebuiltExecutable_shouldCallRunCommand() throws {
+    func testSakeAppManager_whenRunCommandOnPrebuiltExecutable_shouldCallRunCommand() async throws {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: true
         )
@@ -290,7 +290,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.run(prebuiltExecutablePath: "path", command: "command", args: ["arg1", "arg2"], caseConvertingStrategy: .keepOriginal)
+        try await manager.run(prebuiltExecutablePath: "path", command: "command", args: ["arg1", "arg2"], caseConvertingStrategy: .keepOriginal)
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 0)
@@ -299,7 +299,7 @@ final class SakeAppManagerTests: XCTestCase {
         XCTAssertEqual(commandExecutor.callRunCommandOnExecutableCallCount, 1)
     }
 
-    func testSakeAppManager_whenListAvailableCommandsOnPrebuiltExecutable_shouldCallListCommand() throws {
+    func testSakeAppManager_whenListAvailableCommandsOnPrebuiltExecutable_shouldCallListCommand() async throws {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: true
         )
@@ -308,7 +308,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.listAvailableCommands(prebuiltExecutablePath: "path", caseConvertingStrategy: .keepOriginal, json: false)
+        try await manager.listAvailableCommands(prebuiltExecutablePath: "path", caseConvertingStrategy: .keepOriginal, json: false)
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 0)
@@ -400,35 +400,35 @@ private final class MockCommandExecutor: SakeAppManagerCommandExecutor {
         self.packageShowBinPathReturnValue = packageShowBinPathReturnValue
     }
 
-    func swiftVersionDump() throws -> String {
+    func swiftVersionDump() async throws -> String {
         swiftVersionDumpCallCount += 1
         return swiftVersionDumpReturnValue
     }
 
-    func packageDump() throws -> String {
+    func packageDump() async throws -> String {
         let currentCallCount = packageDumpCallCount
         packageDumpCallCount += 1
         return packageDumpReturnValue(currentCallCount)
     }
 
-    func packageClean() throws {
+    func packageClean() async throws {
         packageCleanCallCount += 1
     }
 
-    func packageShowBinPath() throws -> String {
+    func packageShowBinPath() async throws -> String {
         packageShowBinPathCallCount += 1
         return ""
     }
 
-    func buildExecutable() throws {
+    func buildExecutable() async throws {
         buildExecutableCallCount += 1
     }
 
-    func touchExecutable(executablePath _: String) {
+    func touchExecutable(executablePath _: String) async {
         touchExecutableCallCount += 1
     }
 
-    func callListCommandOnExecutable(executablePath _: String, json _: Bool, caseConvertingStrategy _: CaseConvertingStrategy) throws {
+    func callListCommandOnExecutable(executablePath _: String, json _: Bool, caseConvertingStrategy _: CaseConvertingStrategy) async throws {
         callListCommandOnExecutableCallCount += 1
     }
 
@@ -437,7 +437,7 @@ private final class MockCommandExecutor: SakeAppManagerCommandExecutor {
         command _: String,
         args _: [String],
         caseConvertingStrategy _: CaseConvertingStrategy
-    ) throws {
+    ) async throws {
         callRunCommandOnExecutableCallCount += 1
     }
 }

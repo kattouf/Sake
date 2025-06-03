@@ -2,20 +2,20 @@
 
 extension SakeAppManager where Mode == UninitializedMode {
     @discardableResult
-    consuming func initializeProject() throws -> SakeAppManager<InitializedMode> {
+    consuming func initializeProject() async throws -> SakeAppManager<InitializedMode> {
         @discardableResult
-        func initAndValidateInitializedManager() throws -> SakeAppManager<InitializedMode> {
+        func initAndValidateInitializedManager() async throws -> SakeAppManager<InitializedMode> {
             let manager = SakeAppManager<InitializedMode>(
                 fileHandle: fileHandle,
                 commandExecutor: commandExecutor
             )
-            try manager.validateProject()
+            try await manager.validateProject()
             return manager
         }
 
         let alreadyExists: Bool
         do {
-            try initAndValidateInitializedManager()
+            try await initAndValidateInitializedManager()
             alreadyExists = true
         } catch {
             alreadyExists = false
@@ -27,7 +27,7 @@ extension SakeAppManager where Mode == UninitializedMode {
         log("Creating SakeApp package at path: \(fileHandle.path)...")
         try fileHandle.createProjectFiles()
 
-        let initializedManager = try initAndValidateInitializedManager()
+        let initializedManager = try await initAndValidateInitializedManager()
         log("SakeApp package initialized successfully.")
 
         return initializedManager
