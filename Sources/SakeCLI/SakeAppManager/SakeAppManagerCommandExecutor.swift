@@ -100,6 +100,9 @@ final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor 
     }
 
     private func handleSakeAppExitCode(exitCode: Int) throws {
+        guard exitCode != 0 else {
+            return
+        }
         let exitCode = Int32(exitCode)
         switch exitCode {
         case SakeAppExitCode.commandNotFound,
