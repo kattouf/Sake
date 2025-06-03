@@ -252,7 +252,12 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try await manager.run(prebuiltExecutablePath: nil, command: "command", args: ["arg1", "arg2"], caseConvertingStrategy: .keepOriginal)
+        try await manager.run(
+            prebuiltExecutablePath: nil,
+            command: "command",
+            args: ["arg1", "arg2"],
+            caseConvertingStrategy: .keepOriginal
+        )
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 1)
@@ -290,7 +295,12 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try await manager.run(prebuiltExecutablePath: "path", command: "command", args: ["arg1", "arg2"], caseConvertingStrategy: .keepOriginal)
+        try await manager.run(
+            prebuiltExecutablePath: "path",
+            command: "command",
+            args: ["arg1", "arg2"],
+            caseConvertingStrategy: .keepOriginal
+        )
 
         XCTAssertEqual(commandExecutor.packageCleanCallCount, 0)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 0)
@@ -428,7 +438,11 @@ private final class MockCommandExecutor: SakeAppManagerCommandExecutor {
         touchExecutableCallCount += 1
     }
 
-    func callListCommandOnExecutable(executablePath _: String, json _: Bool, caseConvertingStrategy _: CaseConvertingStrategy) async throws {
+    func callListCommandOnExecutable(
+        executablePath _: String,
+        json _: Bool,
+        caseConvertingStrategy _: CaseConvertingStrategy
+    ) async throws {
         callListCommandOnExecutableCallCount += 1
     }
 

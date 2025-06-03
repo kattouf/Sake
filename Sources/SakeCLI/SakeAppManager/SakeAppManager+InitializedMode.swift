@@ -40,7 +40,12 @@ extension SakeAppManager where Mode == InitializedMode {
         log("SakeApp package cleaned successfully.")
     }
 
-    func run(prebuiltExecutablePath: String?, command: String, args: [String], caseConvertingStrategy: CaseConvertingStrategy) async throws {
+    func run(
+        prebuiltExecutablePath: String?,
+        command: String,
+        args: [String],
+        caseConvertingStrategy: CaseConvertingStrategy
+    ) async throws {
         let executablePath = try await getPrebuiltBinaryIfExistsOrBuildFromSource(prebuiltExecutablePath: prebuiltExecutablePath)
         try await commandExecutor.callRunCommandOnExecutable(
             executablePath: executablePath,
@@ -102,7 +107,7 @@ extension SakeAppManager where Mode == InitializedMode {
     }
 
     private func isSwiftVersionWasChanged() async throws -> Bool {
-        guard let lastSwiftVersion = try fileHandle.getSavedSwiftVersionDump(binPath: try await getBinPath()) else {
+        guard let lastSwiftVersion = try await fileHandle.getSavedSwiftVersionDump(binPath: getBinPath()) else {
             return false
         }
         let swiftVersion = try await commandExecutor.swiftVersionDump()
@@ -110,7 +115,7 @@ extension SakeAppManager where Mode == InitializedMode {
     }
 
     private func saveLastUsedSwiftVersion() async throws {
-        try fileHandle.saveSwiftVersionDump(binPath: try await getBinPath(), dump: try await swiftVersionDump())
+        try await fileHandle.saveSwiftVersionDump(binPath: getBinPath(), dump: swiftVersionDump())
     }
 
     private nonisolated(unsafe) static var swiftVersionDumpCache: String?
