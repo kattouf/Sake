@@ -39,7 +39,7 @@ final class IntegrationTests: XCTestCase {
             output: .string(limit: 512 * 1024, encoding: UTF8.self),
             error: .string(limit: 512 * 1024, encoding: UTF8.self)
         )
-        if !sakeRunResult.terminationStatus.isSuccess {
+        if sakeRunResult.terminationStatus.isSuccess {
             XCTAssertTrue(try XCTUnwrap(sakeRunResult.standardOutput).contains("Hello, world!"))
         } else {
             XCTFail("Failed to run Sake app: stdout: \(sakeRunResult.standardOutput ?? ""), stderr: \(sakeRunResult.standardError ?? "")")
