@@ -1,7 +1,11 @@
 import Foundation
 import SakeShared
 import Subprocess
-import System
+#if canImport(System)
+    import System
+#else
+    import SystemPackage
+#endif
 
 final class ShellExecutor {
     struct RunOutput {

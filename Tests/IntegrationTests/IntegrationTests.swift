@@ -1,6 +1,10 @@
 import SakeShared
 import Subprocess
-import System
+#if canImport(System)
+    import System
+#else
+    import SystemPackage
+#endif
 import XCTest
 
 final class IntegrationTests: XCTestCase {
