@@ -1,8 +1,7 @@
 import ArgumentParser
 import Foundation
-import SwiftShell
 
-struct ListCommand: ParsableCommand {
+struct ListCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "list",
         abstract: "List all available commands defined in the SakeApp.",
@@ -18,13 +17,13 @@ struct ListCommand: ParsableCommand {
     @Flag(name: .shortAndLong, help: "Output the result in JSON format.")
     var json: Bool = false
 
-    func run() throws {
+    func run() async throws {
         do {
             let configManager = ConfigManager(cliConfig: CLIConfig(commonOptions: options, commandRelatedOptions: commandRelatedOptions))
             let config = try configManager.resolvedConfig()
 
             let manager: SakeAppManager<InitializedMode> = try .makeInInitializedMode(sakeAppPath: config.sakeAppPath)
-            try manager.listAvailableCommands(
+            try await manager.listAvailableCommands(
                 prebuiltExecutablePath: config.sakeAppPrebuiltBinaryPath,
                 caseConvertingStrategy: config.caseConvertingStrategy,
                 json: json

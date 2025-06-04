@@ -1,68 +1,60 @@
 import Foundation
 import SakeShared
-import SwiftShell
+import Subprocess
+#if canImport(System)
+    import System
+#else
+    import SystemPackage
+#endif
 
 final class ShellExecutor {
     struct RunOutput {
         let succeeded: Bool
         let stdout: String
         let stderror: String
-        let error: SwiftShell.CommandError?
-    }
-
-    private let processMonitor: ProcessMonitor
-
-    init(processMonitor: ProcessMonitor) {
-        self.processMonitor = processMonitor
-    }
-
-    func runAndPrint(_ command: String) throws {
-        let currentShell = getCurrentShell()
-        let asyncCommand = SwiftShell.runAsyncAndPrint(currentShell, "-c", command)
-        processMonitor.addProcess(asyncCommand)
-        try asyncCommand.finish()
+        let executorError: Error?
     }
 
     @discardableResult
-    func run(_ command: String) -> RunOutput {
-        var stdout: String?
-        var stderror: String?
-
+    func runAndPrint(_ command: String) async throws -> Int {
         let currentShell = getCurrentShell()
-        let asyncCommand = SwiftShell.runAsync(currentShell, "-c", command)
-        processMonitor.addProcess(asyncCommand)
 
-        // Workaround: https://github.com/kareman/SwiftShell/issues/52
-        let readOutStreams = DispatchWorkItem {
-            stdout = asyncCommand.stdout.read()
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-        }
-        let readErrorStreams = DispatchWorkItem {
-            stderror = asyncCommand.stderror.read()
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-        }
-        DispatchQueue.global().async(execute: readOutStreams)
-        DispatchQueue.global().async(execute: readErrorStreams)
-        readOutStreams.wait()
-        readErrorStreams.wait()
+        let result = try await Subprocess.run(
+            .path(FilePath(currentShell)),
+            arguments: ["-c", command],
+            input: .fileDescriptor(.standardInput, closeAfterSpawningProcess: false),
+            output: .fileDescriptor(.standardOutput, closeAfterSpawningProcess: false),
+            error: .fileDescriptor(.standardError, closeAfterSpawningProcess: false)
+        )
+        return result.terminationStatus.exitCode
+    }
 
-        stdout = stdout.map(cleanUpOutput)
-        stderror = stderror.map(cleanUpOutput)
-        let error: SwiftShell.CommandError?
-        let succeeded: Bool
+    @discardableResult
+    func run(_ command: String) async -> RunOutput {
+        let currentShell = getCurrentShell()
 
         do {
-            try asyncCommand.finish()
-            succeeded = true
-            error = nil
-        } catch let commandError as CommandError {
-            succeeded = false
-            error = commandError
+            let result = try await Subprocess.run(
+                .path(FilePath(currentShell)),
+                arguments: ["-c", command],
+                input: .none,
+                output: .string(limit: 512 * 1024, encoding: UTF8.self),
+                error: .string(limit: 512 * 1024, encoding: UTF8.self)
+            )
+            return RunOutput(
+                succeeded: result.terminationStatus.isSuccess,
+                stdout: result.standardOutput.map(cleanUpOutput) ?? "",
+                stderror: result.standardError.map(cleanUpOutput) ?? "",
+                executorError: nil
+            )
         } catch {
-            fatalError("Unexpected error: \(error)")
+            return RunOutput(
+                succeeded: false,
+                stdout: "",
+                stderror: "",
+                executorError: error
+            )
         }
-
-        return RunOutput(succeeded: succeeded, stdout: stdout ?? "", stderror: stderror ?? "", error: error)
     }
 }
 
@@ -82,5 +74,16 @@ private extension ShellExecutor {
         return (afterfirstnewline == nil || afterfirstnewline == text.endIndex)
             ? text.trimmingCharacters(in: .whitespacesAndNewlines)
             : text
+    }
+}
+
+private extension TerminationStatus {
+    var exitCode: Int {
+        switch self {
+        case let .exited(code):
+            Int(code)
+        case let .unhandledException(code):
+            Int(code)
+        }
     }
 }
