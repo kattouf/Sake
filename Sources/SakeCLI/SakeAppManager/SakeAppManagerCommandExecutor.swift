@@ -63,7 +63,9 @@ final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor 
     func buildExecutable() async throws {
         let swiftcFlags = "-Xswiftc -gnone -Xswiftc -Onone"
         let buildResult = await shellExecutor
-            .run("swift build \(swiftcFlags) --package-path \(fileHandle.path.shellQuoted) --product \(Constants.sakeAppExecutableName)")
+            .run(
+                "swift build --enable-experimental-prebuilts \(swiftcFlags) --package-path \(fileHandle.path.shellQuoted) --product \(Constants.sakeAppExecutableName)"
+            )
         guard buildResult.succeeded else {
             throw SakeAppManagerError.failedToBuildSakeApp(stdout: buildResult.stdout, stderr: buildResult.stderror)
         }
