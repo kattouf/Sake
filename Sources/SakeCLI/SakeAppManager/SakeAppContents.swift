@@ -20,7 +20,7 @@ enum SakeAppContents {
 
     let package = Package(
         name: "SakeApp",
-        platforms: [.macOS(.v10_15)], // Required by SwiftSyntax for the macro feature in Sake
+        platforms: [.macOS(.v13)], // Required by SwiftSyntax for the macro feature in Sake
         products: [
             .executable(name: "SakeApp", targets: ["SakeApp"]),
         ],
