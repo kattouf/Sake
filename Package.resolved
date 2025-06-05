@@ -1,5 +1,5 @@
 {
-  "originHash" : "e86e8d3a76393e6c01331bd2c145a15ac968bc0f4f347bb0d8c7bba2ccfab8a3",
+  "originHash" : "2be97888b48c4b637a6e1c0484649d1762e33a72a2492f0743dbcbb50a57931f",
   "pins" : [
     {
       "identity" : "swift-argument-parser",
@@ -16,7 +16,7 @@
       "location" : "https://github.com/swiftlang/swift-subprocess.git",
       "state" : {
         "branch" : "main",
-        "revision" : "48d9d5736b0c2b7afed798225acb4e258497680f"
+        "revision" : "e62036c30a319787323f6d9297d312f15f92cc12"
       }
     },
     {

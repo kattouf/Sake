@@ -1,6 +1,4 @@
 import Sake
-import SakeSwiftShell
-import SwiftShell
 
 @CommandGroup
 struct MiseCommands {
@@ -8,10 +6,10 @@ struct MiseCommands {
         Command(
             description: "Ensure swiftformat is installed",
             skipIf: { _ in
-                run("mise", "which", "swiftformat").succeeded
+                try await run("mise", "which", "swiftformat").terminationStatus.isSuccess
             },
-            run: { context in
-                try interruptableRunAndPrint(bash: "mise install swiftformat", interruptionHandler: context.interruptionHandler)
+            run: { _ in
+                try await runAndPrint("mise", "install", "swiftformat")
             }
         )
     }
@@ -20,10 +18,10 @@ struct MiseCommands {
         Command(
             description: "Ensure xcbeautify is installed",
             skipIf: { _ in
-                run("mise", "which", "xcbeautify").succeeded
+                try await run("mise", "which", "xcbeautify").terminationStatus.isSuccess
             },
-            run: { context in
-                try interruptableRunAndPrint(bash: "mise install xcbeautify", interruptionHandler: context.interruptionHandler)
+            run: { _ in
+                try await runAndPrint("mise", "install", "xcbeautify")
             }
         )
     }
@@ -32,10 +30,10 @@ struct MiseCommands {
         Command(
             description: "Ensure gh is installed",
             skipIf: { _ in
-                run("mise", "which", "gh").succeeded
+                try await run("mise", "which", "gh").terminationStatus.isSuccess
             },
-            run: { context in
-                try interruptableRunAndPrint(bash: "mise install gh", interruptionHandler: context.interruptionHandler)
+            run: { _ in
+                try await runAndPrint("mise", "install", "gh")
             }
         )
     }
@@ -44,10 +42,10 @@ struct MiseCommands {
         Command(
             description: "Ensure git-cliff is installed",
             skipIf: { _ in
-                run("mise", "which", "git-cliff").succeeded
+                try await run("mise", "which", "git-cliff").terminationStatus.isSuccess
             },
-            run: { context in
-                try interruptableRunAndPrint(bash: "mise install git-cliff", interruptionHandler: context.interruptionHandler)
+            run: { _ in
+                try await runAndPrint("mise", "install", "git-cliff")
             }
         )
     }

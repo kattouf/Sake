@@ -1,7 +1,5 @@
 import ArgumentParser
 import Sake
-import SakeSwiftShell
-import SwiftShell
 
 @CommandGroup
 struct TestCommands {
@@ -32,8 +30,8 @@ struct TestCommands {
                 let arguments = try TestArguments.parse(context.arguments)
                 return arguments.skipBuild
             },
-            run: { context in
-                try interruptableRunAndPrint(bash: "swift build --build-tests", interruptionHandler: context.interruptionHandler)
+            run: { _ in
+                try await runAndPrint("swift", "build", "--build-tests")
             }
         )
     }
@@ -52,9 +50,10 @@ struct TestCommands {
                     )
                     .run()
                 }
-                try interruptableRunAndPrint(
-                    bash: "swift test --skip-build --filter \"^(?!.*\\bIntegrationTests\\b).*\"\(beautifyLog)",
-                    interruptionHandler: context.interruptionHandler
+                try await runAndPrint(
+                    "bash",
+                    "-c",
+                    "swift test --skip-build --filter \"^(?!.*\\bIntegrationTests\\b).*\"\(beautifyLog)",
                 )
             }
         )
@@ -74,9 +73,10 @@ struct TestCommands {
                     )
                     .run()
                 }
-                try interruptableRunAndPrint(
-                    bash: "swift test --skip-build --filter IntegrationTests\(beautifyLog)",
-                    interruptionHandler: context.interruptionHandler
+                try await runAndPrint(
+                    "bash",
+                    "-c",
+                    "swift test --skip-build --filter IntegrationTests\(beautifyLog)",
                 )
             }
         )
@@ -89,8 +89,8 @@ struct TestCommands {
                 let arguments = try TestArguments.parse(context.arguments)
                 return !arguments.clean
             },
-            run: { context in
-                try interruptableRunAndPrint(bash: "swift package clean", interruptionHandler: context.interruptionHandler)
+            run: { _ in
+                try await runAndPrint("swift", "package", "clean")
             }
         )
     }

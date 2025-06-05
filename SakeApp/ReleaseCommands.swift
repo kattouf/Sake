@@ -2,8 +2,6 @@ import ArgumentParser
 import Crypto
 import Foundation
 import Sake
-import SakeSwiftShell
-import SwiftShell
 
 @CommandGroup
 struct ReleaseCommands {
@@ -101,8 +99,8 @@ struct ReleaseCommands {
                 """
                 try versionFileContent.write(toFile: versionFilePath, atomically: true, encoding: .utf8)
 
-                try runAndPrint("git", "add", versionFilePath)
-                try runAndPrint("git", "commit", "-m", "chore(release): Bump version to \(version)")
+                try await runAndPrint("git", "add", versionFilePath)
+                try await runAndPrint("git", "commit", "-m", "chore(release): Bump version to \(version)")
                 print("Version bumped to \(version)")
             }
         )
@@ -167,21 +165,23 @@ struct ReleaseCommands {
                         }
                     }()
 
-                    try interruptableRunAndPrint(bash: swiftClean, interruptionHandler: context.interruptionHandler)
-                    try interruptableRunAndPrint(bash: swiftBuild, interruptionHandler: context.interruptionHandler)
+                    try await runAndPrint("bash", "-c", swiftClean)
+                    try await runAndPrint("bash", "-c", swiftBuild)
 
-                    let binPath: String = run(bash: "\(swiftBuild) --show-bin-path").stdout
-                    if binPath.isEmpty {
+                    guard let binPath: String = try await run("bash", "-c", "\(swiftBuild) --show-bin-path").standardOutput,
+                          binPath.isEmpty
+                    else {
                         throw NSError(domain: "Fail to get bin path", code: -999)
                     }
                     let executablePath = binPath + "/\(Constants.executableName)"
 
-                    try interruptableRunAndPrint(bash: "\(strip) \(executablePath)", interruptionHandler: context.interruptionHandler)
+                    try await runAndPrint("bash", "-c", "\(strip) \(executablePath)")
 
                     let executableArchivePath = context.projectRoot + "/" + executableArchivePath(target: target, version: version)
-                    try interruptableRunAndPrint(
-                        bash: "\(zip) \(executableArchivePath) \(executablePath.replacingOccurrences(of: "/workdir", with: context.projectRoot))",
-                        interruptionHandler: context.interruptionHandler
+                    try await runAndPrint(
+                        "bash",
+                        "-c",
+                        "\(zip) \(executableArchivePath) \(executablePath.replacingOccurrences(of: "/workdir", with: context.projectRoot))"
                     )
                 }
 
@@ -232,7 +232,7 @@ struct ReleaseCommands {
         Command(
             description: "Clean release artifacts",
             run: { context in
-                try? runAndPrint("rm", "-rf", context.projectRoot + "/" + Constants.buildArtifactsDirectory)
+                try await runAndPrint("rm", "-rf", context.projectRoot + "/" + Constants.buildArtifactsDirectory)
             }
         )
     }
@@ -246,8 +246,10 @@ struct ReleaseCommands {
 
                 let version = arguments.version
 
-                let grepResult = run(bash: "git tag | grep \(arguments.version)")
-                if grepResult.succeeded {
+                let gitTagsResult = try await run("git", "tag")
+                let existingTags = gitTagsResult.standardOutput?.components(separatedBy: .newlines)
+                    .map { $0.trimmingCharacters(in: .whitespaces) }
+                if existingTags?.contains(version) == true {
                     print("Tag \(version) already exists. Skipping...")
                     return true
                 } else {
@@ -261,9 +263,9 @@ struct ReleaseCommands {
                 let version = arguments.version
 
                 print("Creating and pushing tag \(version)")
-                try runAndPrint("git", "tag", version)
-                try runAndPrint("git", "push", "origin", "tag", version)
-                try runAndPrint("git", "push") // push local changes like version bump
+                try await runAndPrint("git", "tag", version)
+                try await runAndPrint("git", "push", "origin", "tag", version)
+                try await runAndPrint("git", "push") // push local changes like version bump
             }
         )
     }
@@ -291,7 +293,7 @@ struct ReleaseCommands {
 
                 let version = arguments.version
                 let releaseNotesPath = context.projectRoot + "/" + releaseNotesPath(version: version)
-                try runAndPrint(
+                try await runAndPrint(
                     "mise",
                     "exec",
                     "--",
@@ -318,8 +320,8 @@ struct ReleaseCommands {
                 try arguments.validate()
 
                 let tagName = arguments.version
-                let ghViewResult = run(bash: "mise exec -- gh release view \(tagName)")
-                if ghViewResult.succeeded {
+                let ghViewResult = try await run("mise", "exec", "--", "gh", "release", "view", tagName)
+                if ghViewResult.terminationStatus.isSuccess {
                     print("Release \(tagName) already exists. Skipping...")
                     return true
                 } else {
@@ -335,7 +337,7 @@ struct ReleaseCommands {
                 let releaseTitle = arguments.version
                 let draftReleaseCommand =
                     "mise exec -- gh release create \(tagName) \(context.projectRoot)/\(Constants.buildArtifactsDirectory)/*.zip --title '\(releaseTitle)' --draft --verify-tag --notes-file \(context.projectRoot)/\(releaseNotesPath(version: tagName))"
-                try runAndPrint(bash: draftReleaseCommand)
+                try await runAndPrint("bash", "-c", draftReleaseCommand)
             }
         )
     }
