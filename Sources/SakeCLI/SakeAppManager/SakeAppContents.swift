@@ -12,7 +12,7 @@ enum SakeAppContents {
     """
 
     static let packageSwift = """
-    // swift-tools-version: 5.10
+    // swift-tools-version: 6.1
     // The swift-tools-version declares the minimum version of Swift required to build this package.
 
     import CompilerPluginSupport
@@ -20,7 +20,7 @@ enum SakeAppContents {
 
     let package = Package(
         name: "SakeApp",
-        platforms: [.macOS(.v13)], // Required by SwiftSyntax for the macro feature in Sake
+        platforms: [.macOS(.v13)], // Required by Sake -> swift-subprocess
         products: [
             .executable(name: "SakeApp", targets: ["SakeApp"]),
         ],
@@ -31,7 +31,7 @@ enum SakeAppContents {
             .executableTarget(
                 name: "SakeApp",
                 dependencies: [
-                    "Sake",
+                    .product(name: "Sake", package: "Sake"),
                 ],
                 path: "."
             ),
