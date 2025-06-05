@@ -1,3 +1,4 @@
+import Foundation
 import SakeShared
 
 protocol SakeAppManagerCommandExecutor {
@@ -19,6 +20,7 @@ protocol SakeAppManagerCommandExecutor {
 final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor {
     let fileHandle: SakeAppManagerFileHandle
     let shellExecutor: ShellExecutor
+    private let enableExperimentalFeatures: Bool = ProcessInfo.processInfo.environment["SAKE_EXPERIMENTAL_FEATURES"] == "1"
 
     init(fileHandle: SakeAppManagerFileHandle, shellExecutor: ShellExecutor) {
         self.fileHandle = fileHandle
@@ -62,9 +64,12 @@ final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor 
 
     func buildExecutable() async throws {
         let swiftcFlags = "-Xswiftc -gnone -Xswiftc -Onone"
+        let experimentalPrebuiltsFlag = enableExperimentalFeatures
+            ? "--enable-experimental-prebuilts"
+            : ""
         let buildResult = await shellExecutor
             .run(
-                "swift build --enable-experimental-prebuilts \(swiftcFlags) --package-path \(fileHandle.path.shellQuoted) --product \(Constants.sakeAppExecutableName)"
+                "swift build \(experimentalPrebuiltsFlag) \(swiftcFlags) --package-path \(fileHandle.path.shellQuoted) --product \(Constants.sakeAppExecutableName)"
             )
         guard buildResult.succeeded else {
             throw SakeAppManagerError.failedToBuildSakeApp(stdout: buildResult.stdout, stderr: buildResult.stderror)
