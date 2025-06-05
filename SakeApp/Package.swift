@@ -15,7 +15,6 @@ let package = Package(
         .package(url: "https://github.com/swiftlang/swift-subprocess.git", branch: "main"),
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", from: "3.8.0"),
-        .package(url: "https://github.com/kareman/SwiftShell.git", from: "5.1.0"),
     ],
     targets: [
         .executableTarget(
@@ -25,7 +24,6 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Subprocess", package: "swift-subprocess"),
                 .product(name: "Crypto", package: "swift-crypto"),
-                .product(name: "SwiftShell", package: "SwiftShell"),
             ],
             path: "."
         ),

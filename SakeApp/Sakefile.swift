@@ -1,7 +1,6 @@
 import ArgumentParser
 import Foundation
 import Sake
-import SwiftShell
 
 @main
 @CommandGroup
@@ -20,7 +19,7 @@ struct Commands: SakeApp {
             description: "Lint code",
             dependencies: [MiseCommands.ensureSwiftFormatInstalled],
             run: { context in
-                try runAndPrint(
+                try await runAndPrint(
                     "mise",
                     "exec",
                     "--",
@@ -40,7 +39,7 @@ struct Commands: SakeApp {
             description: "Format code",
             dependencies: [MiseCommands.ensureSwiftFormatInstalled],
             run: { context in
-                try runAndPrint(
+                try await runAndPrint(
                     "mise",
                     "exec",
                     "--",
