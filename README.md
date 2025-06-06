@@ -8,6 +8,11 @@
 
 Swift-based utility for managing project commands, inspired by Make. Write your project commands in Swift and enjoy type safety, code reuse, and seamless integration.
 
+> [!TIP]
+> **New to Sake?** Check out these comprehensive tutorials:
+> - [**Sake Part I: Getting Started**](https://swifttoolkit.dev/posts/sake-1) - Installation, setup, and creating your first commands
+> - [**Sake Part II: Advanced Usage**](https://swifttoolkit.dev/posts/sake-2) - Command groups, testing automation, and release management
+
 ## ⭐️ Key Features
 
 - **Swift-Native Workflow**: Write, execute, and manage all your project commands in Swift with full IDE support, type safety, and seamless integration
