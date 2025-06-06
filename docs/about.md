@@ -7,11 +7,3 @@ Sake is designed for **Swift developers** who prefer to stay within the familiar
 For more details on how Sake works internally, refer to the [How It Works](/how-it-works.md) section.
 
 :::
-
-::: warning
-
-Sake is feature-complete but hasn’t been battle-tested in production yet. Use with care.
-
-For a list of known limitations and considerations, please refer to the [Limitations](/limitations.md) section.
-
-:::
