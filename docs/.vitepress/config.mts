@@ -58,7 +58,7 @@ export default defineConfig({
       {
         items: [
           { text: "How It Works", link: "/how-it-works" },
-          { text: "Limitations", link: "/limitations" },
+          { text: "Experimental Features", link: "/experimental-features" },
           { text: "Troubleshooting", link: "/troubleshooting" },
           { text: "Contribution Guide", link: "/contribution-guide" },
         ],

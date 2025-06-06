@@ -76,7 +76,7 @@ The [`setup-sake`](https://github.com/kattouf/setup-sake) GitHub Action automate
      ```yaml
      - uses: swift-actions/setup-swift@v2
        with:
-         swift-version: '5.10'
+         swift-version: '6.1'
      ```
 
 3. **Run Sake Commands:**
@@ -95,7 +95,7 @@ The [`setup-sake`](https://github.com/kattouf/setup-sake) GitHub Action automate
 - name: Setup Swift
   uses: swift-actions/setup-swift@v2
   with:
-    swift-version: '5.10'
+    swift-version: '6.1'
 
 - name: Setup Sake
   uses: kattouf/setup-sake@v1

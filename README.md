@@ -8,8 +8,10 @@
 
 Swift-based utility for managing project commands, inspired by Make. Write your project commands in Swift and enjoy type safety, code reuse, and seamless integration.
 
-> [!IMPORTANT]
-> Sake is feature-complete but hasn’t been battle-tested in production yet. Use with care.
+> [!TIP]
+> **New to Sake?** Check out these comprehensive tutorials:
+> - [**Sake Part I: Getting Started**](https://swifttoolkit.dev/posts/sake-1) - Installation, setup, and creating your first commands
+> - [**Sake Part II: Advanced Usage**](https://swifttoolkit.dev/posts/sake-2) - Command groups, testing automation, and release management
 
 ## ⭐️ Key Features
 
@@ -35,54 +37,64 @@ struct Commands: SakeApp {
             description: "Format source code",
             dependencies: [BrewCommands.ensureSwiftFormatInstalled],
             run: { context in
-                try SwiftShell.runAndPrint("swiftformat", "Sources", "Package.swift")
+                try runAndPrint("swiftformat", "Sources", "Package.swift")
             }
         )
     }
 
-    // MARK: - Tests
+    // MARK: - Release automation
 
-    struct TestArguments: ParsableArguments {
-        @Flag(name: .long, help: "Skip building before running tests")
-        var skipBuild: Bool = false
+    public static var buildReleaseArtifacts: Command {
+        Command(
+            description: "Build release artifacts for distribution",
+            dependencies: [buildRelease, stripBinary, createArchive]
+        )
     }
 
-    public static var runTests: Command {
+    static var buildRelease: Command {
         Command(
-            description: "Run unit tests",
-            dependencies: [buildTests],
+            description: "Build optimized release binary",
             run: { context in
-                try SwiftShell.runAndPrint("swift", "test", "--skip-build"")
+                try runAndPrint("swift", "build", "--configuration", "release")
             }
         )
     }
 
-    public static var buildTests: Command {
+    static var stripBinary: Command {
         Command(
-            description: "Build tests",
-            skipIf: { context in
-                let arguments = try TestArguments.parse(context.arguments)
-                return arguments.skipBuild
-            },
+            description: "Strip debug symbols to reduce size",
             run: { context in
-                try SwiftShell.runAndPrint("swift", "build", "--build-tests")
+                try runAndPrint("strip", "-rSTx", ".build/release/MyApp")
+            }
+        )
+    }
+
+    static var createArchive: Command {
+        Command(
+            description: "Create distribution ZIP archive",
+            run: { context in
+                try runAndPrint("zip", "-j", "MyApp.zip", ".build/release/MyApp")
             }
         )
     }
 }
 ```
 
+> [!NOTE]
+> The `runAndPrint` function used in this example is not provided by Sake by default. For running CLI commands in your Sake commands, please refer to the [CLI Tools Running documentation](https://sakeswift.org/advanced-cli-tools-running.html).
+
 Then run them like this:
 ``` sh
 ❯ sake list
 Commands:
  * format - Format source code
- * runTests - Run unit tests
- * buildTests - Build tests
+ * buildReleaseArtifacts - Build release artifacts for distribution
 
-❯ sake runTests --skip-build
-...
-Executed 21 tests, with 0 failures (0 unexpected) in 0.144 (0.146) seconds
+❯ sake buildReleaseArtifacts
+Building for production...
+Compiling MyApp...
+Build complete.
+  creating: MyApp.zip
 ```
 
 [📚 Documentation](https://sakeswift.org) • [🚀 Getting Started](#-getting-started) • [💻 GitHub](https://github.com/kattouf/Sake)
