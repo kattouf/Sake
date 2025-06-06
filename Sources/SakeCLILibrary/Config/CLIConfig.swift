@@ -1,12 +1,13 @@
+import ArgumentParser
 import SakeShared
 
-struct CLIConfig {
+package struct CLIConfig {
     let configPath: String?
     let sakeAppPath: String?
     let sakeAppPrebuiltBinaryPath: String?
     let caseConvertingStrategy: CaseConvertingStrategy?
 
-    init(commonOptions: CommonOptions, commandRelatedOptions: CommandRelatedCommonOptions?) {
+    package init(commonOptions: CommonOptions, commandRelatedOptions: CommandRelatedCommonOptions?) {
         configPath = commonOptions.configPath?.nilIfEmpty()
         sakeAppPath = commonOptions.sakeAppPath?.nilIfEmpty()
         sakeAppPrebuiltBinaryPath = commandRelatedOptions?.sakeAppPrebuiltBinaryPath?.nilIfEmpty()

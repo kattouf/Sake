@@ -1,6 +1,6 @@
 // MARK: - Unitialized mode
 
-extension SakeAppManager where Mode == UninitializedMode {
+package extension SakeAppManager where Mode == UninitializedMode {
     @discardableResult
     consuming func initializeProject() async throws -> SakeAppManager<InitializedMode> {
         @discardableResult

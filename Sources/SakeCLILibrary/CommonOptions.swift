@@ -1,30 +1,34 @@
 import ArgumentParser
 import SakeShared
 
-struct CommonOptions: ParsableArguments {
+package struct CommonOptions: ParsableArguments {
+    package init() {}
+
     @Option(
         name: .shortAndLong,
         help: "Specify the path to the configuration file. Defaults to \".sake.yml\" in the current directory.",
         completion: .file(),
     )
-    var configPath: String?
+    package var configPath: String?
 
     @Option(
         name: .shortAndLong,
         help: "Specify the path for the SakeApp package. Defaults to \"SakeApp\" in the current directory.",
         completion: .directory,
     )
-    var sakeAppPath: String?
+    package var sakeAppPath: String?
 }
 
-struct CommandRelatedCommonOptions: ParsableArguments {
+package struct CommandRelatedCommonOptions: ParsableArguments {
+    package init() {}
+
     @Option(
         name: [.long, .customShort("b")],
         help: "Specify the path to the prebuilt SakeApp binary.\nThis is used to share the ready to use binary and avoid build process (between CI runs for example).",
         completion: .file(),
     )
-    var sakeAppPrebuiltBinaryPath: String?
+    package var sakeAppPrebuiltBinaryPath: String?
 
     @Option(name: .long, help: "Specify the strategy for converting command names' case.")
-    var caseConvertingStrategy: CaseConvertingStrategy?
+    package var caseConvertingStrategy: CaseConvertingStrategy?
 }

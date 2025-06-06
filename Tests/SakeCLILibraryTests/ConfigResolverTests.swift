@@ -1,4 +1,4 @@
-@testable import SakeCLI
+@testable import SakeCLILibrary
 import XCTest
 
 final class ConfigResolverTests: XCTestCase {

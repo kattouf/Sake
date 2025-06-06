@@ -22,15 +22,23 @@ let package = Package(
             name: "SakeCLI",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .target(name: "SakeCLILibrary"),
+                .target(name: "SakeShared"),
+            ],
+        ),
+        .target(
+            name: "SakeCLILibrary",
+            dependencies: [
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Subprocess", package: "swift-subprocess"),
                 .product(name: "Yams", package: "Yams"),
                 .target(name: "SakeShared"),
             ],
         ),
         .testTarget(
-            name: "SakeCLITests",
+            name: "SakeCLILibraryTests",
             dependencies: [
-                "SakeCLI",
+                "SakeCLILibrary",
             ],
         ),
         .target(
@@ -78,7 +86,3 @@ let package = Package(
         ),
     ],
 )
-
-#if compiler(>=6.0)
-    package.targets = package.targets.filter { $0.name != "SakeCLITests" }
-#endif

@@ -3,7 +3,7 @@ import SakeShared
 
 // MARK: - Initialized mode
 
-extension SakeAppManager where Mode == InitializedMode {
+package extension SakeAppManager where Mode == InitializedMode {
     func validateProject() async throws {
         try fileHandle.validatePackageSwiftExists()
         let dump = try await commandExecutor.packageDump()

@@ -1,6 +1,6 @@
 import Foundation
 
-enum SakeAppManagerError: Swift.Error {
+package enum SakeAppManagerError: Swift.Error {
     case sakeAppNotInitialized(path: String)
     case sakeAppAlreadyInitialized(path: String)
     case sakeAppNotValid(ValidationError)
@@ -14,7 +14,7 @@ enum SakeAppManagerError: Swift.Error {
     case sakeAppError(SakeAppError)
 }
 
-extension SakeAppManagerError {
+package extension SakeAppManagerError {
     enum SakeAppError: Swift.Error {
         case businessError
         case unexpectedError
@@ -29,7 +29,7 @@ extension SakeAppManagerError {
 }
 
 extension SakeAppManagerError.ValidationError: LocalizedError {
-    var errorDescription: String? {
+    package var errorDescription: String? {
         switch self {
         case let .failedToFindPackageSwift(path):
             "Failed to find 'Package.swift' at \(path)."
@@ -54,7 +54,7 @@ extension SakeAppManagerError.ValidationError: LocalizedError {
 }
 
 extension SakeAppManagerError.SakeAppError: LocalizedError {
-    var errorDescription: String? {
+    package var errorDescription: String? {
         switch self {
         case .businessError:
             "Business error."
@@ -65,7 +65,7 @@ extension SakeAppManagerError.SakeAppError: LocalizedError {
 }
 
 extension SakeAppManagerError: LocalizedError {
-    var errorDescription: String? {
+    package var errorDescription: String? {
         switch self {
         case let .sakeAppNotInitialized(path):
             "SakeApp not found at \(path)."

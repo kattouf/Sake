@@ -1,23 +1,23 @@
 import Foundation
 import SakeShared
 
-extension ConfigManager {
+package extension ConfigManager {
     enum Error: Swift.Error {
         case configFileNotFound(configPath: String)
         case configFileCorrupted(configPath: String, error: Swift.Error)
     }
 }
 
-final class ConfigManager {
+package final class ConfigManager {
     let cliConfig: CLIConfig
     let envConfig: ENVConfig
 
-    init(cliConfig: CLIConfig, envConfig: ENVConfig = .init()) {
+    package init(cliConfig: CLIConfig, envConfig: ENVConfig = .init()) {
         self.cliConfig = cliConfig
         self.envConfig = envConfig
     }
 
-    func resolvedConfig() throws -> Config {
+    package func resolvedConfig() throws -> Config {
         let configResolver = ConfigResolver()
 
         if let configPath = cliConfig.configPath ?? envConfig.configPath, !FileManager.default.fileExists(atPath: configPath) {
@@ -74,7 +74,7 @@ final class ConfigResolver {
 }
 
 extension ConfigResolver.Error: LocalizedError {
-    var errorDescription: String? {
+    package var errorDescription: String? {
         switch self {
         case let .mutualExclusiveOptions(options):
             "Options are mutually exclusive: \(options.joined(separator: ", "))."
@@ -83,7 +83,7 @@ extension ConfigResolver.Error: LocalizedError {
 }
 
 extension ConfigManager.Error: LocalizedError {
-    var errorDescription: String? {
+    package var errorDescription: String? {
         switch self {
         case let .configFileNotFound(configPath):
             "Configuration file not found at path: \(configPath)."

@@ -7,16 +7,18 @@ import Subprocess
     import SystemPackage
 #endif
 
-final class ShellExecutor {
-    struct RunOutput {
-        let succeeded: Bool
-        let stdout: String
-        let stderror: String
-        let executorError: Error?
+package final class ShellExecutor {
+    package struct RunOutput {
+        package let succeeded: Bool
+        package let stdout: String
+        package let stderror: String
+        package let executorError: Error?
     }
 
+    package init() {}
+
     @discardableResult
-    func runAndPrint(_ command: String) async throws -> Int {
+    package func runAndPrint(_ command: String) async throws -> Int {
         let currentShell = getCurrentShell()
 
         let result = try await Subprocess.run(
@@ -30,7 +32,7 @@ final class ShellExecutor {
     }
 
     @discardableResult
-    func run(_ command: String) async -> RunOutput {
+    package func run(_ command: String) async -> RunOutput {
         let currentShell = getCurrentShell()
 
         do {

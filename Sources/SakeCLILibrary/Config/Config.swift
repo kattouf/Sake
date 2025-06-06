@@ -1,12 +1,11 @@
-import ArgumentParser
 import Foundation
 import SakeShared
 
-struct Config {
-    let configPath: String
-    let sakeAppPath: String
-    let sakeAppPrebuiltBinaryPath: String?
-    let caseConvertingStrategy: CaseConvertingStrategy
+package struct Config {
+    package let configPath: String
+    package let sakeAppPath: String
+    package let sakeAppPrebuiltBinaryPath: String?
+    package let caseConvertingStrategy: CaseConvertingStrategy
 }
 
 extension Config {

@@ -1,5 +1,6 @@
 import ArgumentParser
 import Foundation
+import SakeCLILibrary
 import SakeShared
 
 struct EditCommand: AsyncParsableCommand {

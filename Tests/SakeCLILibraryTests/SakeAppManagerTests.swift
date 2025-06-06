@@ -1,4 +1,4 @@
-@testable import SakeCLI
+@testable import SakeCLILibrary
 import SakeShared
 import XCTest
 
@@ -18,8 +18,11 @@ final class SakeAppManagerTests: XCTestCase {
 
     // MARK: - Factory methods
 
-    func testSakeAppManager_inInitializedMode_shouldNotInitialize_ifSakeAppDirectoryDoesNotExists() throws {
-        XCTAssertThrowsError(try SakeAppManager<InitializedMode>.makeInInitializedMode(sakeAppPath: "jepa")) { error in
+    func testSakeAppManager_inInitializedMode_shouldNotInitialize_ifSakeAppDirectoryDoesNotExists() {
+        do {
+            _ = try SakeAppManager<InitializedMode>.makeInInitializedMode(sakeAppPath: "jepa")
+            XCTFail("Expected error to be thrown")
+        } catch {
             let sakeAppManagerError = error as! SakeAppManagerError
             if case .sakeAppNotInitialized = sakeAppManagerError {
                 XCTAssertTrue(true)
@@ -31,7 +34,7 @@ final class SakeAppManagerTests: XCTestCase {
 
     // MARK: - Initialize
 
-    func testSakeAppManager_whenInitialize_shouldThrowError_IfAlreadyInitialized() {
+    func testSakeAppManager_whenInitialize_shouldThrowError_IfAlreadyInitialized() async {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: false,
         )
@@ -41,7 +44,7 @@ final class SakeAppManagerTests: XCTestCase {
         let manager = SakeAppManager<UninitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
         do {
-            try manager.initializeProject()
+            try await manager.initializeProject()
             XCTFail("Expected error to be thrown")
         } catch {
             let sakeAppManagerError = error as! SakeAppManagerError
@@ -53,7 +56,7 @@ final class SakeAppManagerTests: XCTestCase {
         }
     }
 
-    func testSakeAppManager_whenInitialize_shouldCreateFiles_andValidate() throws {
+    func testSakeAppManager_whenInitialize_shouldCreateFiles_andValidate() async throws {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: true,
         )
@@ -64,7 +67,7 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<UninitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.initializeProject()
+        try await manager.initializeProject()
 
         XCTAssertEqual(fileHandle.createProjectFilesCallCount, 1)
         XCTAssertEqual(commandExecutor.buildExecutableCallCount, 0)
@@ -90,7 +93,7 @@ final class SakeAppManagerTests: XCTestCase {
 
     // MARK: - Validate
 
-    func testSakeAppManager_whenValidate_shouldValidatePackageSwiftExists_andPackageDump() throws {
+    func testSakeAppManager_whenValidate_shouldValidatePackageSwiftExists_andPackageDump() async throws {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: false,
         )
@@ -99,13 +102,13 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        try manager.validateProject()
+        try await manager.validateProject()
 
         XCTAssertEqual(fileHandle.validatePackageSwiftExistsCallCount, 1)
         XCTAssertEqual(commandExecutor.packageDumpCallCount, 1)
     }
 
-    func testSakeAppManager_whenValidate_shouldThrowError_IfPackageDumpIsInvalid() throws {
+    func testSakeAppManager_whenValidate_shouldThrowError_IfPackageDumpIsInvalid() async {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: false,
         )
@@ -114,7 +117,10 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        XCTAssertThrowsError(try manager.validateProject()) { error in
+        do {
+            try await manager.validateProject()
+            XCTFail("Expected error to be thrown")
+        } catch {
             let sakeAppManagerError = error as! SakeAppManagerError
             if case .sakeAppNotValid(.failedToReadPackageSwift) = sakeAppManagerError {
                 XCTAssertTrue(true)
@@ -124,7 +130,7 @@ final class SakeAppManagerTests: XCTestCase {
         }
     }
 
-    func testSakeAppManager_whenValidate_shouldThrowError_IfPackageDumpIsMissingSakeAppExecutable() throws {
+    func testSakeAppManager_whenValidate_shouldThrowError_IfPackageDumpIsMissingSakeAppExecutable() async {
         let fileHandle = MockFileHandle(
             isExecutableOutdatedReturnValue: false,
         )
@@ -145,7 +151,10 @@ final class SakeAppManagerTests: XCTestCase {
         )
         let manager = SakeAppManager<InitializedMode>(fileHandle: fileHandle, commandExecutor: commandExecutor)
 
-        XCTAssertThrowsError(try manager.validateProject()) { error in
+        do {
+            try await manager.validateProject()
+            XCTFail("Expected error to be thrown")
+        } catch {
             let sakeAppManagerError = error as! SakeAppManagerError
             if case .sakeAppNotValid(.failedToFindSakeAppExecutableInPackageProducts) = sakeAppManagerError {
                 XCTAssertTrue(true)

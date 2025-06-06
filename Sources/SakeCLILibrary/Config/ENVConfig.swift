@@ -1,13 +1,13 @@
 import Foundation
 import SakeShared
 
-struct ENVConfig {
+package struct ENVConfig {
     let configPath: String?
     let sakeAppPath: String?
     let sakeAppPrebuiltBinaryPath: String?
     let caseConvertingStrategy: CaseConvertingStrategy?
 
-    init() {
+    package init() {
         configPath = ProcessInfo.processInfo.environment["SAKE_CONFIG_PATH"]?.nilIfEmpty()
         sakeAppPath = ProcessInfo.processInfo.environment["SAKE_APP_PATH"]?.nilIfEmpty()
         sakeAppPrebuiltBinaryPath = ProcessInfo.processInfo.environment["SAKE_APP_PREBUILT_BINARY_PATH"]?.nilIfEmpty()

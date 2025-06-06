@@ -1,5 +1,6 @@
 import ArgumentParser
 import Foundation
+import SakeCLILibrary
 
 struct BuildCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(

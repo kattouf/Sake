@@ -3,29 +3,22 @@ import SakeShared
 
 // MARK: - SakeAppManager
 
-enum UninitializedMode {}
-enum InitializedMode {}
+package enum UninitializedMode {}
+package enum InitializedMode {}
 
-#if swift(>=6.0)
-    struct SakeAppManager<Mode>: ~Copyable {
-        let fileHandle: SakeAppManagerFileHandle
-        let commandExecutor: SakeAppManagerCommandExecutor
-    }
-#else
-    struct SakeAppManager<Mode> {
-        let fileHandle: SakeAppManagerFileHandle
-        let commandExecutor: SakeAppManagerCommandExecutor
-    }
-#endif
+package struct SakeAppManager<Mode>: ~Copyable {
+    let fileHandle: SakeAppManagerFileHandle
+    let commandExecutor: SakeAppManagerCommandExecutor
+}
 
 // MARK: - Factory methods
 
 extension SakeAppManager {
-    static func makeInUninitializedMode(sakeAppPath: String) -> SakeAppManager<UninitializedMode> {
+    package static func makeInUninitializedMode(sakeAppPath: String) -> SakeAppManager<UninitializedMode> {
         .makeDefault(sakeAppPath: sakeAppPath)
     }
 
-    static func makeInInitializedMode(sakeAppPath: String) throws -> SakeAppManager<InitializedMode> {
+    package static func makeInInitializedMode(sakeAppPath: String) throws -> SakeAppManager<InitializedMode> {
         try validateSakeAppIsExists(sakeAppPath: sakeAppPath)
         return .makeDefault(sakeAppPath: sakeAppPath)
     }
