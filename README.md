@@ -35,7 +35,7 @@ struct Commands: SakeApp {
             description: "Format source code",
             dependencies: [BrewCommands.ensureSwiftFormatInstalled],
             run: { context in
-                try SwiftShell.runAndPrint("swiftformat", "Sources", "Package.swift")
+                try runAndPrint("swiftformat", "Sources", "Package.swift")
             }
         )
     }
@@ -52,7 +52,7 @@ struct Commands: SakeApp {
             description: "Run unit tests",
             dependencies: [buildTests],
             run: { context in
-                try SwiftShell.runAndPrint("swift", "test", "--skip-build"")
+                try runAndPrint("swift", "test", "--skip-build")
             }
         )
     }
@@ -65,12 +65,15 @@ struct Commands: SakeApp {
                 return arguments.skipBuild
             },
             run: { context in
-                try SwiftShell.runAndPrint("swift", "build", "--build-tests")
+                try runAndPrint("swift", "build", "--build-tests")
             }
         )
     }
 }
 ```
+
+> [!NOTE]
+> The `runAndPrint` function used in this example is not provided by Sake by default. For running CLI commands in your Sake commands, please refer to the [CLI Tools Running documentation](https://sakeswift.org/advanced-cli-tools-running.html).
 
 Then run them like this:
 ``` sh
