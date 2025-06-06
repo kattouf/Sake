@@ -4,6 +4,15 @@ outline: deep
 
 # Getting Started
 
+::: tip Alternative Tutorial Format
+If you prefer a more detailed, article-style introduction to Sake, you can check out these comprehensive tutorials that walk through practical examples:
+
+- [**Sake Part I: Swift-powered Command Management**](https://swifttoolkit.dev/posts/sake-1) - Covers installation, setup, and creating practical formatting/linting commands
+- [**Sake Part II: Advanced Usage**](https://swifttoolkit.dev/posts/sake-2) - Explores command groups, testing automation, and GitHub release management
+
+These articles provide step-by-step guidance with real-world examples and are perfect for getting familiar with Sake's capabilities.
+:::
+
 To start using Sake, follow these steps:
 
 ### Initialize a new SakeApp
