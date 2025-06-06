@@ -168,8 +168,9 @@ struct ReleaseCommands {
                     try await runAndPrint("bash", "-c", swiftClean)
                     try await runAndPrint("bash", "-c", swiftBuild)
 
-                    guard let binPath: String = try await run("bash", "-c", "\(swiftBuild) --show-bin-path").standardOutput,
-                          binPath.isEmpty
+                    guard let binPath: String = try await run("bash", "-c", "\(swiftBuild) --show-bin-path").standardOutput?
+                        .trimmingCharacters(in: .whitespacesAndNewlines),
+                        !binPath.isEmpty
                     else {
                         throw NSError(domain: "Fail to get bin path", code: -999)
                     }
