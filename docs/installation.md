@@ -1,7 +1,7 @@
 # Installation
 
 ::: info Requirements
-macOS and Linux are supported and require **Swift 5.10** (Xcode 15.3 for macOS) or higher.
+macOS 13+ and Linux are supported and require **Swift 6.1** or higher.
 :::
 
 ### Package Managers
