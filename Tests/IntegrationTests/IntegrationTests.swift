@@ -23,11 +23,11 @@ final class IntegrationTests: XCTestCase {
             arguments: ["init", "--sake-app-path", sakeAppPath],
             environment: .inherit.updating(["SAKE_APP_PREBUILT_BINARY_PATH": ""]),
             output: .string(limit: 512 * 1024, encoding: UTF8.self),
-            error: .string(limit: 512 * 1024, encoding: UTF8.self)
+            error: .string(limit: 512 * 1024, encoding: UTF8.self),
         )
         if !sakeInitResult.terminationStatus.isSuccess {
             XCTFail(
-                "Failed to init Sake app: stdout: \(sakeInitResult.standardOutput ?? ""), stderr: \(sakeInitResult.standardError ?? "")"
+                "Failed to init Sake app: stdout: \(sakeInitResult.standardOutput ?? ""), stderr: \(sakeInitResult.standardError ?? "")",
             )
         }
 
@@ -37,7 +37,7 @@ final class IntegrationTests: XCTestCase {
             arguments: ["hello", "--sake-app-path", sakeAppPath],
             environment: .inherit.updating(["SAKE_APP_PREBUILT_BINARY_PATH": ""]),
             output: .string(limit: 512 * 1024, encoding: UTF8.self),
-            error: .string(limit: 512 * 1024, encoding: UTF8.self)
+            error: .string(limit: 512 * 1024, encoding: UTF8.self),
         )
         if sakeRunResult.terminationStatus.isSuccess {
             XCTAssertTrue(try XCTUnwrap(sakeRunResult.standardOutput).contains("Hello, world!"))

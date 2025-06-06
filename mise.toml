@@ -1,5 +1,5 @@
 [tools]
-"swiftformat" = "0.55.3"
+"swiftformat" = "0.56.3"
 "xcbeautify" = "2.11.0"
 "gh" = "2.58.0"
 "git-cliff" = "2.6.1"

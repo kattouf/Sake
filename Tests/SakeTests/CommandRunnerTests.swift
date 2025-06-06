@@ -12,7 +12,7 @@ final class CommandRunnerTests: XCTestCase {
             },
             run: { _ in
                 runnedCommands.append("run")
-            }
+            },
         )
 
         let runner = CommandRunner(command: command, context: .empty)
@@ -31,7 +31,7 @@ final class CommandRunnerTests: XCTestCase {
             },
             run: { _ in
                 runnedCommands.append("run")
-            }
+            },
         )
 
         let runner = CommandRunner(command: command, context: .empty)
@@ -46,28 +46,28 @@ final class CommandRunnerTests: XCTestCase {
         let dependency1 = Command(
             run: { _ in
                 runnedCommands.append("dependency1")
-            }
+            },
         )
 
         let dependency2 = Command(
             dependencies: [dependency1],
             run: { _ in
                 runnedCommands.append("dependency2")
-            }
+            },
         )
 
         let dependency3 = Command(
             dependencies: [dependency2],
             run: { _ in
                 runnedCommands.append("dependency3")
-            }
+            },
         )
 
         let command = Command(
             dependencies: [dependency3],
             run: { _ in
                 runnedCommands.append("command")
-            }
+            },
         )
 
         let runner = CommandRunner(command: command, context: .empty)
@@ -82,7 +82,7 @@ final class CommandRunnerTests: XCTestCase {
         let dependency1 = Command(
             run: { _ in
                 runnedCommands.append("dependency1")
-            }
+            },
         )
 
         let dependency2 = Command(
@@ -93,21 +93,21 @@ final class CommandRunnerTests: XCTestCase {
             },
             run: { _ in
                 runnedCommands.append("dependency2")
-            }
+            },
         )
 
         let dependency3 = Command(
             dependencies: [dependency2],
             run: { _ in
                 runnedCommands.append("dependency3")
-            }
+            },
         )
 
         let command = Command(
             dependencies: [dependency3],
             run: { _ in
                 runnedCommands.append("command")
-            }
+            },
         )
 
         let runner = CommandRunner(command: command, context: .empty)
@@ -123,7 +123,7 @@ final class CommandRunnerTests: XCTestCase {
             run: { context in
                 context.storage["someKey"] = "someData"
                 runnedCommands.append("dependency1")
-            }
+            },
         )
 
         let dependency2 = Command(
@@ -131,7 +131,7 @@ final class CommandRunnerTests: XCTestCase {
             run: { context in
                 XCTAssertEqual(context.storage["someKey"] as? String, "someData")
                 runnedCommands.append("dependency2")
-            }
+            },
         )
 
         let dependency3 = Command(
@@ -140,7 +140,7 @@ final class CommandRunnerTests: XCTestCase {
                 XCTAssertEqual(context.storage["someKey"] as? String, "someData")
                 context.storage["someKey"] = "otherData"
                 runnedCommands.append("dependency3")
-            }
+            },
         )
 
         let command = Command(
@@ -148,7 +148,7 @@ final class CommandRunnerTests: XCTestCase {
             run: { context in
                 XCTAssertEqual(context.storage["someKey"] as? String, "otherData")
                 runnedCommands.append("command")
-            }
+            },
         )
 
         let runner = CommandRunner(command: command, context: .empty)
@@ -166,7 +166,7 @@ private extension Command.Context {
             appDirectory: "",
             runDirectory: "",
             storage: .init(),
-            interruptionHandler: .init(processMonitor: .init())
+            interruptionHandler: .init(processMonitor: .init()),
         )
     }
 }

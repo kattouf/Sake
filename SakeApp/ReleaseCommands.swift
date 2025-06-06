@@ -64,7 +64,7 @@ struct ReleaseCommands {
                 createAndPushTag,
                 generateReleaseNotes,
                 draftReleaseWithArtifacts,
-            ]
+            ],
         )
     }
 
@@ -102,7 +102,7 @@ struct ReleaseCommands {
                 try await runAndPrint("git", "add", versionFilePath)
                 try await runAndPrint("git", "commit", "-m", "chore(release): Bump version to \(version)")
                 print("Version bumped to \(version)")
-            }
+            },
         )
     }
 
@@ -134,7 +134,7 @@ struct ReleaseCommands {
                 try FileManager.default.createDirectory(
                     atPath: Constants.buildArtifactsDirectory,
                     withIntermediateDirectories: true,
-                    attributes: nil
+                    attributes: nil,
                 )
                 let existingArtifactsTriples = context.storage["existing-artifacts-triples"] as? [String] ?? []
                 for target in Constants.buildTargets {
@@ -153,14 +153,14 @@ struct ReleaseCommands {
                                 "\(dockerExec) swift build --static-swift-stdlib \(buildFlags)",
                                 "\(dockerExec) swift package clean",
                                 "\(dockerExec) strip -s",
-                                "zip -j"
+                                "zip -j",
                             )
                         } else {
                             return (
                                 "swift build \(buildFlags)",
                                 "swift package clean",
                                 "strip -rSTx",
-                                "zip -j"
+                                "zip -j",
                             )
                         }
                     }()
@@ -181,12 +181,12 @@ struct ReleaseCommands {
                     try await runAndPrint(
                         "bash",
                         "-c",
-                        "\(zip) \(executableArchivePath) \(executablePath.replacingOccurrences(of: "/workdir", with: context.projectRoot))"
+                        "\(zip) \(executableArchivePath) \(executablePath.replacingOccurrences(of: "/workdir", with: context.projectRoot))",
                     )
                 }
 
                 print("Release artifacts built successfully at '\(Constants.buildArtifactsDirectory)'")
-            }
+            },
         )
     }
 
@@ -222,9 +222,9 @@ struct ReleaseCommands {
                 }
                 FileManager.default.createFile(
                     atPath: context.projectRoot + "/" + shasumFilePath(version: version),
-                    contents: shasumResults.joined(separator: "\n").data(using: .utf8)
+                    contents: shasumResults.joined(separator: "\n").data(using: .utf8),
                 )
-            }
+            },
         )
     }
 
@@ -233,7 +233,7 @@ struct ReleaseCommands {
             description: "Clean release artifacts",
             run: { context in
                 try await runAndPrint("rm", "-rf", context.projectRoot + "/" + Constants.buildArtifactsDirectory)
-            }
+            },
         )
     }
 
@@ -266,7 +266,7 @@ struct ReleaseCommands {
                 try await runAndPrint("git", "tag", version)
                 try await runAndPrint("git", "push", "origin", "tag", version)
                 try await runAndPrint("git", "push") // push local changes like version bump
-            }
+            },
         )
     }
 
@@ -304,10 +304,10 @@ struct ReleaseCommands {
                     "--tag",
                     version,
                     "--output",
-                    releaseNotesPath
+                    releaseNotesPath,
                 )
                 print("Release notes generated at \(releaseNotesPath)")
-            }
+            },
         )
     }
 
@@ -338,7 +338,7 @@ struct ReleaseCommands {
                 let draftReleaseCommand =
                     "mise exec -- gh release create \(tagName) \(context.projectRoot)/\(Constants.buildArtifactsDirectory)/*.zip --title '\(releaseTitle)' --draft --verify-tag --notes-file \(context.projectRoot)/\(releaseNotesPath(version: tagName))"
                 try await runAndPrint("bash", "-c", draftReleaseCommand)
-            }
+            },
         )
     }
 }

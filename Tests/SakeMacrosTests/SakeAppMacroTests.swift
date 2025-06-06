@@ -102,7 +102,7 @@ final class SakeAppMacroTests: XCTestCase {
                 }
             }
             """,
-            macros: ["CommandGroup": CommandGroupMacro.self]
+            macros: ["CommandGroup": CommandGroupMacro.self],
         )
     }
 
@@ -122,7 +122,7 @@ final class SakeAppMacroTests: XCTestCase {
                 }
             }
             """,
-            macros: ["CommandGroup": CommandGroupMacro.self]
+            macros: ["CommandGroup": CommandGroupMacro.self],
         )
     }
 }

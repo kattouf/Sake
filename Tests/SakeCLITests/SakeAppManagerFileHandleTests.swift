@@ -59,7 +59,7 @@ final class DefaultFileHandleTests: XCTestCase {
         try FileManager.default.createDirectory(
             atPath: URL(fileURLWithPath: executablePath).deletingLastPathComponent().path,
             withIntermediateDirectories: true,
-            attributes: nil
+            attributes: nil,
         )
 
         FileManager.default.createFile(atPath: executablePath, contents: nil, attributes: nil)
@@ -87,7 +87,7 @@ final class DefaultFileHandleTests: XCTestCase {
         try FileManager.default.createDirectory(
             atPath: URL(fileURLWithPath: executablePath).deletingLastPathComponent().path,
             withIntermediateDirectories: true,
-            attributes: nil
+            attributes: nil,
         )
 
         FileManager.default.createFile(atPath: hiddenFilePath, contents: nil, attributes: nil)

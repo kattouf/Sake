@@ -10,7 +10,7 @@ struct MiseCommands {
             },
             run: { _ in
                 try await runAndPrint("mise", "install", "swiftformat")
-            }
+            },
         )
     }
 
@@ -22,7 +22,7 @@ struct MiseCommands {
             },
             run: { _ in
                 try await runAndPrint("mise", "install", "xcbeautify")
-            }
+            },
         )
     }
 
@@ -34,7 +34,7 @@ struct MiseCommands {
             },
             run: { _ in
                 try await runAndPrint("mise", "install", "gh")
-            }
+            },
         )
     }
 
@@ -46,7 +46,7 @@ struct MiseCommands {
             },
             run: { _ in
                 try await runAndPrint("mise", "install", "git-cliff")
-            }
+            },
         )
     }
 }

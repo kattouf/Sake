@@ -25,13 +25,13 @@ let package = Package(
                 .product(name: "Subprocess", package: "swift-subprocess"),
                 .product(name: "Yams", package: "Yams"),
                 .target(name: "SakeShared"),
-            ]
+            ],
         ),
         .testTarget(
             name: "SakeCLITests",
             dependencies: [
                 "SakeCLI",
-            ]
+            ],
         ),
         .target(
             name: "Sake",
@@ -39,20 +39,20 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .target(name: "SakeMacros"),
                 .target(name: "SakeShared"),
-            ]
+            ],
 
         ),
         .testTarget(
             name: "SakeTests",
             dependencies: [
                 .target(name: "Sake"),
-            ]
+            ],
         ),
         .target(
             name: "SakeShared",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-            ]
+            ],
 
         ),
         .macro(
@@ -60,23 +60,23 @@ let package = Package(
             dependencies: [
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-            ]
+            ],
         ),
         .testTarget(
             name: "SakeMacrosTests",
             dependencies: [
                 .target(name: "SakeMacros"),
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
-            ]
+            ],
         ),
         .testTarget(
             name: "IntegrationTests",
             dependencies: [
                 .product(name: "Subprocess", package: "swift-subprocess"),
                 .target(name: "SakeShared"),
-            ]
+            ],
         ),
-    ]
+    ],
 )
 
 #if compiler(>=6.0)

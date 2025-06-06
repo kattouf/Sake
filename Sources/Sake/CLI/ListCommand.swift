@@ -2,7 +2,7 @@ import ArgumentParser
 
 struct ListCommand: SakeParsableCommand {
     static let configuration = CommandConfiguration(
-        commandName: "list"
+        commandName: "list",
     )
 
     @OptionGroup
@@ -15,7 +15,7 @@ struct ListCommand: SakeParsableCommand {
         let commandsPreprocessor = CommandsPreprocessor(
             commands: sakeApp.commands,
             commandGroups: sakeApp.configuration.commandGroups,
-            caseConvertingStrategy: options.caseConvertingStrategy
+            caseConvertingStrategy: options.caseConvertingStrategy,
         )
         let rootCommands = commandsPreprocessor.rootCommands()
         let commandGroups = commandsPreprocessor.otherCommandGroups()
@@ -23,7 +23,7 @@ struct ListCommand: SakeParsableCommand {
         let formatterInputData = CommandListFormatter.InputData(
             rootName: sakeApp.name,
             rootCommands: rootCommands,
-            groupedCommands: commandGroups
+            groupedCommands: commandGroups,
         )
         let formatted = if json {
             try CommandListFormatter.json(inputData: formatterInputData)

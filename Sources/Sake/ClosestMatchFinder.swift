@@ -43,7 +43,7 @@ final class ClosestMatchFinder {
                     matrix[i][j] = min(
                         matrix[i - 1][j] + 1, // Deletion
                         matrix[i][j - 1] + 1, // Insertion
-                        matrix[i - 1][j - 1] + 1 // Substitution
+                        matrix[i - 1][j - 1] + 1, // Substitution
                     )
                 }
             }

@@ -14,6 +14,6 @@ extension Config {
         configPath: FileManager.default.currentDirectoryPath + "/.sake.yml",
         sakeAppPath: FileManager.default.currentDirectoryPath + "/SakeApp",
         sakeAppPrebuiltBinaryPath: nil,
-        caseConvertingStrategy: CaseConvertingStrategy.keepOriginal
+        caseConvertingStrategy: CaseConvertingStrategy.keepOriginal,
     )
 }

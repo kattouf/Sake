@@ -4,7 +4,7 @@ import Foundation
 struct BuildCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "build",
-        abstract: "Manually trigger a rebuild of the SakeApp. This is typically unnecessary, but can be used to \"warm up\" the build if needed."
+        abstract: "Manually trigger a rebuild of the SakeApp. This is typically unnecessary, but can be used to \"warm up\" the build if needed.",
     )
 
     @OptionGroup

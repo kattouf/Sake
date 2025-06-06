@@ -19,7 +19,7 @@ final class CommandListFormatterTests: XCTestCase {
                     "command5": Command(description: "description5"),
                     "command6": Command(description: "description6"),
                 ],
-            ]
+            ],
         )
         let json = try CommandListFormatter.json(inputData: inputData)
 
@@ -69,7 +69,7 @@ final class CommandListFormatterTests: XCTestCase {
                     "command5": Command(description: "description5"),
                     "command6": Command(description: "description6"),
                 ],
-            ]
+            ],
         )
         let humanReadable = CommandListFormatter.humanReadable(inputData: inputData)
         let expectedHumanReadable = """

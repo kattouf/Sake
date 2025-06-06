@@ -24,7 +24,7 @@ enum ShellCompletionCommandListGenerator {
 
             let configManager = ConfigManager(cliConfig: CLIConfig(
                 commonOptions: arguments.options,
-                commandRelatedOptions: arguments.commandRelatedOptions
+                commandRelatedOptions: arguments.commandRelatedOptions,
             ))
             let config = try configManager.resolvedConfig()
 
@@ -32,7 +32,7 @@ enum ShellCompletionCommandListGenerator {
             guard
                 let commandsListJSON = await manager.getListAvailableCommandsOutputIfExecutablePresented(
                     caseConvertingStrategy: config.caseConvertingStrategy,
-                    json: true
+                    json: true,
                 ),
                 let commandsListJSONData = commandsListJSON.data(using: .utf8)
             else {
@@ -54,7 +54,7 @@ private extension SakeAppManager where Mode == InitializedMode {
         return await commandExecutor.callListCommandOnExecutableAndCaptureOutput(
             executablePath: executablePath,
             json: json,
-            caseConvertingStrategy: caseConvertingStrategy
+            caseConvertingStrategy: caseConvertingStrategy,
         )
     }
 }

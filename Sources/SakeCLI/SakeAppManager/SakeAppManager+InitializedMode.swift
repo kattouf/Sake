@@ -10,7 +10,7 @@ extension SakeAppManager where Mode == InitializedMode {
         guard let dumpData = dump.data(using: .utf8) else {
             throw SakeAppManagerError.sakeAppNotValid(.failedToReadPackageSwift(
                 path: fileHandle.packageSwiftPath,
-                reason: "Can't decode as utf8 string"
+                reason: "Can't decode as utf8 string",
             ))
         }
 
@@ -20,14 +20,14 @@ extension SakeAppManager where Mode == InitializedMode {
         } catch {
             throw SakeAppManagerError.sakeAppNotValid(.failedToReadPackageSwift(
                 path: fileHandle.packageSwiftPath,
-                reason: "Can't decode as PackageDescription object. Error: \(error)"
+                reason: "Can't decode as PackageDescription object. Error: \(error)",
             ))
         }
 
         guard packageDescription.products.contains(where: { $0.type.isExecutable && $0.name == Constants.sakeAppExecutableName }) else {
             throw SakeAppManagerError.sakeAppNotValid(.failedToFindSakeAppExecutableInPackageProducts(
                 path: fileHandle.packageSwiftPath,
-                executableName: Constants.sakeAppExecutableName
+                executableName: Constants.sakeAppExecutableName,
             ))
         }
     }
@@ -44,14 +44,14 @@ extension SakeAppManager where Mode == InitializedMode {
         prebuiltExecutablePath: String?,
         command: String,
         args: [String],
-        caseConvertingStrategy: CaseConvertingStrategy
+        caseConvertingStrategy: CaseConvertingStrategy,
     ) async throws {
         let executablePath = try await getPrebuiltBinaryIfExistsOrBuildFromSource(prebuiltExecutablePath: prebuiltExecutablePath)
         try await commandExecutor.callRunCommandOnExecutable(
             executablePath: executablePath,
             command: command,
             args: args,
-            caseConvertingStrategy: caseConvertingStrategy
+            caseConvertingStrategy: caseConvertingStrategy,
         )
     }
 
@@ -60,7 +60,7 @@ extension SakeAppManager where Mode == InitializedMode {
         try await commandExecutor.callListCommandOnExecutable(
             executablePath: executablePath,
             json: json,
-            caseConvertingStrategy: caseConvertingStrategy
+            caseConvertingStrategy: caseConvertingStrategy,
         )
     }
 

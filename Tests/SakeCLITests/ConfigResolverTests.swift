@@ -9,7 +9,7 @@ final class ConfigResolverTests: XCTestCase {
 
         let resolvedConfigPath = resolver.resolveConfigPath(
             cliConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
-            envConfig: .mock(configPath: nil, sakeAppPath: nil)
+            envConfig: .mock(configPath: nil, sakeAppPath: nil),
         )
         XCTAssertEqual(resolvedConfigPath, Config.default.configPath)
     }
@@ -19,7 +19,7 @@ final class ConfigResolverTests: XCTestCase {
 
         let resolvedConfigPath = resolver.resolveConfigPath(
             cliConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
-            envConfig: .mock(configPath: "env-sourced-path", sakeAppPath: nil)
+            envConfig: .mock(configPath: "env-sourced-path", sakeAppPath: nil),
         )
         XCTAssertEqual(resolvedConfigPath, "env-sourced-path")
     }
@@ -29,7 +29,7 @@ final class ConfigResolverTests: XCTestCase {
 
         let resolvedConfigPath = resolver.resolveConfigPath(
             cliConfig: .mock(configPath: "cli-sourced-path", sakeAppPath: nil, caseConvertingStrategy: nil),
-            envConfig: .mock(configPath: nil, sakeAppPath: nil)
+            envConfig: .mock(configPath: nil, sakeAppPath: nil),
         )
         XCTAssertEqual(resolvedConfigPath, "cli-sourced-path")
     }
@@ -39,7 +39,7 @@ final class ConfigResolverTests: XCTestCase {
 
         let resolvedConfigPath = resolver.resolveConfigPath(
             cliConfig: .mock(configPath: "cli-sourced-path", sakeAppPath: nil, caseConvertingStrategy: nil),
-            envConfig: .mock(configPath: "env-sourced-path", sakeAppPath: nil)
+            envConfig: .mock(configPath: "env-sourced-path", sakeAppPath: nil),
         )
         XCTAssertEqual(resolvedConfigPath, "cli-sourced-path")
     }
@@ -52,7 +52,7 @@ final class ConfigResolverTests: XCTestCase {
         XCTAssertThrowsError(try resolver.resolve(
             cliConfig: .mock(sakeAppPath: "cli-sourced-path", sakeAppPrebuiltBinaryPath: "cli-sourced-path"),
             envConfig: .mock(sakeAppPath: nil, sakeAppPrebuiltBinaryPath: nil),
-            fileConfig: .mock(sakeAppPath: nil, sakeAppPrebuiltBinaryPath: nil)
+            fileConfig: .mock(sakeAppPath: nil, sakeAppPrebuiltBinaryPath: nil),
         )) { error in
             XCTAssertEqual(error as? ConfigResolver.Error, .mutualExclusiveOptions(["sakeAppPath", "sakeAppPrebuiltBinaryPath"]))
         }
@@ -60,7 +60,7 @@ final class ConfigResolverTests: XCTestCase {
         XCTAssertThrowsError(try resolver.resolve(
             cliConfig: .mock(sakeAppPath: "cli-sourced-path", sakeAppPrebuiltBinaryPath: nil),
             envConfig: .mock(sakeAppPath: nil, sakeAppPrebuiltBinaryPath: "cli-sourced-path"),
-            fileConfig: .mock(sakeAppPath: nil, sakeAppPrebuiltBinaryPath: nil)
+            fileConfig: .mock(sakeAppPath: nil, sakeAppPrebuiltBinaryPath: nil),
         )) { error in
             XCTAssertEqual(error as? ConfigResolver.Error, .mutualExclusiveOptions(["sakeAppPath", "sakeAppPrebuiltBinaryPath"]))
         }
@@ -68,7 +68,7 @@ final class ConfigResolverTests: XCTestCase {
         XCTAssertThrowsError(try resolver.resolve(
             cliConfig: .mock(sakeAppPath: "cli-sourced-path", sakeAppPrebuiltBinaryPath: nil),
             envConfig: .mock(sakeAppPath: nil, sakeAppPrebuiltBinaryPath: nil),
-            fileConfig: .mock(sakeAppPath: nil, sakeAppPrebuiltBinaryPath: "cli-sourced-path")
+            fileConfig: .mock(sakeAppPath: nil, sakeAppPrebuiltBinaryPath: "cli-sourced-path"),
         )) { error in
             XCTAssertEqual(error as? ConfigResolver.Error, .mutualExclusiveOptions(["sakeAppPath", "sakeAppPrebuiltBinaryPath"]))
         }
@@ -80,7 +80,7 @@ final class ConfigResolverTests: XCTestCase {
         let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
             envConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
-            fileConfig: nil
+            fileConfig: nil,
         )
         XCTAssertEqual(resolvedConfig.configPath, Config.default.configPath)
         XCTAssertEqual(resolvedConfig.sakeAppPath, Config.default.sakeAppPath)
@@ -93,7 +93,7 @@ final class ConfigResolverTests: XCTestCase {
         let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
             envConfig: .mock(configPath: "env-sourced-path", sakeAppPath: "env-sourced-path-2", caseConvertingStrategy: .toKebabCase),
-            fileConfig: nil
+            fileConfig: nil,
         )
         XCTAssertEqual(resolvedConfig.configPath, "env-sourced-path")
         XCTAssertEqual(resolvedConfig.sakeAppPath, "env-sourced-path-2")
@@ -106,7 +106,7 @@ final class ConfigResolverTests: XCTestCase {
         let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: "cli-sourced-path", sakeAppPath: "cli-sourced-path-2", caseConvertingStrategy: .toSnakeCase),
             envConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
-            fileConfig: nil
+            fileConfig: nil,
         )
         XCTAssertEqual(resolvedConfig.configPath, "cli-sourced-path")
         XCTAssertEqual(resolvedConfig.sakeAppPath, "cli-sourced-path-2")
@@ -119,7 +119,7 @@ final class ConfigResolverTests: XCTestCase {
         let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
             envConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
-            fileConfig: .mock(sakeAppPath: "file-sourced-path", caseConvertingStrategy: nil)
+            fileConfig: .mock(sakeAppPath: "file-sourced-path", caseConvertingStrategy: nil),
         )
         XCTAssertEqual(resolvedConfig.configPath, Config.default.configPath)
         XCTAssertEqual(resolvedConfig.sakeAppPath, "file-sourced-path")
@@ -132,7 +132,7 @@ final class ConfigResolverTests: XCTestCase {
         let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: "cli-sourced-path", sakeAppPath: "cli-sourced-path-2", caseConvertingStrategy: .toSnakeCase),
             envConfig: .mock(configPath: "env-sourced-path", sakeAppPath: "env-sourced-path-2", caseConvertingStrategy: .toKebabCase),
-            fileConfig: nil
+            fileConfig: nil,
         )
         XCTAssertEqual(resolvedConfig.configPath, "cli-sourced-path")
         XCTAssertEqual(resolvedConfig.sakeAppPath, "cli-sourced-path-2")
@@ -145,7 +145,7 @@ final class ConfigResolverTests: XCTestCase {
         let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: "cli-sourced-path", sakeAppPath: "cli-sourced-path-2", caseConvertingStrategy: .toSnakeCase),
             envConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
-            fileConfig: .mock(sakeAppPath: "file-sourced-path", caseConvertingStrategy: nil)
+            fileConfig: .mock(sakeAppPath: "file-sourced-path", caseConvertingStrategy: nil),
         )
         XCTAssertEqual(resolvedConfig.configPath, "cli-sourced-path")
         XCTAssertEqual(resolvedConfig.sakeAppPath, "cli-sourced-path-2")
@@ -158,7 +158,7 @@ final class ConfigResolverTests: XCTestCase {
         let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: nil, sakeAppPath: nil, caseConvertingStrategy: nil),
             envConfig: .mock(configPath: "env-sourced-path", sakeAppPath: "env-sourced-path-2", caseConvertingStrategy: .toKebabCase),
-            fileConfig: .mock(sakeAppPath: "file-sourced-path", caseConvertingStrategy: nil)
+            fileConfig: .mock(sakeAppPath: "file-sourced-path", caseConvertingStrategy: nil),
         )
         XCTAssertEqual(resolvedConfig.configPath, "env-sourced-path")
         XCTAssertEqual(resolvedConfig.sakeAppPath, "env-sourced-path-2")
@@ -171,7 +171,7 @@ final class ConfigResolverTests: XCTestCase {
         let resolvedConfig = try resolver.resolve(
             cliConfig: .mock(configPath: "cli-sourced-path", sakeAppPath: "cli-sourced-path-2", caseConvertingStrategy: .toSnakeCase),
             envConfig: .mock(configPath: "env-sourced-path", sakeAppPath: "env-sourced-path-2", caseConvertingStrategy: .toKebabCase),
-            fileConfig: .mock(sakeAppPath: "file-sourced-path", caseConvertingStrategy: nil)
+            fileConfig: .mock(sakeAppPath: "file-sourced-path", caseConvertingStrategy: nil),
         )
         XCTAssertEqual(resolvedConfig.configPath, "cli-sourced-path")
         XCTAssertEqual(resolvedConfig.sakeAppPath, "cli-sourced-path-2")

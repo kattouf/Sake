@@ -23,7 +23,7 @@ extension FileConfig {
         FileConfig(
             sakeAppPath: sakeAppPath,
             sakeAppPrebuiltBinaryPath: sakeAppPrebuiltBinaryPath,
-            caseConvertingStrategy: caseConvertingStrategy
+            caseConvertingStrategy: caseConvertingStrategy,
         )
     }
 }
@@ -44,7 +44,7 @@ final class FileConfigManager {
         return FileConfig(
             sakeAppPath: decoded.sakeAppPath?.nilIfEmpty(),
             sakeAppPrebuiltBinaryPath: decoded.sakeAppPrebuiltBinaryPath?.nilIfEmpty(),
-            caseConvertingStrategy: decoded.caseConvertingStrategy
+            caseConvertingStrategy: decoded.caseConvertingStrategy,
         )
     }
 }

@@ -24,7 +24,7 @@ final class ShellExecutor {
             arguments: ["-c", command],
             input: .fileDescriptor(.standardInput, closeAfterSpawningProcess: false),
             output: .fileDescriptor(.standardOutput, closeAfterSpawningProcess: false),
-            error: .fileDescriptor(.standardError, closeAfterSpawningProcess: false)
+            error: .fileDescriptor(.standardError, closeAfterSpawningProcess: false),
         )
         return result.terminationStatus.exitCode
     }
@@ -39,20 +39,20 @@ final class ShellExecutor {
                 arguments: ["-c", command],
                 input: .none,
                 output: .string(limit: 512 * 1024, encoding: UTF8.self),
-                error: .string(limit: 512 * 1024, encoding: UTF8.self)
+                error: .string(limit: 512 * 1024, encoding: UTF8.self),
             )
             return RunOutput(
                 succeeded: result.terminationStatus.isSuccess,
                 stdout: result.standardOutput.map(cleanUpOutput) ?? "",
                 stderror: result.standardError.map(cleanUpOutput) ?? "",
-                executorError: nil
+                executorError: nil,
             )
         } catch {
             return RunOutput(
                 succeeded: false,
                 stdout: "",
                 stderror: "",
-                executorError: error
+                executorError: error,
             )
         }
     }

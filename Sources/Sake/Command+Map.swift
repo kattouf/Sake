@@ -41,7 +41,7 @@ public extension Command {
             },
             run: { context in
                 try await run(transform(context))
-            }
+            },
         )
     }
 }
@@ -62,7 +62,7 @@ public extension Command.Context {
             appDirectory: appDirectory,
             runDirectory: runDirectory,
             storage: storage,
-            interruptionHandler: interruptionHandler
+            interruptionHandler: interruptionHandler,
         )
     }
 
@@ -81,7 +81,7 @@ public extension Command.Context {
             appDirectory: appDirectory,
             runDirectory: runDirectory,
             storage: storage,
-            interruptionHandler: interruptionHandler
+            interruptionHandler: interruptionHandler,
         )
     }
 }

@@ -20,7 +20,7 @@ extension PackageDescription {
             guard container.allKeys.count == 1 else {
                 throw DecodingError.dataCorrupted(DecodingError.Context(
                     codingPath: container.codingPath,
-                    debugDescription: "Expected only one key of product type"
+                    debugDescription: "Expected only one key of product type",
                 ))
             }
 

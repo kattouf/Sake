@@ -1,4 +1,4 @@
---swiftversion 5.10
+--swiftversion 6.1
 
 --exclude .build,.index-build,SakeApp/.build,SakeApp/.index-build
 

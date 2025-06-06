@@ -18,7 +18,7 @@ struct TestCommands {
                 buildTests,
                 unitTests.mapArguments { arguments in arguments + ["--skip-build"] },
                 integrationTests.mapArguments { arguments in arguments + ["--skip-build"] },
-            ]
+            ],
         )
     }
 
@@ -32,7 +32,7 @@ struct TestCommands {
             },
             run: { _ in
                 try await runAndPrint("swift", "build", "--build-tests")
-            }
+            },
         )
     }
 
@@ -46,7 +46,7 @@ struct TestCommands {
                 if shouldBeautifyLog {
                     try await CommandRunner(
                         command: MiseCommands.ensureXcbeautifyInstalled,
-                        context: context
+                        context: context,
                     )
                     .run()
                 }
@@ -55,7 +55,7 @@ struct TestCommands {
                     "-c",
                     "swift test --skip-build --filter \"^(?!.*\\bIntegrationTests\\b).*\"\(beautifyLog)",
                 )
-            }
+            },
         )
     }
 
@@ -69,7 +69,7 @@ struct TestCommands {
                 if shouldBeautifyLog {
                     try await CommandRunner(
                         command: MiseCommands.ensureXcbeautifyInstalled,
-                        context: context
+                        context: context,
                     )
                     .run()
                 }
@@ -78,7 +78,7 @@ struct TestCommands {
                     "-c",
                     "swift test --skip-build --filter IntegrationTests\(beautifyLog)",
                 )
-            }
+            },
         )
     }
 
@@ -91,7 +91,7 @@ struct TestCommands {
             },
             run: { _ in
                 try await runAndPrint("swift", "package", "clean")
-            }
+            },
         )
     }
 }

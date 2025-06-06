@@ -21,6 +21,6 @@ struct SakeCLI: AsyncParsableCommand {
         abstract: "Swift-based utility for managing command execution with dependencies and conditions, inspired by Make.",
         version: sakeCLIVersion,
         subcommands: subcommands,
-        defaultSubcommand: RunCommand.self
+        defaultSubcommand: RunCommand.self,
     )
 }

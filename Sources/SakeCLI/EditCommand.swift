@@ -5,7 +5,7 @@ import SakeShared
 struct EditCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "edit",
-        abstract: "Open the SakeApp in Xcode"
+        abstract: "Open the SakeApp in Xcode",
     )
 
     @OptionGroup

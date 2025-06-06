@@ -25,7 +25,7 @@ let package = Package(
                 .product(name: "Subprocess", package: "swift-subprocess"),
                 .product(name: "Crypto", package: "swift-crypto"),
             ],
-            path: "."
+            path: ".",
         ),
-    ]
+    ],
 )

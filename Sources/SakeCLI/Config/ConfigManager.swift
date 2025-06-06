@@ -28,7 +28,7 @@ final class ConfigManager {
         return try configResolver.resolve(
             cliConfig: cliConfig,
             envConfig: envConfig,
-            fileConfig: fileConfig
+            fileConfig: fileConfig,
         )
     }
 
@@ -68,7 +68,7 @@ final class ConfigResolver {
             configPath: resolveConfigPath(cliConfig: cliConfig, envConfig: envConfig),
             sakeAppPath: sakeAppPath ?? Config.default.sakeAppPath,
             sakeAppPrebuiltBinaryPath: sakeAppPrebuiltBinaryPath ?? Config.default.sakeAppPrebuiltBinaryPath,
-            caseConvertingStrategy: caseConvertingStrategy ?? Config.default.caseConvertingStrategy
+            caseConvertingStrategy: caseConvertingStrategy ?? Config.default.caseConvertingStrategy,
         )
     }
 }

@@ -37,7 +37,7 @@ extension CLIConfig {
             configPath: configPath,
             sakeAppPath: sakeAppPath,
             sakeAppPrebuiltBinaryPath: sakeAppPrebuiltBinaryPath,
-            caseConvertingStrategy: caseConvertingStrategy
+            caseConvertingStrategy: caseConvertingStrategy,
         )
     }
 }

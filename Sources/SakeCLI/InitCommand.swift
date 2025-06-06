@@ -4,7 +4,7 @@ import Foundation
 struct InitCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "init",
-        abstract: "Initialize a new SakeApp project template for defining commands."
+        abstract: "Initialize a new SakeApp project template for defining commands.",
     )
 
     @OptionGroup

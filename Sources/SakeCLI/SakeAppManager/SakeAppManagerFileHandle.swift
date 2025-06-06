@@ -40,12 +40,12 @@ final class DefaultSakeAppManagerFileHandle: SakeAppManagerFileHandle {
         _ = FileManager.default.createFile(
             atPath: gitignorePath,
             contents: SakeAppContents.gitignore.data(using: .utf8),
-            attributes: nil
+            attributes: nil,
         )
         _ = FileManager.default.createFile(
             atPath: packageSwiftPath,
             contents: SakeAppContents.packageSwift.data(using: .utf8),
-            attributes: nil
+            attributes: nil,
         )
         _ = FileManager.default.createFile(atPath: sakefilePath, contents: SakeAppContents.sakefile.data(using: .utf8), attributes: nil)
     }
@@ -76,7 +76,7 @@ final class DefaultSakeAppManagerFileHandle: SakeAppManagerFileHandle {
         let enumerator = fileManager.enumerator(
             at: sakeAppDirectoryURL,
             includingPropertiesForKeys: Array(urlResourceKeys),
-            options: enumeratorOptions
+            options: enumeratorOptions,
         )!
 
         for case let fileURL as URL in enumerator {

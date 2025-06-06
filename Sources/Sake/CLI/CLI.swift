@@ -3,7 +3,7 @@ import SakeShared
 
 struct CLI: ParsableCommand {
     static let configuration = CommandConfiguration(
-        subcommands: [ListCommand.self, RunCommand.self]
+        subcommands: [ListCommand.self, RunCommand.self],
     )
 }
 

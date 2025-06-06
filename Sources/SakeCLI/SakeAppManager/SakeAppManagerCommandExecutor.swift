@@ -13,7 +13,7 @@ protocol SakeAppManagerCommandExecutor {
         executablePath: String,
         command: String,
         args: [String],
-        caseConvertingStrategy: CaseConvertingStrategy
+        caseConvertingStrategy: CaseConvertingStrategy,
     ) async throws
 }
 
@@ -41,7 +41,7 @@ final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor 
             throw SakeAppManagerError.sakeAppNotValid(.failedToDumpPackageSwift(
                 path: fileHandle.packageSwiftPath,
                 stdout: dumpResult.stdout,
-                stderr: dumpResult.stderror
+                stderr: dumpResult.stderror,
             ))
         }
         return dumpResult.stdout
@@ -69,7 +69,7 @@ final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor 
             : ""
         let buildResult = await shellExecutor
             .run(
-                "swift build \(experimentalPrebuiltsFlag) \(swiftcFlags) --package-path \(fileHandle.path.shellQuoted) --product \(Constants.sakeAppExecutableName)"
+                "swift build \(experimentalPrebuiltsFlag) \(swiftcFlags) --package-path \(fileHandle.path.shellQuoted) --product \(Constants.sakeAppExecutableName)",
             )
         guard buildResult.succeeded else {
             throw SakeAppManagerError.failedToBuildSakeApp(stdout: buildResult.stdout, stderr: buildResult.stderror)
@@ -86,7 +86,7 @@ final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor 
 
         let exitCode = try await shellExecutor
             .runAndPrint(
-                "\(executablePath.shellQuoted) list --case-converting-strategy \(caseConvertingStrategy.rawValue)\(jsonFlag)"
+                "\(executablePath.shellQuoted) list --case-converting-strategy \(caseConvertingStrategy.rawValue)\(jsonFlag)",
             )
         try handleSakeAppExitCode(exitCode: exitCode)
     }
@@ -95,13 +95,13 @@ final class DefaultSakeAppManagerCommandExecutor: SakeAppManagerCommandExecutor 
         executablePath: String,
         command: String,
         args: [String],
-        caseConvertingStrategy: CaseConvertingStrategy
+        caseConvertingStrategy: CaseConvertingStrategy,
     ) async throws {
         let args = args.isEmpty ? "" : " \(args.map { $0.shellQuoted }.joined(separator: " "))"
 
         let exitCode = try await shellExecutor
             .runAndPrint(
-                "\(executablePath.shellQuoted) run --case-converting-strategy \(caseConvertingStrategy.rawValue) \(command)\(args)"
+                "\(executablePath.shellQuoted) run --case-converting-strategy \(caseConvertingStrategy.rawValue) \(command)\(args)",
             )
         try handleSakeAppExitCode(exitCode: exitCode)
     }

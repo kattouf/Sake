@@ -4,7 +4,7 @@ import SakeShared
 
 struct RunCommand: SakeParsableCommand {
     static let configuration = CommandConfiguration(
-        commandName: "run"
+        commandName: "run",
     )
 
     @OptionGroup
@@ -20,7 +20,7 @@ struct RunCommand: SakeParsableCommand {
         let commandsPreprocessor = CommandsPreprocessor(
             commands: sakeApp.commands,
             commandGroups: sakeApp.configuration.commandGroups,
-            caseConvertingStrategy: options.caseConvertingStrategy
+            caseConvertingStrategy: options.caseConvertingStrategy,
         )
         let commands = try commandsPreprocessor.allCommands()
 
@@ -33,7 +33,7 @@ struct RunCommand: SakeParsableCommand {
                     .path ?? "<Could not find SakeApp directory>",
                 runDirectory: FileManager.default.currentDirectoryPath,
                 storage: Command.Context.Storage(),
-                interruptionHandler: Command.Context.InterruptionHandler(processMonitor: processMonitor)
+                interruptionHandler: Command.Context.InterruptionHandler(processMonitor: processMonitor),
             )
             let runner = CommandRunner(command: command, context: context)
             processMonitor.monitor()

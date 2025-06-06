@@ -10,7 +10,7 @@ struct Commands: SakeApp {
             commandGroups: [
                 TestCommands.self,
                 ReleaseCommands.self,
-            ]
+            ],
         )
     }
 
@@ -28,9 +28,9 @@ struct Commands: SakeApp {
                     "\(context.projectRoot)/SakeApp",
                     "\(context.projectRoot)/Tests",
                     "\(context.projectRoot)/Package.swift",
-                    "--lint"
+                    "--lint",
                 )
-            }
+            },
         )
     }
 
@@ -47,9 +47,9 @@ struct Commands: SakeApp {
                     "\(context.projectRoot)/Sources",
                     "\(context.projectRoot)/SakeApp",
                     "\(context.projectRoot)/Tests",
-                    "\(context.projectRoot)/Package.swift"
+                    "\(context.projectRoot)/Package.swift",
                 )
-            }
+            },
         )
     }
 }

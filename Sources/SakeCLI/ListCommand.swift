@@ -5,7 +5,7 @@ struct ListCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "list",
         abstract: "List all available commands defined in the SakeApp.",
-        aliases: ["ls"]
+        aliases: ["ls"],
     )
 
     @OptionGroup
@@ -26,7 +26,7 @@ struct ListCommand: AsyncParsableCommand {
             try await manager.listAvailableCommands(
                 prebuiltExecutablePath: config.sakeAppPrebuiltBinaryPath,
                 caseConvertingStrategy: config.caseConvertingStrategy,
-                json: json
+                json: json,
             )
         } catch {
             if case let SakeAppManagerError.sakeAppError(sakeAppError) = error {

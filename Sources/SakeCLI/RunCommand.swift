@@ -4,7 +4,7 @@ import Foundation
 struct RunCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "run",
-        abstract: "Run the specified command from the SakeApp."
+        abstract: "Run the specified command from the SakeApp.",
     )
 
     @OptionGroup
@@ -15,7 +15,7 @@ struct RunCommand: AsyncParsableCommand {
 
     @Argument(
         help: "The name of the command to execute.",
-        completion: .custom(ShellCompletionCommandListGenerator.generate)
+        completion: .custom(ShellCompletionCommandListGenerator.generate),
     )
     var command: String
 
@@ -32,7 +32,7 @@ struct RunCommand: AsyncParsableCommand {
                 prebuiltExecutablePath: config.sakeAppPrebuiltBinaryPath,
                 command: command,
                 args: args,
-                caseConvertingStrategy: config.caseConvertingStrategy
+                caseConvertingStrategy: config.caseConvertingStrategy,
             )
         } catch {
             if case let SakeAppManagerError.sakeAppError(sakeAppError) = error {
