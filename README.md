@@ -37,32 +37,38 @@ struct Commands: SakeApp {
         )
     }
 
-    // MARK: - Tests
+    // MARK: - Release automation
 
-    struct TestArguments: ParsableArguments {
-        @Flag(name: .long, help: "Skip building before running tests")
-        var skipBuild: Bool = false
+    public static var buildReleaseArtifacts: Command {
+        Command(
+            description: "Build release artifacts for distribution",
+            dependencies: [buildRelease, stripBinary, createArchive]
+        )
     }
 
-    public static var runTests: Command {
+    static var buildRelease: Command {
         Command(
-            description: "Run unit tests",
-            dependencies: [buildTests],
+            description: "Build optimized release binary",
             run: { context in
-                try runAndPrint("swift", "test", "--skip-build")
+                try runAndPrint("swift", "build", "--configuration", "release")
             }
         )
     }
 
-    public static var buildTests: Command {
+    static var stripBinary: Command {
         Command(
-            description: "Build tests",
-            skipIf: { context in
-                let arguments = try TestArguments.parse(context.arguments)
-                return arguments.skipBuild
-            },
+            description: "Strip debug symbols to reduce size",
             run: { context in
-                try runAndPrint("swift", "build", "--build-tests")
+                try runAndPrint("strip", "-rSTx", ".build/release/MyApp")
+            }
+        )
+    }
+
+    static var createArchive: Command {
+        Command(
+            description: "Create distribution ZIP archive",
+            run: { context in
+                try runAndPrint("zip", "-j", "MyApp.zip", ".build/release/MyApp")
             }
         )
     }
@@ -77,12 +83,13 @@ Then run them like this:
 ❯ sake list
 Commands:
  * format - Format source code
- * runTests - Run unit tests
- * buildTests - Build tests
+ * buildReleaseArtifacts - Build release artifacts for distribution
 
-❯ sake runTests --skip-build
-...
-Executed 21 tests, with 0 failures (0 unexpected) in 0.144 (0.146) seconds
+❯ sake buildReleaseArtifacts
+Building for production...
+Compiling MyApp...
+Build complete.
+  creating: MyApp.zip
 ```
 
 [📚 Documentation](https://sakeswift.org) • [🚀 Getting Started](#-getting-started) • [💻 GitHub](https://github.com/kattouf/Sake)
