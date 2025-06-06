@@ -8,7 +8,7 @@ You can easily integrate libraries by adding them to your `SakeApp/Package.swift
 dependencies: [
     .package(url: "https://github.com/kattouf/Sake", from: "0.1.0"),
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.0"),
-    .package(url: "https://github.com/kareman/SwiftShell", from: "5.1.0")
+    .package(url: "https://github.com/swiftlang/swift-subprocess.git", branch: "main")
 ]
 ```
 And then adding the product to `SakeApp` target that needs access to the library:
@@ -17,15 +17,15 @@ targets: [
     .executableTarget(
         name: "SakeApp",
         dependencies: [
-            "Sake",
+            .product(name: "Sake", package: "Sake"),
             .product(name: "ArgumentParser", package: "swift-argument-parser"),
-            "SwiftShell"
+            .product(name: "Subprocess", package: "swift-subprocess")
         ],
         path: "."
     ),
 ]
 ```
 
-This allows you to use libraries like `ArgumentParser` or `SwiftShell` to extend the capabilities of your commands.
+This allows you to use libraries like `ArgumentParser` or `swift-subprocess` to extend the capabilities of your commands.
 
 This flexibility lets you create commands that suit your specific needs while benefiting from Swift's extensive ecosystem of third-party libraries.

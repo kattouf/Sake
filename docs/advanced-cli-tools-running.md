@@ -1,41 +1,47 @@
 # CLI Tools Running
 
-In Sake, you can integrate external Swift libraries to run and automate CLI commands as part of your tasks. A popular library for this purpose is [`SwiftShell`](https://github.com/kareman/SwiftShell), which makes running shell commands easy and convenient.
+In Sake, you can integrate external Swift libraries to run and automate CLI commands as part of your tasks. The recommended library for this purpose is [`swift-subprocess`](https://github.com/swiftlang/swift-subprocess), which provides a modern, Swift-native way to spawn and manage processes.
 
-### Using SwiftShell for Command Execution
+### Using swift-subprocess for Command Execution
 
-With `SwiftShell`, you can execute CLI commands directly from within your Sake commands, making it easy to automate various steps in your project workflow.
+With `swift-subprocess`, you can execute CLI commands directly from within your Sake commands, making it easy to automate various steps in your project workflow.
 
-Here is an example of using `SwiftShell` to run CLI commands in a Sake command:
+Here is an example of using `swift-subprocess` to run CLI commands in a Sake command:
 
-```swift {12}
+```swift {12-17}
 import Foundation
 import Sake
-import SwiftShell
+import Subprocess
 
 @main
 @CommandGroup
 struct Commands: SakeApp {
-    public static var build: Command {
+    public static var test: Command {
         Command(
-            description: "Build the project using a shell command"
-        ) { context in
-            try runAndPrint("swift", "build")
-        }
+            description: "Test the project using a shell command",
+            run: { context in
+                try await run(
+                    .name("swift"),
+                    arguments: ["test"],
+                    output: .fileDescriptor(.standardOutput, closeAfterSpawningProcess: false),
+                    error: .fileDescriptor(.standardError, closeAfterSpawningProcess: false),
+                )
+            }
+        )
     }
 }
 ```
 
-In this example, the `build` command uses `SwiftShell`'s `runAndPrint` function to execute the `swift build` command, which builds the project and prints the output to the console.
+In this example, the `test` command uses `swift-subprocess`'s `run` function to execute the `swift test` command, which runs the project tests and prints the output to the console.
 
 #### Adding Dependencies
 
-To use `SwiftShell` in your Sake commands, add it to your `SakeApp/Package.swift` file:
+To use `swift-subprocess` in your Sake commands, add it to your `SakeApp/Package.swift` file:
 
 ```swift{3}
 dependencies: [
     .package(url: "https://github.com/kattouf/Sake", from: "0.1.0"),
-    .package(url: "https://github.com/kareman/SwiftShell", from: "5.1.0")
+    .package(url: "https://github.com/swiftlang/swift-subprocess.git", branch: "main")
 ]
 ```
 And then adding the product to `SakeApp` target that needs access to the library:
@@ -44,8 +50,8 @@ targets: [
     .executableTarget(
         name: "SakeApp",
         dependencies: [
-            "Sake",
-            "SwiftShell"
+            .product(name: "Sake", package: "Sake"),
+            .product(name: "Subprocess", package: "swift-subprocess")
         ],
         path: "."
     ),

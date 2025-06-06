@@ -6,7 +6,7 @@ The example below demonstrates a linting command that can accept arguments and e
 import ArgumentParser
 import Foundation
 import Sake
-import SwiftShell
+import Subprocess
 
 @main
 @CommandGroup
@@ -27,9 +27,13 @@ struct Commands: SakeApp {
 
                 // Run SwiftLint based on the provided arguments
                 if arguments.quiet {
-                    run("swiftlint")
+                    try await run(.name("swiftlint"))
                 } else {
-                    try runAndPrint("swiftlint")
+                    try await run(
+                        .name("swiftlint"),
+                        output: .fileDescriptor(.standardOutput, closeAfterSpawningProcess: false),
+                        error: .fileDescriptor(.standardError, closeAfterSpawningProcess: false)
+                    )
                 }
             }
         )
@@ -40,12 +44,18 @@ struct Commands: SakeApp {
     static var ensureSwiftLintInstalled: Command {
         Command(
             skipIf: { _ in
-                run("which", "swiftlint").succeeded // Skip installation if SwiftLint is already available
+                let result = try await run(.name("which"), arguments: ["swiftlint"])
+                return result.terminationStatus.isSuccess // Skip installation if SwiftLint is already available
             },
             run: { _ in
                 print("Installing SwiftLint...")
                 // Install SwiftLint using Homebrew
-                try runAndPrint("brew", "install", "swiftlint")
+                try await run(
+                    .name("brew"),
+                    arguments: ["install", "swiftlint"],
+                    output: .fileDescriptor(.standardOutput, closeAfterSpawningProcess: false),
+                    error: .fileDescriptor(.standardError, closeAfterSpawningProcess: false)
+                )
             }
         )
     }
