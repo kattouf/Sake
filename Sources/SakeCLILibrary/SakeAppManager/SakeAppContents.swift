@@ -25,7 +25,7 @@ enum SakeAppContents {
             .executable(name: "SakeApp", targets: ["SakeApp"]),
         ],
         dependencies: [
-            .package(url: "https://github.com/kattouf/Sake", from: "0.1.0"),
+            .package(url: "https://github.com/kattouf/Sake", from: "1.0.0"),
         ],
         targets: [
             .executableTarget(
