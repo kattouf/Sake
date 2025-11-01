@@ -40,8 +40,8 @@ To use `swift-subprocess` in your Sake commands, add it to your `SakeApp/Package
 
 ```swift{3}
 dependencies: [
-    .package(url: "https://github.com/kattouf/Sake", from: "0.1.0"),
-    .package(url: "https://github.com/swiftlang/swift-subprocess.git", branch: "main")
+    .package(url: "https://github.com/kattouf/Sake", from: "1.0.0"),
+    .package(url: "https://github.com/swiftlang/swift-subprocess.git", from: "0.2.0")
 ]
 ```
 And then adding the product to `SakeApp` target that needs access to the library:
