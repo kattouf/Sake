@@ -4,18 +4,22 @@ import SakeCLILibrary
 import SakeShared
 
 enum ShellCompletionCommandListGenerator {
+    private final class UncheckedSendable: @unchecked Sendable {
+        var value: [String] = []
+    }
+
     @Sendable
     static func generate(arguments: [String]) -> [String] {
         let semaphore = DispatchSemaphore(value: 0)
-        var result: [String] = []
+        let resultBox = UncheckedSendable()
 
         Task {
-            result = await generateAsync(arguments: arguments)
+            resultBox.value = await generateAsync(arguments: arguments)
             semaphore.signal()
         }
 
         semaphore.wait()
-        return result
+        return resultBox.value
     }
 
     @Sendable

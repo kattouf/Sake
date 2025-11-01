@@ -16,7 +16,7 @@ struct RunCommand: AsyncParsableCommand {
 
     @Argument(
         help: "The name of the command to execute.",
-        completion: .custom(ShellCompletionCommandListGenerator.generate),
+        completion: .custom(ShellCompletionCommandListGenerator.generate), // For some reasons new async API makes runtime errors
     )
     var command: String
 
