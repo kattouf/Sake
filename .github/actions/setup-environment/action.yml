@@ -18,6 +18,7 @@ runs:
     - uses: SwiftyLab/setup-swift@latest
       with:
         swift-version: ${{ inputs.swift-version }}
+        development: true
     - name: Setup Sake
       id: setup-sake
       uses: kattouf/setup-sake@v1
