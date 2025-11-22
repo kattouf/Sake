@@ -15,7 +15,7 @@ runs:
       with:
         version: ${{ inputs.mise-version }}
         install: false
-    - uses: SwiftyLab/setup-swift@latest
+    - uses: swift-actions/setup-swift@v2
       with:
         swift-version: ${{ inputs.swift-version }}
     - name: Setup Sake
