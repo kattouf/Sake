@@ -30,7 +30,7 @@ struct ReleaseCommands {
     }
 
     private enum Constants {
-        static let swiftVersion = "6.1"
+        static let swiftVersion = "6.2.1"
         static let buildArtifactsDirectory = ".build/artifacts"
         static let buildTargets: [BuildTarget] = [
             .init(arch: .arm, os: .macos),
