@@ -5,7 +5,7 @@
 When working on tasks in the Sake project, there is no structured process that ensures:
 - Relevant project knowledge is loaded before starting work
 - Quality checks and reviews happen consistently
-- New knowledge discovered during work is captured back into the project's knowledge base (AGENTS.md, skills)
+- New knowledge discovered during work is captured back into the project's knowledge base (CLAUDE.md, skills)
 
 The knowledge base should grow organically as tasks are completed, making the agent more effective over time.
 
@@ -23,7 +23,7 @@ Heavy interactive skills (brainstorming, writing-plans) are called explicitly at
 
 - Read the list of available skills, select relevant ones based on the task description
 - Load selected skills (via Skill tool) to bring domain knowledge into context
-- Read AGENTS.md for current project conventions and patterns
+- Read CLAUDE.md for current project conventions and patterns
 
 No fixed mapping of "task type -> skills". The agent decides relevance based on skill descriptions and task context.
 
@@ -37,7 +37,7 @@ For trivial tasks (typo fix, single-line change, straightforward bug fix): skip 
 #### 3. Implement
 
 - Execute the plan (invoke `superpowers:executing-plans` or work directly from the plan)
-- Follow patterns and conventions from AGENTS.md and loaded skills
+- Follow patterns and conventions from CLAUDE.md and loaded skills
 
 #### 4. Verify
 
@@ -52,7 +52,7 @@ For trivial tasks (typo fix, single-line change, straightforward bug fix): skip 
 Two sub-steps, in order:
 
 **5a. Knowledge base conformance check**
-Agent re-reads AGENTS.md and relevant skills, then reviews its own diff for:
+Agent re-reads CLAUDE.md and relevant skills, then reviews its own diff for:
 - Violations of documented patterns and conventions
 - Code style deviations not caught by automated tools
 - Inconsistencies with existing codebase approaches
@@ -70,13 +70,13 @@ After both sub-steps: present results to the user, request feedback. If changes 
 **Trigger:** Only after step 4 (verify) passes. If review (step 5) caused rework, this step runs after the subsequent verify pass.
 
 **Update criteria** — update if any of these discovered during work:
-- Pattern or convention not described in AGENTS.md
+- Pattern or convention not described in CLAUDE.md
 - Project knowledge that had to be discovered and would be useful again
-- Existing description in AGENTS.md or skills became inaccurate
+- Existing description in CLAUDE.md or skills became inaccurate
 - A domain or process worth capturing as a new skill (reference or procedural)
 
 **What can be updated:**
-- **AGENTS.md** — new patterns, conventions, architectural decisions
+- **CLAUDE.md** — new patterns, conventions, architectural decisions
 - **Existing skills** — corrections, improvements to workflow or reference skills
 - **New skills** — reference skills (domain knowledge), process skills (repeated workflows), any type that serves as modular knowledge base for the agent
 
@@ -86,8 +86,8 @@ If nothing qualifies — skip this step entirely.
 
 #### 7. Commit
 
-- Create commit with conventional commit message following project conventions (see AGENTS.md)
-- Knowledge base updates (AGENTS.md, skills) are included in the same commit or a separate one, depending on logical grouping
+- Create commit with conventional commit message following project conventions (see CLAUDE.md)
+- Knowledge base updates (CLAUDE.md, skills) are included in the same commit or a separate one, depending on logical grouping
 
 ### What the Skill Does NOT Do
 
@@ -102,7 +102,7 @@ If nothing qualifies — skip this step entirely.
 Task received
     |
     v
-[1. Discover context] -- load relevant skills, read AGENTS.md
+[1. Discover context] -- load relevant skills, read CLAUDE.md
     |
     v
 [2. Brainstorm & Plan] -- brainstorming -> writing-plans (skip if trivial)
@@ -114,7 +114,7 @@ Task received
 [4. Verify] <-- loop: format, lint, test -> fix -> repeat
     |
     v
-[5a. KB conformance check] -- diff vs AGENTS.md & skills
+[5a. KB conformance check] -- diff vs CLAUDE.md & skills
     |
     v
 [5b. Quality review] -- superpowers:requesting-code-review
@@ -124,7 +124,7 @@ Task received
     |
    yes
     v
-[6. Update knowledge base] -- AGENTS.md, skills (if applicable)
+[6. Update knowledge base] -- CLAUDE.md, skills (if applicable)
     |
     v
 [7. Commit]
