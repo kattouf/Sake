@@ -37,7 +37,7 @@ Only `public static var` properties of type `Command` or `Sake.Command` are expo
 
 ## Configuration
 
-Three-level cascade (highest priority first): CLI args → ENV vars → `.sake.yml` file → defaults.
+Four-level cascade (highest priority first): CLI args → ENV vars → `.sake.yml` file → defaults.
 
 Key options: `sakeAppPath`, `sakeAppPrebuiltBinaryPath` (mutually exclusive), `caseConvertingStrategy` (keepOriginal/toSnakeCase/toKebabCase).
 

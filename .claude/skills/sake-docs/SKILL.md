@@ -38,7 +38,8 @@ docs/
   experimental-features.md          — SAKE_EXPERIMENTAL_FEATURES, swift-syntax prebuilts
   troubleshooting.md                — sake clean, rm -rf SakeApp/.build
   contribution-guide.md             — formatting, testing, conventional commits
-  package.json                      — VitePress config
+  package.json                      — npm scripts and dependencies
+  .vitepress/config.mts             — VitePress sidebar/nav config
 ```
 
 ## VitePress Build
@@ -60,7 +61,7 @@ Deployed automatically on push to main (docs/** changes) via `.github/workflows/
 ## Adding a New Doc
 
 1. Create `docs/new-page.md`
-2. Add to VitePress sidebar config in `docs/.vitepress/config.js` (if it exists) or navigation
+2. Add to VitePress sidebar config in `docs/.vitepress/config.mts`
 3. Cross-reference from related pages
 4. Run `cd docs && npm run docs:dev` to preview locally
 
