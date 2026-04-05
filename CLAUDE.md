@@ -1,4 +1,4 @@
-# AGENTS.md
+# Sake Project
 
 ## Project Overview
 
@@ -7,6 +7,8 @@ Sake is a Swift-based command runner inspired by Make. Two-part system:
 - **SakeApp** — user's SPM executable containing commands defined via `@CommandGroup` macro
 
 Requirements: macOS 13+, Linux, Swift 6.1+.
+
+For structured task execution, use the `sake-workflow` skill. Reference skills for specific project areas are available in `.claude/skills/`.
 
 ## Module Architecture
 
