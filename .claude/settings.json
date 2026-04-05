@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sake format:*)",
+      "Bash(sake lint:*)",
+      "Bash(sake test:*)",
+      "Bash(sake build_tests:*)",
+      "Bash(sake unit_tests:*)",
+      "Bash(sake integration_tests:*)",
+      "Bash(sake list:*)",
+      "Bash(sake build:*)",
+      "Bash(sake clean:*)",
+      "Bash(swift build:*)",
+      "Bash(swift test:*)",
+      "Bash(swift package dump-package:*)",
+      "Bash(swift package show-dependencies:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git mv:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr status:*)",
+      "Bash(gh repo view:*)",
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "Bash(wc:*)"
+    ],
+    "deny": []
+  }
+}
