@@ -108,6 +108,10 @@ Validated by `semantic-pr-lint.yml` and parsed by git-cliff:
 
 Note: `chore(release): Bump version to X` commits are skipped in release notes.
 
+### What NOT to commit
+
+- Design specs (`docs/superpowers/specs/`) — keep locally, do not commit to the repository.
+
 ## CI Workflows
 
 - **checks.yml** — on push to main and PRs: tests (matrix macOS+Ubuntu, Swift 6.1+6.2.1) + lint
