@@ -7,6 +7,6 @@ DerivedData/
 .swiftpm/configuration/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
-.claude
+.claude/settings.local.json
 
 TODO.md
